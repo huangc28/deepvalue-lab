@@ -4,6 +4,9 @@
 
 This project uses NotebookLM as a long-term knowledge base for Codex and other agents.
 
+Project name:
+- `DeepValue Lab`
+
 Notebook metadata:
 - Alias: `profound-stock`
 - Notebook ID: `afa6678d-0ae5-4070-bd5f-7ec2365c6310`

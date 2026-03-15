@@ -1,5 +1,7 @@
 # Project Context Bootstrap
 
+Project: DeepValue Lab
+
 Status: NotebookLM bootstrap initialized on 2026-03-15.
 
 This repository is currently an early-stage or placeholder workspace. The NotebookLM project starts with minimal curated context and should be expanded only after real project structure, decisions, and workflows exist.
