@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 
 import { Link } from '@tanstack/react-router'
 
+import { ExpectationBridge } from '../components/detail/expectation-bridge'
 import { ScenarioCard } from '../components/detail/scenario-card'
 import { MetricBlock } from '../components/ui/metric-block'
 import { Panel, PanelBody, PanelChrome } from '../components/ui/panel'
@@ -238,7 +239,13 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
             <div className="space-y-4">
               <BulletList items={[stock.currentPriceImplies]} />
               {stock.currentPriceImpliedFacts?.length ? (
-                <InfoList items={toInfoItems(stock.currentPriceImpliedFacts)} />
+                <ExpectationBridge
+                  items={stock.currentPriceImpliedFacts}
+                  currentPrice={stock.currentPrice}
+                  bearFairValue={stock.bearFairValue}
+                  baseFairValue={stock.baseFairValue}
+                  bullFairValue={stock.bullFairValue}
+                />
               ) : null}
             </div>
           </ResearchSection>
