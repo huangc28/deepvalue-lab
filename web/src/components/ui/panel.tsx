@@ -33,16 +33,9 @@ export function PanelChrome({
         className,
       )}
     >
-      <div className="flex items-center gap-3">
-        <div className="flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-[var(--signal-danger)]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[var(--signal-watch)]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[var(--signal-positive)]" />
-        </div>
-        <span className="font-mono text-[0.78rem] tracking-[0.14em] text-[var(--ink-muted)]">
-          {label}
-        </span>
-      </div>
+      <span className="font-mono text-[0.78rem] tracking-[0.14em] text-[var(--ink-muted)]">
+        {label}
+      </span>
       {status ? (
         <span className="font-mono text-[0.75rem] uppercase tracking-[0.18em] text-[var(--ink-faint)]">
           {status}
