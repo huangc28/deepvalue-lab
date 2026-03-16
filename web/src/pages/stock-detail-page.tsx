@@ -45,6 +45,8 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
     )
   }
 
+  const nearestScenario = getNearestScenario(stock)
+
   return (
     <div className="flex flex-col gap-8">
       <Panel className="overflow-hidden bg-[linear-gradient(135deg,_rgba(22,27,34,1),_rgba(13,17,23,1))]">
@@ -100,136 +102,25 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
               value={m.status.actionValue[stock.actionState]}
             />
           </div>
+
+          <div className="grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+            <HeroInsightCard
+              label={m.detail.variantPerceptionTitle}
+              value={text(stock.variantPerception)}
+            />
+            <HeroInsightCard
+              label={m.detail.heroPriceImpliesLabel}
+              value={text(stock.currentPriceImplies)}
+              meta={[
+                [m.detail.nearestScenario, m.detail.scenario[nearestScenario]],
+              ]}
+            />
+          </div>
         </PanelBody>
       </Panel>
 
       <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="space-y-6">
-          <ResearchSection
-            fileLabel="conclusion.md"
-            title={m.detail.conclusionTitle}
-          >
-            <InfoList
-              items={[
-                [
-                  m.detail.currentCall,
-                  text(stock.provisionalConclusion ?? stock.summary),
-                ],
-                [m.detail.decisionSummary, text(stock.summary)],
-                [
-                  m.detail.nextStep,
-                  text(
-                    stock.monitorNext[0] ?? 'Review the next material update.',
-                  ),
-                ],
-                [m.detail.whyItMatters, text(stock.currentPriceImplies)],
-              ]}
-            />
-          </ResearchSection>
-
-          <div className="grid gap-6 lg:grid-cols-2">
-            <ResearchSection
-              fileLabel="business-classification.ts"
-              title={m.detail.businessClassificationTitle}
-              description={m.detail.businessClassificationDescription}
-            >
-              <InfoList
-                items={[[m.detail.businessType, text(stock.businessType)]]}
-              />
-            </ResearchSection>
-
-            <ResearchSection
-              fileLabel="variant-perception.md"
-              title={m.detail.variantPerceptionTitle}
-            >
-              <BulletList items={[stock.variantPerception]} />
-            </ResearchSection>
-          </div>
-
-          <ResearchSection
-            fileLabel="thesis.md"
-            title={m.detail.thesisTitle}
-            description={text(stock.thesisStatement)}
-          >
-            <BulletList items={stock.thesisBullets} />
-          </ResearchSection>
-
-          <div className="grid gap-6 lg:grid-cols-2">
-            <ResearchSection
-              fileLabel="valuation.ts"
-              title={m.detail.valuationLensTitle}
-              description={m.detail.valuationLensDescription}
-            >
-              <InfoList
-                items={[
-                  [m.detail.primaryLens, text(stock.valuationLens.primary)],
-                  [m.detail.crossCheck, text(stock.valuationLens.crossCheck)],
-                  [m.detail.whyItFits, text(stock.valuationLens.rationale)],
-                ]}
-              />
-            </ResearchSection>
-
-            <ResearchSection
-              fileLabel="snapshot.json"
-              title={m.detail.currentValuationSnapshotTitle}
-              description={m.detail.currentValuationSnapshotDescription}
-            >
-              <InfoList
-                items={[
-                  [
-                    m.detail.marketCap,
-                    text(stock.currentValuationSnapshot.marketCap ?? 'n/a'),
-                  ],
-                  [
-                    m.detail.enterpriseValue,
-                    text(
-                      stock.currentValuationSnapshot.enterpriseValue ?? 'n/a',
-                    ),
-                  ],
-                  [
-                    m.detail.keyMultiples,
-                    stock.currentValuationSnapshot.multiples
-                      .map((item) => text(item))
-                      .join(' · '),
-                  ],
-                  [
-                    m.detail.balanceSheetContext,
-                    text(
-                      stock.currentValuationSnapshot.balanceSheetNote ?? 'n/a',
-                    ),
-                  ],
-                ]}
-              />
-            </ResearchSection>
-          </div>
-
-          <ResearchSection
-            fileLabel="news-to-model.log"
-            title={m.detail.newsToModelTitle}
-            description={m.detail.newsToModelDescription}
-          >
-            <div className="space-y-4">
-              {stock.newsToModel.map((item) => (
-                <div
-                  key={text(item.event)}
-                  className="rounded-[1.1rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] p-4"
-                >
-                  <InfoList
-                    items={[
-                      [m.detail.event, text(item.event)],
-                      [
-                        m.detail.modelVariableChanged,
-                        text(item.modelVariableChanged),
-                      ],
-                      [m.detail.impact, text(item.impact)],
-                      [m.detail.affectedScenario, text(item.affectedScenario)],
-                    ]}
-                  />
-                </div>
-              ))}
-            </div>
-          </ResearchSection>
-
           <ResearchSection
             fileLabel="scenario-model.json"
             title={m.detail.scenariosTitle}
@@ -260,60 +151,174 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
             </div>
           </ResearchSection>
 
-          <div className="grid gap-6 lg:grid-cols-2">
-            <ResearchSection
-              fileLabel="thesis-status.md"
-              title={m.detail.thesisStatusTitle}
-            >
+          <ResearchSection
+            fileLabel="entry-timing.tsx"
+            title={m.detail.technicalEntryStatusTitle}
+            description={m.detail.technicalEntryStatusDescription}
+          >
+            <div className="space-y-4">
               <InfoList
                 items={[
                   [
-                    m.detail.currentStatus,
-                    m.status.thesisValue[stock.thesisStatus],
+                    m.detail.entryStatus,
+                    m.status.entryValue[stock.technicalEntryStatus],
                   ],
                   [
-                    m.detail.whatRemainsTrue,
-                    text(stock.thesisBullets[0] ?? stock.thesisStatement),
+                    m.detail.timingNote,
+                    text(stock.technicalCommentary ?? stock.summary),
                   ],
                   [
-                    m.detail.whatNeedsWatching,
-                    text(
-                      stock.thesisBullets[1] ??
-                        'Await the next material company update.',
-                    ),
+                    m.detail.framework,
+                    'RSI + EMA + MRC-compatible stretch logic',
                   ],
                 ]}
               />
-            </ResearchSection>
+              {stock.technicalSignals?.length ? (
+                <InfoList items={toInfoItems(stock.technicalSignals, text)} />
+              ) : null}
+            </div>
+          </ResearchSection>
 
-            <ResearchSection
-              fileLabel="entry-timing.tsx"
-              title={m.detail.technicalEntryStatusTitle}
-              description={m.detail.technicalEntryStatusDescription}
-            >
-              <div className="space-y-4">
+          <ResearchSection
+            fileLabel="conclusion.md"
+            title={m.detail.conclusionTitle}
+          >
+            <InfoList
+              items={[
+                [
+                  m.detail.currentCall,
+                  text(stock.provisionalConclusion ?? stock.summary),
+                ],
+                [m.detail.pricedIn, text(stock.currentPriceImplies)],
+                [
+                  m.detail.nextStep,
+                  text(
+                    stock.monitorNext[0] ?? 'Review the next material update.',
+                  ),
+                ],
+                [
+                  m.detail.whatBreaksThis,
+                  text(
+                    stock.risks[0] ?? 'A key underwriting variable changes.',
+                  ),
+                ],
+              ]}
+            />
+          </ResearchSection>
+
+          <ResearchSection
+            fileLabel="valuation-context.ts"
+            title={m.detail.valuationContextTitle}
+            description={m.detail.valuationContextDescription}
+          >
+            <div className="grid gap-6 lg:grid-cols-2">
+              <ContextBlock title={m.detail.businessClassificationTitle}>
+                <InfoList
+                  items={[[m.detail.businessType, text(stock.businessType)]]}
+                />
+              </ContextBlock>
+              <ContextBlock title={m.detail.valuationLensTitle}>
                 <InfoList
                   items={[
-                    [
-                      m.detail.entryStatus,
-                      m.status.entryValue[stock.technicalEntryStatus],
-                    ],
-                    [
-                      m.detail.timingNote,
-                      text(stock.technicalCommentary ?? stock.summary),
-                    ],
-                    [
-                      m.detail.framework,
-                      'RSI + EMA + MRC-compatible stretch logic',
-                    ],
+                    [m.detail.primaryLens, text(stock.valuationLens.primary)],
+                    [m.detail.crossCheck, text(stock.valuationLens.crossCheck)],
+                    [m.detail.whyItFits, text(stock.valuationLens.rationale)],
                   ]}
                 />
-                {stock.technicalSignals?.length ? (
-                  <InfoList items={toInfoItems(stock.technicalSignals, text)} />
-                ) : null}
-              </div>
-            </ResearchSection>
-          </div>
+              </ContextBlock>
+            </div>
+          </ResearchSection>
+
+          <ResearchSection
+            fileLabel="thesis.md"
+            title={m.detail.thesisTitle}
+            description={text(stock.thesisStatement)}
+          >
+            <BulletList items={stock.thesisBullets} />
+          </ResearchSection>
+
+          <ResearchSection
+            fileLabel="snapshot.json"
+            title={m.detail.currentValuationSnapshotTitle}
+            description={m.detail.currentValuationSnapshotDescription}
+          >
+            <InfoList
+              items={[
+                [
+                  m.detail.marketCap,
+                  text(stock.currentValuationSnapshot.marketCap ?? 'n/a'),
+                ],
+                [
+                  m.detail.enterpriseValue,
+                  text(stock.currentValuationSnapshot.enterpriseValue ?? 'n/a'),
+                ],
+                [
+                  m.detail.keyMultiples,
+                  stock.currentValuationSnapshot.multiples
+                    .map((item) => text(item))
+                    .join(' · '),
+                ],
+                [
+                  m.detail.balanceSheetContext,
+                  text(
+                    stock.currentValuationSnapshot.balanceSheetNote ?? 'n/a',
+                  ),
+                ],
+              ]}
+            />
+          </ResearchSection>
+
+          <ResearchSection
+            fileLabel="news-to-model.log"
+            title={m.detail.newsToModelTitle}
+            description={m.detail.newsToModelDescription}
+          >
+            <div className="space-y-4">
+              {stock.newsToModel.map((item) => (
+                <div
+                  key={text(item.event)}
+                  className="rounded-[1.1rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] p-4"
+                >
+                  <InfoList
+                    items={[
+                      [m.detail.event, text(item.event)],
+                      [
+                        m.detail.modelVariableChanged,
+                        text(item.modelVariableChanged),
+                      ],
+                      [m.detail.impact, text(item.impact)],
+                      [m.detail.affectedScenario, text(item.affectedScenario)],
+                    ]}
+                  />
+                </div>
+              ))}
+            </div>
+          </ResearchSection>
+
+          <ResearchSection
+            fileLabel="thesis-status.md"
+            title={m.detail.thesisStatusTitle}
+          >
+            <InfoList
+              items={[
+                [
+                  m.detail.currentStatus,
+                  m.status.thesisValue[stock.thesisStatus],
+                ],
+                [
+                  m.detail.whatRemainsTrue,
+                  text(stock.thesisBullets[0] ?? stock.thesisStatement),
+                ],
+                [
+                  m.detail.whatNeedsWatching,
+                  text(
+                    stock.thesisBullets[1] ??
+                      'Await the next material company update.',
+                  ),
+                ],
+              ]}
+            />
+          </ResearchSection>
 
           <ResearchSection
             fileLabel="risks-catalysts.md"
@@ -401,13 +406,14 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
             />
             <PanelBody className="space-y-3">
               {[
-                m.detail.sectionIndex.conclusion,
-                m.detail.sectionIndex.businessClassification,
-                m.detail.sectionIndex.thesis,
-                m.detail.sectionIndex.valuationLens,
-                m.detail.sectionIndex.newsToModel,
                 m.detail.sectionIndex.scenarios,
                 m.detail.sectionIndex.priceImplies,
+                m.detail.sectionIndex.entryTiming,
+                m.detail.sectionIndex.conclusion,
+                m.detail.sectionIndex.valuationContext,
+                m.detail.sectionIndex.thesis,
+                m.detail.sectionIndex.snapshot,
+                m.detail.sectionIndex.newsToModel,
                 m.detail.sectionIndex.monitorNext,
               ].map((item) => (
                 <div
@@ -421,6 +427,54 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           </Panel>
         </aside>
       </div>
+    </div>
+  )
+}
+
+function HeroInsightCard({
+  label,
+  value,
+  meta,
+}: {
+  label: string
+  value: string
+  meta?: Array<[string, string]>
+}) {
+  return (
+    <div className="rounded-[1.2rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] px-5 py-5">
+      <p className="font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--ink-muted)]">
+        {label}
+      </p>
+      <p className="mt-3 text-sm leading-7 text-[var(--ink-secondary)]">
+        {value}
+      </p>
+      {meta?.length ? (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {meta.map(([key, metaValue]) => (
+            <span
+              key={`${key}-${metaValue}`}
+              className="inline-flex rounded-full border border-[var(--line-subtle)] bg-[var(--surface-chip)] px-3 py-1.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-[var(--ink-secondary)]"
+            >
+              {key}: {metaValue}
+            </span>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
+function ContextBlock({
+  title,
+  children,
+}: {
+  title: string
+  children: ReactNode
+}) {
+  return (
+    <div className="space-y-4 rounded-[1.15rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] p-4">
+      <TerminalLabel>{title}</TerminalLabel>
+      {children}
     </div>
   )
 }
@@ -506,6 +560,26 @@ function SideMetric({ label, value }: { label: string; value: string }) {
       </span>
     </div>
   )
+}
+
+function getNearestScenario(stock: {
+  currentPrice: number
+  bearFairValue: number
+  baseFairValue: number
+  bullFairValue: number
+}) {
+  const scenarios = [
+    { label: 'Bear' as const, value: stock.bearFairValue },
+    { label: 'Base' as const, value: stock.baseFairValue },
+    { label: 'Bull' as const, value: stock.bullFairValue },
+  ]
+
+  return scenarios.reduce((closest, scenario) => {
+    const currentDistance = Math.abs(stock.currentPrice - scenario.value)
+    const bestDistance = Math.abs(stock.currentPrice - closest.value)
+
+    return currentDistance < bestDistance ? scenario : closest
+  }).label
 }
 
 function SourceList({
