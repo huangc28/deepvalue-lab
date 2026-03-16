@@ -119,313 +119,243 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
         </PanelBody>
       </Panel>
 
-      <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_22rem]">
-        <div className="space-y-6">
-          <ResearchSection
-            fileLabel={m.detail.panelLabels.scenarioModel}
-            title={m.detail.scenariosTitle}
-            description={m.detail.scenariosDescription}
-          >
-            <div className="grid gap-5 xl:grid-cols-3">
-              {stock.scenarios.map((scenario) => (
-                <ScenarioCard key={scenario.label} scenario={scenario} />
-              ))}
-            </div>
-          </ResearchSection>
+      <div className="space-y-6">
+        <ResearchSection
+          fileLabel={m.detail.panelLabels.scenarioModel}
+          title={m.detail.scenariosTitle}
+          description={m.detail.scenariosDescription}
+        >
+          <div className="grid gap-5 xl:grid-cols-3">
+            {stock.scenarios.map((scenario) => (
+              <ScenarioCard key={scenario.label} scenario={scenario} />
+            ))}
+          </div>
+        </ResearchSection>
 
-          <ResearchSection
-            fileLabel={m.detail.panelLabels.pricingContext}
-            title={m.detail.currentPriceImpliesTitle}
-          >
-            <div className="space-y-4">
-              <BulletList items={[stock.currentPriceImplies]} />
-              {stock.currentPriceImpliedFacts?.length ? (
-                <ExpectationBridge
-                  items={stock.currentPriceImpliedFacts}
-                  currentPrice={stock.currentPrice}
-                  bearFairValue={stock.bearFairValue}
-                  baseFairValue={stock.baseFairValue}
-                  bullFairValue={stock.bullFairValue}
-                />
-              ) : null}
-            </div>
-          </ResearchSection>
+        <ResearchSection
+          fileLabel={m.detail.panelLabels.pricingContext}
+          title={m.detail.currentPriceImpliesTitle}
+        >
+          <div className="space-y-4">
+            <BulletList items={[stock.currentPriceImplies]} />
+            {stock.currentPriceImpliedFacts?.length ? (
+              <ExpectationBridge
+                items={stock.currentPriceImpliedFacts}
+                currentPrice={stock.currentPrice}
+                bearFairValue={stock.bearFairValue}
+                baseFairValue={stock.baseFairValue}
+                bullFairValue={stock.bullFairValue}
+              />
+            ) : null}
+          </div>
+        </ResearchSection>
 
-          <ResearchSection
-            fileLabel={m.detail.panelLabels.entryTiming}
-            title={m.detail.technicalEntryStatusTitle}
-            description={m.detail.technicalEntryStatusDescription}
-          >
-            <div className="space-y-4">
+        <ResearchSection
+          fileLabel={m.detail.panelLabels.entryTiming}
+          title={m.detail.technicalEntryStatusTitle}
+          description={m.detail.technicalEntryStatusDescription}
+        >
+          <div className="space-y-4">
+            <InfoList
+              items={[
+                [
+                  m.detail.entryStatus,
+                  m.status.entryValue[stock.technicalEntryStatus],
+                ],
+                [
+                  m.detail.timingNote,
+                  text(stock.technicalCommentary ?? stock.summary),
+                ],
+                [
+                  m.detail.framework,
+                  'RSI + EMA + MRC-compatible stretch logic',
+                ],
+              ]}
+            />
+            {stock.technicalSignals?.length ? (
+              <InfoList items={toInfoItems(stock.technicalSignals, text)} />
+            ) : null}
+          </div>
+        </ResearchSection>
+
+        <ResearchSection
+          fileLabel={m.detail.panelLabels.conclusion}
+          title={m.detail.conclusionTitle}
+        >
+          <InfoList
+            items={[
+              [
+                m.detail.currentCall,
+                text(stock.provisionalConclusion ?? stock.summary),
+              ],
+              [m.detail.pricedIn, text(stock.currentPriceImplies)],
+              [
+                m.detail.nextStep,
+                text(stock.monitorNext[0] ?? 'Review the next material update.'),
+              ],
+              [
+                m.detail.whatBreaksThis,
+                text(stock.risks[0] ?? 'A key underwriting variable changes.'),
+              ],
+            ]}
+          />
+        </ResearchSection>
+
+        <ResearchSection
+          fileLabel={m.detail.panelLabels.valuationContext}
+          title={m.detail.valuationContextTitle}
+          description={m.detail.valuationContextDescription}
+        >
+          <div className="grid gap-6 lg:grid-cols-2">
+            <ContextBlock title={m.detail.businessClassificationTitle}>
+              <InfoList
+                items={[[m.detail.businessType, text(stock.businessType)]]}
+              />
+            </ContextBlock>
+            <ContextBlock title={m.detail.valuationLensTitle}>
               <InfoList
                 items={[
-                  [
-                    m.detail.entryStatus,
-                    m.status.entryValue[stock.technicalEntryStatus],
-                  ],
-                  [
-                    m.detail.timingNote,
-                    text(stock.technicalCommentary ?? stock.summary),
-                  ],
-                  [
-                    m.detail.framework,
-                    'RSI + EMA + MRC-compatible stretch logic',
-                  ],
+                  [m.detail.primaryLens, text(stock.valuationLens.primary)],
+                  [m.detail.crossCheck, text(stock.valuationLens.crossCheck)],
+                  [m.detail.whyItFits, text(stock.valuationLens.rationale)],
                 ]}
               />
-              {stock.technicalSignals?.length ? (
-                <InfoList items={toInfoItems(stock.technicalSignals, text)} />
-              ) : null}
-            </div>
-          </ResearchSection>
+            </ContextBlock>
+          </div>
+        </ResearchSection>
 
-          <ResearchSection
-            fileLabel={m.detail.panelLabels.conclusion}
-            title={m.detail.conclusionTitle}
-          >
-            <InfoList
-              items={[
-                [
-                  m.detail.currentCall,
-                  text(stock.provisionalConclusion ?? stock.summary),
-                ],
-                [m.detail.pricedIn, text(stock.currentPriceImplies)],
-                [
-                  m.detail.nextStep,
-                  text(
-                    stock.monitorNext[0] ?? 'Review the next material update.',
-                  ),
-                ],
-                [
-                  m.detail.whatBreaksThis,
-                  text(
-                    stock.risks[0] ?? 'A key underwriting variable changes.',
-                  ),
-                ],
-              ]}
-            />
-          </ResearchSection>
+        <ResearchSection
+          fileLabel={m.detail.panelLabels.thesis}
+          title={m.detail.thesisTitle}
+          description={text(stock.thesisStatement)}
+        >
+          <BulletList items={stock.thesisBullets} />
+        </ResearchSection>
 
-          <ResearchSection
-            fileLabel={m.detail.panelLabels.valuationContext}
-            title={m.detail.valuationContextTitle}
-            description={m.detail.valuationContextDescription}
-          >
-            <div className="grid gap-6 lg:grid-cols-2">
-              <ContextBlock title={m.detail.businessClassificationTitle}>
-                <InfoList
-                  items={[[m.detail.businessType, text(stock.businessType)]]}
-                />
-              </ContextBlock>
-              <ContextBlock title={m.detail.valuationLensTitle}>
+        <ResearchSection
+          fileLabel={m.detail.panelLabels.snapshot}
+          title={m.detail.currentValuationSnapshotTitle}
+          description={m.detail.currentValuationSnapshotDescription}
+        >
+          <InfoList
+            items={[
+              [
+                m.detail.marketCap,
+                text(stock.currentValuationSnapshot.marketCap ?? 'n/a'),
+              ],
+              [
+                m.detail.enterpriseValue,
+                text(stock.currentValuationSnapshot.enterpriseValue ?? 'n/a'),
+              ],
+              [
+                m.detail.keyMultiples,
+                stock.currentValuationSnapshot.multiples
+                  .map((item) => text(item))
+                  .join(' · '),
+              ],
+              [
+                m.detail.balanceSheetContext,
+                text(stock.currentValuationSnapshot.balanceSheetNote ?? 'n/a'),
+              ],
+            ]}
+          />
+        </ResearchSection>
+
+        <ResearchSection
+          fileLabel={m.detail.panelLabels.newsToModel}
+          title={m.detail.newsToModelTitle}
+          description={m.detail.newsToModelDescription}
+        >
+          <div className="space-y-4">
+            {stock.newsToModel.map((item) => (
+              <div
+                key={text(item.event)}
+                className="rounded-[1.1rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] p-4"
+              >
                 <InfoList
                   items={[
-                    [m.detail.primaryLens, text(stock.valuationLens.primary)],
-                    [m.detail.crossCheck, text(stock.valuationLens.crossCheck)],
-                    [m.detail.whyItFits, text(stock.valuationLens.rationale)],
+                    [m.detail.event, text(item.event)],
+                    [
+                      m.detail.modelVariableChanged,
+                      text(item.modelVariableChanged),
+                    ],
+                    [m.detail.impact, text(item.impact)],
+                    [m.detail.affectedScenario, text(item.affectedScenario)],
                   ]}
                 />
-              </ContextBlock>
-            </div>
-          </ResearchSection>
-
-          <ResearchSection
-            fileLabel={m.detail.panelLabels.thesis}
-            title={m.detail.thesisTitle}
-            description={text(stock.thesisStatement)}
-          >
-            <BulletList items={stock.thesisBullets} />
-          </ResearchSection>
-
-          <ResearchSection
-            fileLabel={m.detail.panelLabels.snapshot}
-            title={m.detail.currentValuationSnapshotTitle}
-            description={m.detail.currentValuationSnapshotDescription}
-          >
-            <InfoList
-              items={[
-                [
-                  m.detail.marketCap,
-                  text(stock.currentValuationSnapshot.marketCap ?? 'n/a'),
-                ],
-                [
-                  m.detail.enterpriseValue,
-                  text(stock.currentValuationSnapshot.enterpriseValue ?? 'n/a'),
-                ],
-                [
-                  m.detail.keyMultiples,
-                  stock.currentValuationSnapshot.multiples
-                    .map((item) => text(item))
-                    .join(' · '),
-                ],
-                [
-                  m.detail.balanceSheetContext,
-                  text(
-                    stock.currentValuationSnapshot.balanceSheetNote ?? 'n/a',
-                  ),
-                ],
-              ]}
-            />
-          </ResearchSection>
-
-          <ResearchSection
-            fileLabel={m.detail.panelLabels.newsToModel}
-            title={m.detail.newsToModelTitle}
-            description={m.detail.newsToModelDescription}
-          >
-            <div className="space-y-4">
-              {stock.newsToModel.map((item) => (
-                <div
-                  key={text(item.event)}
-                  className="rounded-[1.1rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] p-4"
-                >
-                  <InfoList
-                    items={[
-                      [m.detail.event, text(item.event)],
-                      [
-                        m.detail.modelVariableChanged,
-                        text(item.modelVariableChanged),
-                      ],
-                      [m.detail.impact, text(item.impact)],
-                      [m.detail.affectedScenario, text(item.affectedScenario)],
-                    ]}
-                  />
-                </div>
-              ))}
-            </div>
-          </ResearchSection>
-
-          <ResearchSection
-            fileLabel={m.detail.panelLabels.thesisStatus}
-            title={m.detail.thesisStatusTitle}
-          >
-            <InfoList
-              items={[
-                [
-                  m.detail.currentStatus,
-                  m.status.thesisValue[stock.thesisStatus],
-                ],
-                [
-                  m.detail.whatRemainsTrue,
-                  text(stock.thesisBullets[0] ?? stock.thesisStatement),
-                ],
-                [
-                  m.detail.whatNeedsWatching,
-                  text(
-                    stock.thesisBullets[1] ??
-                      'Await the next material company update.',
-                  ),
-                ],
-              ]}
-            />
-          </ResearchSection>
-
-          <ResearchSection
-            fileLabel={m.detail.panelLabels.risksAndCatalysts}
-            title={m.detail.risksAndCatalystsTitle}
-            description={m.detail.risksAndCatalystsDescription}
-          >
-            <div className="grid gap-6 lg:grid-cols-2">
-              <div>
-                <TerminalLabel>{m.detail.downsideVariables}</TerminalLabel>
-                <div className="mt-4">
-                  <BulletList items={stock.risks} />
-                </div>
               </div>
-              <div>
-                <TerminalLabel>{m.detail.possibleUnlocks}</TerminalLabel>
-                <div className="mt-4">
-                  <BulletList items={stock.catalysts} />
-                </div>
-              </div>
-            </div>
-          </ResearchSection>
-
-          <div className="grid gap-6 lg:grid-cols-2">
-            <ResearchSection
-              fileLabel={m.detail.panelLabels.monitorNext}
-              title={m.detail.monitorNextTitle}
-              description={m.detail.monitorNextDescription}
-            >
-              <BulletList items={stock.monitorNext} />
-            </ResearchSection>
-
-            <ResearchSection
-              fileLabel={m.detail.panelLabels.sources}
-              title={m.detail.sourcesUsedTitle}
-              description={m.detail.sourcesUsedDescription}
-            >
-              <SourceList items={stock.sourcesUsed} />
-            </ResearchSection>
+            ))}
           </div>
+        </ResearchSection>
+
+        <ResearchSection
+          fileLabel={m.detail.panelLabels.thesisStatus}
+          title={m.detail.thesisStatusTitle}
+        >
+          <InfoList
+            items={[
+              [m.detail.currentStatus, m.status.thesisValue[stock.thesisStatus]],
+              [
+                m.detail.whatRemainsTrue,
+                text(stock.thesisBullets[0] ?? stock.thesisStatement),
+              ],
+              [
+                m.detail.whatNeedsWatching,
+                text(
+                  stock.thesisBullets[1] ??
+                    'Await the next material company update.',
+                ),
+              ],
+            ]}
+          />
+        </ResearchSection>
+
+        <ResearchSection
+          fileLabel={m.detail.panelLabels.risksAndCatalysts}
+          title={m.detail.risksAndCatalystsTitle}
+          description={m.detail.risksAndCatalystsDescription}
+        >
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div>
+              <TerminalLabel>{m.detail.downsideVariables}</TerminalLabel>
+              <div className="mt-4">
+                <BulletList items={stock.risks} />
+              </div>
+            </div>
+            <div>
+              <TerminalLabel>{m.detail.possibleUnlocks}</TerminalLabel>
+              <div className="mt-4">
+                <BulletList items={stock.catalysts} />
+              </div>
+            </div>
+          </div>
+        </ResearchSection>
+
+        <div className="grid gap-6 lg:grid-cols-2">
+          <ResearchSection
+            fileLabel={m.detail.panelLabels.monitorNext}
+            title={m.detail.monitorNextTitle}
+            description={m.detail.monitorNextDescription}
+          >
+            <BulletList items={stock.monitorNext} />
+          </ResearchSection>
 
           <ResearchSection
-            fileLabel={m.detail.panelLabels.history}
-            title={m.detail.historyTitle}
-            description={m.detail.historyDescription}
+            fileLabel={m.detail.panelLabels.sources}
+            title={m.detail.sourcesUsedTitle}
+            description={m.detail.sourcesUsedDescription}
           >
-            <BulletList items={stock.history} />
+            <SourceList items={stock.sourcesUsed} />
           </ResearchSection>
         </div>
 
-        <aside className="space-y-6">
-          <Panel className="overflow-hidden">
-            <PanelChrome
-              label={m.detail.panelLabels.stickySummary}
-              status={m.detail.stickySummaryStatus}
-            />
-            <PanelBody className="space-y-4">
-              <TerminalLabel>{m.detail.stickySummaryLabel}</TerminalLabel>
-              <div className="flex flex-wrap gap-2">
-                <ActionBadge value={stock.actionState} />
-                <ValuationBadge value={stock.valuationStatus} />
-                <ThesisBadge value={stock.thesisStatus} />
-                <TechnicalBadge value={stock.technicalEntryStatus} />
-              </div>
-              <div className="space-y-3 rounded-[1.2rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] p-4">
-                <SideMetric
-                  label={m.detail.price}
-                  value={`$${stock.currentPrice.toFixed(1)}`}
-                />
-                <SideMetric
-                  label={m.detail.baseFv}
-                  value={`$${stock.baseFairValue.toFixed(0)}`}
-                />
-                <SideMetric
-                  label={m.detail.discount}
-                  value={`${stock.discountToBase > 0 ? '+' : ''}${stock.discountToBase.toFixed(1)}%`}
-                />
-              </div>
-            </PanelBody>
-          </Panel>
-
-          <Panel className="overflow-hidden">
-            <PanelChrome
-              label={m.detail.panelLabels.sectionIndex}
-              status={m.detail.navigationStatus}
-            />
-            <PanelBody className="space-y-3">
-              {[
-                m.detail.sectionIndex.scenarios,
-                m.detail.sectionIndex.priceImplies,
-                m.detail.sectionIndex.entryTiming,
-                m.detail.sectionIndex.conclusion,
-                m.detail.sectionIndex.valuationContext,
-                m.detail.sectionIndex.thesis,
-                m.detail.sectionIndex.snapshot,
-                m.detail.sectionIndex.newsToModel,
-                m.detail.sectionIndex.monitorNext,
-              ].map((item) => (
-                <div
-                  key={item}
-                  className="rounded-full border border-[var(--line-subtle)] bg-[var(--surface-chip)] px-4 py-2 font-mono text-[0.72rem] uppercase tracking-[0.16em] text-[var(--ink-secondary)]"
-                >
-                  {item}
-                </div>
-              ))}
-            </PanelBody>
-          </Panel>
-        </aside>
+        <ResearchSection
+          fileLabel={m.detail.panelLabels.history}
+          title={m.detail.historyTitle}
+          description={m.detail.historyDescription}
+        >
+          <BulletList items={stock.history} />
+        </ResearchSection>
       </div>
     </div>
   )
@@ -545,19 +475,6 @@ function InfoList({ items }: { items: Array<[string, string]> }) {
         </div>
       ))}
     </dl>
-  )
-}
-
-function SideMetric({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between gap-4">
-      <span className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-[var(--ink-muted)]">
-        {label}
-      </span>
-      <span className="font-mono text-sm text-[var(--ink-primary)]">
-        {value}
-      </span>
-    </div>
   )
 }
 
