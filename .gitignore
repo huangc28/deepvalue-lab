@@ -1,1 +1,7 @@
-.agents/
+.agents/*
+!.agents/skills/
+.agents/skills/*
+!.agents/skills/deepvalue-stock-analysis/
+.agents/skills/deepvalue-stock-analysis/*
+!.agents/skills/deepvalue-stock-analysis/SKILL.md
+research/archive/2026/03/16/amzn-analysis.md
