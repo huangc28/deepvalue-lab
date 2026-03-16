@@ -5,6 +5,23 @@ This repository is Claude-compatible through this file.
 Project:
 - `DeepValue Lab`
 
+## Claude MCP
+
+This repo provides a checked-in Claude project MCP config at `.mcp.json`.
+
+Current project MCP servers:
+- `chrome-devtools`
+- `obsidian`
+- `notebooklm-mcp`
+
+Notes:
+- Claude does not read Codex MCP config from `~/.codex/config.toml`.
+- Claude should use this repo's `.mcp.json` as the project-scoped MCP definition.
+- These servers still depend on local prerequisites:
+  - `chrome-devtools` expects Chrome remote debugging on `http://127.0.0.1:9222`
+  - `obsidian` points at `/Users/huangchihan/Documents/markdowns`
+  - `notebooklm-mcp` must be installed and authenticated locally
+
 ## Working Model
 
 Use this repo as a decision-support stock research product and research archive.
