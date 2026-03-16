@@ -1,4 +1,5 @@
 import { cx } from '../../lib/cx'
+import { useI18n } from '../../i18n/context'
 import type {
   ActionState,
   NewsImpactStatus,
@@ -55,23 +56,48 @@ const toneClass: Record<StatusTone, string> = {
 }
 
 export function ValuationBadge({ value }: { value: ValuationStatus }) {
-  return <Badge label={`valuation · ${value}`} tone={valuationTone[value]} />
+  const { m } = useI18n()
+  return (
+    <Badge
+      label={`${m.status.valuation} · ${m.status.valuationValue[value]}`}
+      tone={valuationTone[value]}
+    />
+  )
 }
 
 export function NewsImpactBadge({ value }: { value: NewsImpactStatus }) {
-  return <Badge label={`news · ${value}`} tone={newsTone[value]} />
+  const { m } = useI18n()
+  return (
+    <Badge
+      label={`${m.status.news} · ${m.status.newsValue[value]}`}
+      tone={newsTone[value]}
+    />
+  )
 }
 
 export function ThesisBadge({ value }: { value: ThesisStatus }) {
-  return <Badge label={`thesis · ${value}`} tone={thesisTone[value]} />
+  const { m } = useI18n()
+  return (
+    <Badge
+      label={`${m.status.thesis} · ${m.status.thesisValue[value]}`}
+      tone={thesisTone[value]}
+    />
+  )
 }
 
 export function TechnicalBadge({ value }: { value: TechnicalEntryStatus }) {
-  return <Badge label={`entry · ${value}`} tone={technicalTone[value]} />
+  const { m } = useI18n()
+  return (
+    <Badge
+      label={`${m.status.entry} · ${m.status.entryValue[value]}`}
+      tone={technicalTone[value]}
+    />
+  )
 }
 
 export function ActionBadge({ value }: { value: ActionState }) {
-  return <Badge label={value} tone={actionTone[value]} />
+  const { m } = useI18n()
+  return <Badge label={m.status.actionValue[value]} tone={actionTone[value]} />
 }
 
 export function AccentBadge({ label }: { label: string }) {

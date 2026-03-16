@@ -15,6 +15,7 @@ import {
 } from '../components/ui/status-badge'
 import { TerminalLabel } from '../components/ui/terminal-label'
 import { getStockByTicker } from '../data/mock-stocks'
+import { useI18n } from '../i18n/context'
 import type { FactItem } from '../types/stocks'
 
 interface StockDetailPageProps {
@@ -22,22 +23,23 @@ interface StockDetailPageProps {
 }
 
 export function StockDetailPage({ ticker }: StockDetailPageProps) {
+  const { m, text } = useI18n()
   const stock = getStockByTicker(ticker)
 
   if (!stock) {
     return (
       <section className="rounded-[1.75rem] border border-dashed border-[var(--line-strong)] bg-[var(--surface-panel)] p-10">
         <p className="font-mono text-sm font-semibold uppercase tracking-[0.2em] text-[var(--ink-muted)]">
-          Stock Not Found
+          {m.detail.stockNotFound}
         </p>
         <h2 className="mt-3 font-serif text-3xl tracking-tight text-[var(--ink-primary)]">
-          There is no mock stock wired to {ticker.toUpperCase()} yet.
+          {m.detail.stockNotFoundBody.replace('{ticker}', ticker.toUpperCase())}
         </h2>
         <Link
           to="/"
           className="mt-6 inline-flex rounded-full border border-[var(--line-subtle)] bg-[var(--surface-chip)] px-4 py-2 font-mono text-sm font-medium text-[var(--ink-primary)]"
         >
-          $ back /dashboard
+          {m.detail.backToDashboard}
         </Link>
       </section>
     )
@@ -57,17 +59,17 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
                 to="/"
                 className="font-mono text-sm text-[var(--ink-muted)] transition hover:text-[var(--ink-primary)]"
               >
-                ← open /dashboard
+                {m.detail.backToDashboard}
               </Link>
-              <TerminalLabel>{stock.businessType}</TerminalLabel>
+              <TerminalLabel>{text(stock.businessType)}</TerminalLabel>
               <h2 className="mt-3 font-serif text-[3.4rem] leading-[0.96] tracking-[-0.05em] text-[var(--ink-primary)] md:text-[4.2rem]">
                 {stock.companyName}
               </h2>
               <p className="mt-3 font-mono text-sm uppercase tracking-[0.16em] text-[var(--ink-muted)]">
-                {stock.ticker} · updated {stock.lastUpdated}
+                {stock.ticker} · {m.detail.updated} {stock.lastUpdated}
               </p>
               <p className="mt-6 max-w-2xl text-base leading-8 text-[var(--ink-secondary)]">
-                {stock.summary}
+                {text(stock.summary)}
               </p>
             </div>
 
@@ -82,20 +84,20 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
 
           <div className="grid gap-4 lg:grid-cols-4">
             <MetricBlock
-              label="Current Price"
+              label={m.detail.currentPrice}
               value={`$${stock.currentPrice.toFixed(1)}`}
             />
             <MetricBlock
-              label="Fair Value Range"
+              label={m.detail.fairValueRange}
               value={`$${stock.bearFairValue.toFixed(0)} - $${stock.bullFairValue.toFixed(0)}`}
             />
             <MetricBlock
-              label="Discount To Base"
+              label={m.detail.discountToBase}
               value={`${stock.discountToBase > 0 ? '+' : ''}${stock.discountToBase.toFixed(1)}%`}
             />
             <MetricBlock
-              label="What To Do Now"
-              value={toTitle(stock.actionState)}
+              label={m.detail.whatToDoNow}
+              value={m.status.actionValue[stock.actionState]}
             />
           </div>
         </PanelBody>
@@ -105,18 +107,23 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
         <div className="space-y-6">
           <ResearchSection
             fileLabel="conclusion.md"
-            title="Provisional Conclusion"
-            description={stock.provisionalConclusion ?? stock.summary}
+            title={m.detail.conclusionTitle}
+            description={text(stock.provisionalConclusion ?? stock.summary)}
           >
             <InfoList
               items={[
-                ['Current Call', stock.provisionalConclusion ?? stock.summary],
-                ['Decision Summary', stock.summary],
                 [
-                  'Next Step',
-                  stock.monitorNext[0] ?? 'Review the next material update.',
+                  m.detail.currentCall,
+                  text(stock.provisionalConclusion ?? stock.summary),
                 ],
-                ['Why It Matters', stock.currentPriceImplies],
+                [m.detail.decisionSummary, text(stock.summary)],
+                [
+                  m.detail.nextStep,
+                  text(
+                    stock.monitorNext[0] ?? 'Review the next material update.',
+                  ),
+                ],
+                [m.detail.whyItMatters, text(stock.currentPriceImplies)],
               ]}
             />
           </ResearchSection>
@@ -124,21 +131,21 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           <div className="grid gap-6 lg:grid-cols-2">
             <ResearchSection
               fileLabel="business-classification.ts"
-              title="Business Classification"
-              description="Business type should remain visible because valuation method depends on it."
+              title={m.detail.businessClassificationTitle}
+              description={m.detail.businessClassificationDescription}
             >
               <InfoList
                 items={[
-                  ['Business Type', stock.businessType],
-                  ['Why It Matters', stock.valuationLens.rationale],
+                  [m.detail.businessType, text(stock.businessType)],
+                  [m.detail.whyItFits, text(stock.valuationLens.rationale)],
                 ]}
               />
             </ResearchSection>
 
             <ResearchSection
               fileLabel="variant-perception.md"
-              title="Why This May Be Mispriced"
-              description={stock.variantPerception}
+              title={m.detail.variantPerceptionTitle}
+              description={text(stock.variantPerception)}
             >
               <BulletList items={[stock.variantPerception]} />
             </ResearchSection>
@@ -146,8 +153,8 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
 
           <ResearchSection
             fileLabel="thesis.md"
-            title="Thesis"
-            description={stock.thesisStatement}
+            title={m.detail.thesisTitle}
+            description={text(stock.thesisStatement)}
           >
             <BulletList items={stock.thesisBullets} />
           </ResearchSection>
@@ -155,40 +162,46 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           <div className="grid gap-6 lg:grid-cols-2">
             <ResearchSection
               fileLabel="valuation.ts"
-              title="Valuation Lens"
-              description="The framework should be explicit, not hidden behind a target price."
+              title={m.detail.valuationLensTitle}
+              description={m.detail.valuationLensDescription}
             >
               <InfoList
                 items={[
-                  ['Primary Lens', stock.valuationLens.primary],
-                  ['Cross-check', stock.valuationLens.crossCheck],
-                  ['Why It Fits', stock.valuationLens.rationale],
+                  [m.detail.primaryLens, text(stock.valuationLens.primary)],
+                  [m.detail.crossCheck, text(stock.valuationLens.crossCheck)],
+                  [m.detail.whyItFits, text(stock.valuationLens.rationale)],
                 ]}
               />
             </ResearchSection>
 
             <ResearchSection
               fileLabel="snapshot.json"
-              title="Current Valuation Snapshot"
-              description="Current multiples and balance-sheet context anchor the market setup."
+              title={m.detail.currentValuationSnapshotTitle}
+              description={m.detail.currentValuationSnapshotDescription}
             >
               <InfoList
                 items={[
                   [
-                    'Market Cap',
-                    stock.currentValuationSnapshot.marketCap ?? 'n/a',
+                    m.detail.marketCap,
+                    text(stock.currentValuationSnapshot.marketCap ?? 'n/a'),
                   ],
                   [
-                    'Enterprise Value',
-                    stock.currentValuationSnapshot.enterpriseValue ?? 'n/a',
+                    m.detail.enterpriseValue,
+                    text(
+                      stock.currentValuationSnapshot.enterpriseValue ?? 'n/a',
+                    ),
                   ],
                   [
-                    'Key Multiples',
-                    stock.currentValuationSnapshot.multiples.join(' · '),
+                    m.detail.keyMultiples,
+                    stock.currentValuationSnapshot.multiples
+                      .map((item) => text(item))
+                      .join(' · '),
                   ],
                   [
-                    'Balance Sheet Context',
-                    stock.currentValuationSnapshot.balanceSheetNote ?? 'n/a',
+                    m.detail.balanceSheetContext,
+                    text(
+                      stock.currentValuationSnapshot.balanceSheetNote ?? 'n/a',
+                    ),
                   ],
                 ]}
               />
@@ -197,21 +210,24 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
 
           <ResearchSection
             fileLabel="news-to-model.log"
-            title="Recent News And News-To-Model"
-            description="Only recent developments that change the underwriting belong here."
+            title={m.detail.newsToModelTitle}
+            description={m.detail.newsToModelDescription}
           >
             <div className="space-y-4">
               {stock.newsToModel.map((item) => (
                 <div
-                  key={item.event}
+                  key={text(item.event)}
                   className="rounded-[1.1rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] p-4"
                 >
                   <InfoList
                     items={[
-                      ['Event', item.event],
-                      ['Model Variable Changed', item.modelVariableChanged],
-                      ['Impact', item.impact],
-                      ['Affected Scenario', item.affectedScenario],
+                      [m.detail.event, text(item.event)],
+                      [
+                        m.detail.modelVariableChanged,
+                        text(item.modelVariableChanged),
+                      ],
+                      [m.detail.impact, text(item.impact)],
+                      [m.detail.affectedScenario, text(item.affectedScenario)],
                     ]}
                   />
                 </div>
@@ -221,8 +237,8 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
 
           <ResearchSection
             fileLabel="scenario-model.json"
-            title="Bear / Base / Bull Scenarios"
-            description="Scenarios must remain auditable from their operating and valuation assumptions."
+            title={m.detail.scenariosTitle}
+            description={m.detail.scenariosDescription}
           >
             <div className="grid gap-5 xl:grid-cols-3">
               {stock.scenarios.map((scenario) => (
@@ -233,8 +249,8 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
 
           <ResearchSection
             fileLabel="pricing-context.md"
-            title="What The Current Price Implies"
-            description={stock.currentPriceImplies}
+            title={m.detail.currentPriceImpliesTitle}
+            description={text(stock.currentPriceImplies)}
           >
             <div className="space-y-4">
               <BulletList items={[stock.currentPriceImplies]} />
@@ -253,20 +269,28 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           <div className="grid gap-6 lg:grid-cols-2">
             <ResearchSection
               fileLabel="thesis-status.md"
-              title="Thesis Status"
-              description={`Current status: ${stock.thesisStatus}.`}
+              title={m.detail.thesisStatusTitle}
+              description={m.detail.thesisStatusDescription.replace(
+                '{status}',
+                m.status.thesisValue[stock.thesisStatus],
+              )}
             >
               <InfoList
                 items={[
-                  ['Current Status', toTitle(stock.thesisStatus)],
                   [
-                    'What Remains True',
-                    stock.thesisBullets[0] ?? stock.thesisStatement,
+                    m.detail.currentStatus,
+                    m.status.thesisValue[stock.thesisStatus],
                   ],
                   [
-                    'What Needs Watching',
-                    stock.thesisBullets[1] ??
-                      'Await the next material company update.',
+                    m.detail.whatRemainsTrue,
+                    text(stock.thesisBullets[0] ?? stock.thesisStatement),
+                  ],
+                  [
+                    m.detail.whatNeedsWatching,
+                    text(
+                      stock.thesisBullets[1] ??
+                        'Await the next material company update.',
+                    ),
                   ],
                 ]}
               />
@@ -274,19 +298,28 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
 
             <ResearchSection
               fileLabel="entry-timing.tsx"
-              title="Technical Entry Status"
-              description="Technicals stay in the execution layer after valuation and thesis work."
+              title={m.detail.technicalEntryStatusTitle}
+              description={m.detail.technicalEntryStatusDescription}
             >
               <div className="space-y-4">
                 <InfoList
                   items={[
-                    ['Entry Status', toTitle(stock.technicalEntryStatus)],
-                    ['Timing Note', stock.technicalCommentary ?? stock.summary],
-                    ['Framework', 'RSI + EMA + MRC-compatible stretch logic'],
+                    [
+                      m.detail.entryStatus,
+                      m.status.entryValue[stock.technicalEntryStatus],
+                    ],
+                    [
+                      m.detail.timingNote,
+                      text(stock.technicalCommentary ?? stock.summary),
+                    ],
+                    [
+                      m.detail.framework,
+                      'RSI + EMA + MRC-compatible stretch logic',
+                    ],
                   ]}
                 />
                 {stock.technicalSignals?.length ? (
-                  <InfoList items={toInfoItems(stock.technicalSignals)} />
+                  <InfoList items={toInfoItems(stock.technicalSignals, text)} />
                 ) : null}
               </div>
             </ResearchSection>
@@ -294,18 +327,18 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
 
           <ResearchSection
             fileLabel="risks-catalysts.md"
-            title="Risks And Catalysts"
-            description="Keep the key downside variables and potential unlocks visible in the same frame."
+            title={m.detail.risksAndCatalystsTitle}
+            description={m.detail.risksAndCatalystsDescription}
           >
             <div className="grid gap-6 lg:grid-cols-2">
               <div>
-                <TerminalLabel>downside variables</TerminalLabel>
+                <TerminalLabel>{m.detail.downsideVariables}</TerminalLabel>
                 <div className="mt-4">
                   <BulletList items={stock.risks} />
                 </div>
               </div>
               <div>
-                <TerminalLabel>possible unlocks</TerminalLabel>
+                <TerminalLabel>{m.detail.possibleUnlocks}</TerminalLabel>
                 <div className="mt-4">
                   <BulletList items={stock.catalysts} />
                 </div>
@@ -316,16 +349,16 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           <div className="grid gap-6 lg:grid-cols-2">
             <ResearchSection
               fileLabel="monitor-next.md"
-              title="What To Monitor Next"
-              description="These are the next facts most likely to move valuation, thesis, or scenario probabilities."
+              title={m.detail.monitorNextTitle}
+              description={m.detail.monitorNextDescription}
             >
               <BulletList items={stock.monitorNext} />
             </ResearchSection>
 
             <ResearchSection
               fileLabel="sources.yml"
-              title="Sources Used"
-              description="Every major claim should stay traceable to a current source."
+              title={m.detail.sourcesUsedTitle}
+              description={m.detail.sourcesUsedDescription}
             >
               <SourceList items={stock.sourcesUsed} />
             </ResearchSection>
@@ -333,8 +366,8 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
 
           <ResearchSection
             fileLabel="history.log"
-            title="History"
-            description="Track how the case has changed over time."
+            title={m.detail.historyTitle}
+            description={m.detail.historyDescription}
           >
             <BulletList items={stock.history} />
           </ResearchSection>
@@ -342,9 +375,12 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
 
         <aside className="space-y-6">
           <Panel className="overflow-hidden">
-            <PanelChrome label="sticky-summary.ts" status="fast read" />
+            <PanelChrome
+              label="sticky-summary.ts"
+              status={m.detail.stickySummaryStatus}
+            />
             <PanelBody className="space-y-4">
-              <TerminalLabel>status summary</TerminalLabel>
+              <TerminalLabel>{m.detail.stickySummaryLabel}</TerminalLabel>
               <div className="flex flex-wrap gap-2">
                 <ActionBadge value={stock.actionState} />
                 <ValuationBadge value={stock.valuationStatus} />
@@ -353,15 +389,15 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
               </div>
               <div className="space-y-3 rounded-[1.2rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] p-4">
                 <SideMetric
-                  label="Price"
+                  label={m.detail.price}
                   value={`$${stock.currentPrice.toFixed(1)}`}
                 />
                 <SideMetric
-                  label="Base FV"
+                  label={m.detail.baseFv}
                   value={`$${stock.baseFairValue.toFixed(0)}`}
                 />
                 <SideMetric
-                  label="Discount"
+                  label={m.detail.discount}
                   value={`${stock.discountToBase > 0 ? '+' : ''}${stock.discountToBase.toFixed(1)}%`}
                 />
               </div>
@@ -369,17 +405,20 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           </Panel>
 
           <Panel className="overflow-hidden">
-            <PanelChrome label="section-index.json" status="navigation" />
+            <PanelChrome
+              label="section-index.json"
+              status={m.detail.navigationStatus}
+            />
             <PanelBody className="space-y-3">
               {[
-                'Provisional Conclusion',
-                'Business Classification',
-                'Thesis',
-                'Valuation Lens',
-                'News To Model',
-                'Scenarios',
-                'Price Implies',
-                'Monitor Next',
+                m.detail.sectionIndex.conclusion,
+                m.detail.sectionIndex.businessClassification,
+                m.detail.sectionIndex.thesis,
+                m.detail.sectionIndex.valuationLens,
+                m.detail.sectionIndex.newsToModel,
+                m.detail.sectionIndex.scenarios,
+                m.detail.sectionIndex.priceImplies,
+                m.detail.sectionIndex.monitorNext,
               ].map((item) => (
                 <div
                   key={item}
@@ -427,15 +466,17 @@ function ResearchSection({
   )
 }
 
-function BulletList({ items }: { items: string[] }) {
+function BulletList({ items }: { items: FactItem['label'][] }) {
+  const { text } = useI18n()
+
   return (
     <ul className="space-y-3">
       {items.map((item) => (
         <li
-          key={item}
+          key={text(item)}
           className="rounded-[1.1rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] px-4 py-4 text-sm leading-7 text-[var(--ink-secondary)]"
         >
-          {item}
+          {text(item)}
         </li>
       ))}
     </ul>
@@ -478,13 +519,17 @@ function SideMetric({ label, value }: { label: string; value: string }) {
 function SourceList({
   items,
 }: {
-  items: Array<string | { label: string; url?: string }>
+  items: Array<string | { label: FactItem['label']; url?: string }>
 }) {
+  const { text } = useI18n()
+
   return (
     <ul className="space-y-3">
       {items.map((item) => {
         const key =
-          typeof item === 'string' ? item : `${item.label}-${item.url}`
+          typeof item === 'string'
+            ? item
+            : `${text(item.label)}-${item.url ?? 'no-url'}`
 
         return (
           <li
@@ -493,9 +538,9 @@ function SourceList({
           >
             {typeof item === 'string' || !item.url ? (
               typeof item === 'string' ? (
-                item
+                text(item)
               ) : (
-                item.label
+                text(item.label)
               )
             ) : (
               <a
@@ -504,7 +549,7 @@ function SourceList({
                 rel="noreferrer"
                 className="text-[var(--accent-copper)] underline-offset-4 transition hover:text-[var(--ink-primary)] hover:underline"
               >
-                {item.label}
+                {text(item.label)}
               </a>
             )}
           </li>
@@ -514,10 +559,11 @@ function SourceList({
   )
 }
 
-function toInfoItems(items: FactItem[]) {
-  return items.map(({ label, value }) => [label, value] as [string, string])
-}
-
-function toTitle(value: string) {
-  return value.replace(/\b\w/g, (character) => character.toUpperCase())
+function toInfoItems(
+  items: FactItem[],
+  text: (value: FactItem['label']) => string,
+) {
+  return items.map(
+    ({ label, value }) => [text(label), text(value)] as [string, string],
+  )
 }

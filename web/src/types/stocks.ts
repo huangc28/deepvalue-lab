@@ -1,3 +1,5 @@
+import type { LocalizedText } from '../i18n/types'
+
 export type ValuationStatus = 'cheap' | 'fair' | 'rich'
 export type NewsImpactStatus = 'improving' | 'unchanged' | 'deteriorating'
 export type ThesisStatus = 'intact' | 'watch' | 'broken'
@@ -12,40 +14,40 @@ export type ActionState =
   | 'needs review'
 
 export interface ValuationLens {
-  primary: string
-  crossCheck: string
-  rationale: string
+  primary: LocalizedText
+  crossCheck: LocalizedText
+  rationale: LocalizedText
 }
 
 export interface CurrentValuationSnapshot {
-  marketCap?: string
-  enterpriseValue?: string
-  multiples: string[]
-  balanceSheetNote?: string
+  marketCap?: LocalizedText
+  enterpriseValue?: LocalizedText
+  multiples: LocalizedText[]
+  balanceSheetNote?: LocalizedText
 }
 
 export interface NewsToModelItem {
-  event: string
-  modelVariableChanged: string
-  impact: string
-  affectedScenario: string
+  event: LocalizedText
+  modelVariableChanged: LocalizedText
+  impact: LocalizedText
+  affectedScenario: LocalizedText
 }
 
 export interface Scenario {
   label: 'Bear' | 'Base' | 'Bull'
-  operatingAssumption: string
-  valuationAssumption: string
-  fairValue: string
-  whatMustBeTrue: string
+  operatingAssumption: LocalizedText
+  valuationAssumption: LocalizedText
+  fairValue: LocalizedText
+  whatMustBeTrue: LocalizedText
 }
 
 export interface FactItem {
-  label: string
-  value: string
+  label: LocalizedText
+  value: LocalizedText
 }
 
 export interface SourceReference {
-  label: string
+  label: LocalizedText
   url?: string
 }
 
@@ -53,7 +55,7 @@ export interface StockSummary {
   id: string
   ticker: string
   companyName: string
-  businessType: string
+  businessType: LocalizedText
   currentPrice: number
   valuationStatus: ValuationStatus
   newsImpactStatus: NewsImpactStatus
@@ -65,26 +67,26 @@ export interface StockSummary {
   bearFairValue: number
   bullFairValue: number
   discountToBase: number
-  summary: string
+  summary: LocalizedText
   lastUpdated: string
 }
 
 export interface StockDetail extends StockSummary {
-  thesisStatement: string
-  thesisBullets: string[]
-  variantPerception: string
+  thesisStatement: LocalizedText
+  thesisBullets: LocalizedText[]
+  variantPerception: LocalizedText
   valuationLens: ValuationLens
   currentValuationSnapshot: CurrentValuationSnapshot
   newsToModel: NewsToModelItem[]
   scenarios: Scenario[]
-  currentPriceImplies: string
+  currentPriceImplies: LocalizedText
   currentPriceImpliedFacts?: FactItem[]
-  provisionalConclusion?: string
-  technicalCommentary?: string
+  provisionalConclusion?: LocalizedText
+  technicalCommentary?: LocalizedText
   technicalSignals?: FactItem[]
-  risks: string[]
-  catalysts: string[]
-  monitorNext: string[]
+  risks: LocalizedText[]
+  catalysts: LocalizedText[]
+  monitorNext: LocalizedText[]
   sourcesUsed: Array<string | SourceReference>
-  history: string[]
+  history: LocalizedText[]
 }

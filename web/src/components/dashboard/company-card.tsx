@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 
+import { useI18n } from '../../i18n/context'
 import type { StockSummary } from '../../types/stocks'
 import {
   ActionBadge,
@@ -10,6 +11,8 @@ import {
 import { Panel, PanelBody, PanelChrome } from '../ui/panel'
 
 export function CompanyCard({ stock }: { stock: StockSummary }) {
+  const { m, text } = useI18n()
+
   return (
     <Link
       to="/stocks/$ticker"
@@ -28,7 +31,7 @@ export function CompanyCard({ stock }: { stock: StockSummary }) {
                 {stock.companyName}
               </p>
               <p className="mt-2 font-mono text-[0.78rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">
-                {stock.ticker} · {stock.businessType}
+                {stock.ticker} · {text(stock.businessType)}
               </p>
             </div>
             <ActionBadge value={stock.actionState} />
@@ -36,15 +39,15 @@ export function CompanyCard({ stock }: { stock: StockSummary }) {
 
           <div className="grid gap-3 sm:grid-cols-3">
             <MetricColumn
-              label="price"
+              label={m.card.price}
               value={`$${stock.currentPrice.toFixed(1)}`}
             />
             <MetricColumn
-              label="base fair value"
+              label={m.card.baseFairValue}
               value={`$${stock.baseFairValue.toFixed(0)}`}
             />
             <MetricColumn
-              label="discount to base"
+              label={m.card.discountToBase}
               value={`${stock.discountToBase > 0 ? '+' : ''}${stock.discountToBase.toFixed(1)}%`}
             />
           </div>
@@ -56,7 +59,7 @@ export function CompanyCard({ stock }: { stock: StockSummary }) {
           </div>
 
           <p className="text-sm leading-7 text-[var(--ink-secondary)]">
-            {stock.summary}
+            {text(stock.summary)}
           </p>
         </PanelBody>
       </Panel>

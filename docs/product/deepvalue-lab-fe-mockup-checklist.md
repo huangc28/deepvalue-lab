@@ -38,6 +38,15 @@ Date:
 - [x] Ensure mock data covers multiple thesis and entry conditions
 - [x] Add example history and news-to-model data
 
+## Phase 2.5: Localization Foundation
+
+- [x] Add lightweight typed i18n support for `en` and `zh-TW`
+- [x] Add a header locale switcher
+- [x] Localize dashboard and stock detail UI chrome
+- [x] Add bilingual mock research content for `TSM`
+- [x] Validate runtime language switching on dashboard and `TSM` detail page
+- [ ] Translate the remaining non-TSM mock research content into `zh-TW`
+
 ## Phase 3: Shared UI Primitives
 
 - [x] Build page container and section shell primitives

@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 
+import { useI18n } from '../../i18n/context'
 import type { StockSummary } from '../../types/stocks'
 import {
   ActionBadge,
@@ -10,24 +11,19 @@ import {
 import { Panel, PanelBody, PanelChrome } from '../ui/panel'
 
 export function WatchlistTable({ stocks }: { stocks: StockSummary[] }) {
+  const { m, text } = useI18n()
+
   return (
     <Panel className="overflow-hidden">
-      <PanelChrome label="watchlist.table" status={`${stocks.length} names`} />
+      <PanelChrome
+        label="watchlist.table"
+        status={`${stocks.length} ${m.table.names}`}
+      />
       <PanelBody className="overflow-x-auto p-0">
         <table className="min-w-full border-collapse">
           <thead>
             <tr className="border-b border-[var(--line-subtle)] bg-[rgba(255,255,255,0.02)] text-left">
-              {[
-                'Ticker',
-                'Company',
-                'Price',
-                'Base FV',
-                'Disc.',
-                'News',
-                'Thesis',
-                'Entry',
-                'Action',
-              ].map((label) => (
+              {m.table.headers.map((label) => (
                 <th
                   key={label}
                   className="px-5 py-3 font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--ink-muted)]"
@@ -58,7 +54,7 @@ export function WatchlistTable({ stocks }: { stocks: StockSummary[] }) {
                       {stock.companyName}
                     </p>
                     <p className="mt-1 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-[var(--ink-muted)]">
-                      {stock.businessType}
+                      {text(stock.businessType)}
                     </p>
                   </div>
                 </td>

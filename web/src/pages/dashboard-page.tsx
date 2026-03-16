@@ -12,25 +12,15 @@ import {
 import { AccentBadge } from '../components/ui/status-badge'
 import { TerminalLabel } from '../components/ui/terminal-label'
 import { getDashboardCounts, mockStocks } from '../data/mock-stocks'
+import { useI18n } from '../i18n/context'
+import { flattenLocalizedText } from '../i18n/utils'
 import type { DashboardBucket, StockSummary } from '../types/stocks'
-
-const bucketLabels = {
-  'now-actionable': 'Now Actionable',
-  'needs-review': 'Needs Review',
-  'at-risk': 'At Risk',
-} as const
 
 type ViewMode = 'cards' | 'table'
 type SortMode = 'most-actionable' | 'largest-discount' | 'recently-updated'
 
-const filters: Array<{ label: string; value: DashboardBucket | 'all' }> = [
-  { label: 'All Names', value: 'all' },
-  { label: 'Now Actionable', value: 'now-actionable' },
-  { label: 'Needs Review', value: 'needs-review' },
-  { label: 'At Risk', value: 'at-risk' },
-]
-
 export function DashboardPage() {
+  const { m } = useI18n()
   const counts = getDashboardCounts()
   const [viewMode, setViewMode] = useState<ViewMode>('cards')
   const [bucketFilter, setBucketFilter] = useState<DashboardBucket | 'all'>(
@@ -38,6 +28,19 @@ export function DashboardPage() {
   )
   const [sortMode, setSortMode] = useState<SortMode>('most-actionable')
   const [query, setQuery] = useState('')
+
+  const filters: Array<{ label: string; value: DashboardBucket | 'all' }> = [
+    { label: m.dashboard.filters.all, value: 'all' },
+    {
+      label: m.dashboard.filters['now-actionable'],
+      value: 'now-actionable',
+    },
+    {
+      label: m.dashboard.filters['needs-review'],
+      value: 'needs-review',
+    },
+    { label: m.dashboard.filters['at-risk'], value: 'at-risk' },
+  ]
 
   const deferredQuery = useDeferredValue(query)
 
@@ -55,7 +58,7 @@ export function DashboardPage() {
         }
 
         const haystack =
-          `${stock.ticker} ${stock.companyName} ${stock.businessType}`.toLowerCase()
+          `${stock.ticker} ${stock.companyName} ${flattenLocalizedText(stock.businessType)} ${flattenLocalizedText(stock.summary)}`.toLowerCase()
         return haystack.includes(normalizedQuery)
       })
       .toSorted(sortStocks(sortMode))
@@ -64,34 +67,38 @@ export function DashboardPage() {
   return (
     <div className="flex flex-col gap-8">
       <Panel className="overflow-hidden bg-[linear-gradient(135deg,_rgba(22,27,34,1),_rgba(13,17,23,1))]">
-        <PanelChrome
-          label="main.ts"
-          status="decision-support research cockpit"
-        />
+        <PanelChrome label="main.ts" status={m.dashboard.heroStatus} />
         <PanelBody className="space-y-8 p-8">
           <PanelLead
             label="deepvalue-lab://watchlist"
             title={
               <>
                 <span className="text-[var(--accent-copper)]">&gt;</span>{' '}
-                DeepValue Research Board
+                {m.dashboard.heroTitle}
               </>
             }
-            description="Track cheap versus fair value, thesis integrity, news-to-model changes, and entry timing in one calm dark workspace tuned for long research reading."
-            aside={<AccentBadge label="cards default · table secondary" />}
+            description={m.dashboard.heroDescription}
+            aside={<AccentBadge label={m.badge.cardsDefault} />}
           />
 
           <div className="grid gap-5 xl:grid-cols-[1.3fr_0.9fr]">
             <Panel className="overflow-hidden bg-[var(--surface-panel-alt)]">
-              <PanelChrome label="decision-summary.log" status="live buckets" />
+              <PanelChrome
+                label="decision-summary.log"
+                status={m.dashboard.summaryStatus}
+              />
               <PanelBody>
                 <div className="grid gap-4 md:grid-cols-3">
-                  {Object.entries(bucketLabels).map(([bucket, label]) => (
+                  {(
+                    Object.entries(m.dashboard.buckets) as Array<
+                      [DashboardBucket, string]
+                    >
+                  ).map(([bucket, label]) => (
                     <MetricBlock
                       key={bucket}
                       label={label}
                       value={String(counts[bucket as keyof typeof counts])}
-                      detail="Tracked companies in this decision bucket."
+                      detail={m.dashboard.summaryDetail}
                     />
                   ))}
                 </div>
@@ -99,16 +106,16 @@ export function DashboardPage() {
             </Panel>
 
             <Panel className="overflow-hidden bg-[var(--surface-panel-alt)]">
-              <PanelChrome label="operator-notes.md" status="use the board" />
+              <PanelChrome
+                label="operator-notes.md"
+                status={m.dashboard.operatorStatus}
+              />
               <PanelBody className="space-y-4">
-                <TerminalLabel>what the user should know first</TerminalLabel>
+                <TerminalLabel>{m.dashboard.operatorLabel}</TerminalLabel>
                 <ul className="space-y-3 text-sm leading-7 text-[var(--ink-secondary)]">
-                  <li>Judgment appears before raw data.</li>
-                  <li>Cards help decide what deserves a click now.</li>
-                  <li>
-                    Table mode supports dense comparison without replacing the
-                    board.
-                  </li>
+                  {m.dashboard.operatorBullets.map((bullet) => (
+                    <li key={bullet}>{bullet}</li>
+                  ))}
                 </ul>
               </PanelBody>
             </Panel>
@@ -120,14 +127,14 @@ export function DashboardPage() {
         <Panel className="overflow-hidden">
           <PanelChrome
             label="watchlist.board"
-            status={`${filteredStocks.length} visible names`}
+            status={`${filteredStocks.length} ${m.dashboard.boardVisible}`}
           />
           <PanelBody className="space-y-6">
             <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
               <div>
-                <TerminalLabel>browse.tsx</TerminalLabel>
+                <TerminalLabel>{m.dashboard.browseLabel}</TerminalLabel>
                 <h3 className="mt-2 font-serif text-[2rem] tracking-[-0.04em] text-[var(--ink-primary)]">
-                  Browse the watchlist like a live research file.
+                  {m.dashboard.browseTitle}
                 </h3>
               </div>
 
@@ -155,7 +162,9 @@ export function DashboardPage() {
 
                 <div className="flex flex-col gap-3 md:flex-row">
                   <label className="flex items-center gap-3 rounded-full border border-[var(--line-subtle)] bg-[var(--surface-chip)] px-4 py-3 font-mono text-[0.74rem] text-[var(--ink-secondary)]">
-                    <span className="text-[var(--accent-copper)]">$ find</span>
+                    <span className="text-[var(--accent-copper)]">
+                      {m.dashboard.searchLabel}
+                    </span>
                     <input
                       value={query}
                       onChange={(event) => {
@@ -164,13 +173,15 @@ export function DashboardPage() {
                           setQuery(nextValue)
                         })
                       }}
-                      placeholder="TSM, semicap, compounder"
+                      placeholder={m.dashboard.searchPlaceholder}
                       className="min-w-[16rem] bg-transparent text-[var(--ink-primary)] outline-none placeholder:text-[var(--ink-faint)]"
                     />
                   </label>
 
                   <div className="flex items-center gap-3 rounded-full border border-[var(--line-subtle)] bg-[var(--surface-chip)] px-4 py-3 font-mono text-[0.74rem] text-[var(--ink-secondary)]">
-                    <span className="text-[var(--accent-copper)]">sort</span>
+                    <span className="text-[var(--accent-copper)]">
+                      {m.dashboard.sortLabel}
+                    </span>
                     <select
                       value={sortMode}
                       onChange={(event) =>
@@ -180,9 +191,15 @@ export function DashboardPage() {
                       }
                       className="bg-transparent text-[var(--ink-primary)] outline-none"
                     >
-                      <option value="most-actionable">most actionable</option>
-                      <option value="largest-discount">largest discount</option>
-                      <option value="recently-updated">recently updated</option>
+                      <option value="most-actionable">
+                        {m.dashboard.sortOptions['most-actionable']}
+                      </option>
+                      <option value="largest-discount">
+                        {m.dashboard.sortOptions['largest-discount']}
+                      </option>
+                      <option value="recently-updated">
+                        {m.dashboard.sortOptions['recently-updated']}
+                      </option>
                     </select>
                   </div>
 
@@ -195,7 +212,7 @@ export function DashboardPage() {
                         })
                       }
                     >
-                      cards
+                      {m.dashboard.view.cards}
                     </ViewToggleButton>
                     <ViewToggleButton
                       isActive={viewMode === 'table'}
@@ -205,7 +222,7 @@ export function DashboardPage() {
                         })
                       }
                     >
-                      table
+                      {m.dashboard.view.table}
                     </ViewToggleButton>
                   </div>
                 </div>
@@ -228,32 +245,30 @@ export function DashboardPage() {
           <Panel className="overflow-hidden">
             <PanelChrome
               label="signals.log"
-              status="changed since last review"
+              status={m.dashboard.signalsStatus}
             />
             <PanelBody className="space-y-4">
-              <InsightRow
-                title="TSM fair value revised"
-                body="Packaging bottlenecks improved confidence in the base case."
-              />
-              <InsightRow
-                title="ASML thesis downgraded to watch"
-                body="Export visibility remains the main pressure point."
-              />
-              <InsightRow
-                title="ADBE entered the strongest alignment bucket"
-                body="Valuation support and favorable entry conditions now overlap."
-              />
+              {m.dashboard.signals.map((item) => (
+                <InsightRow
+                  key={item.title}
+                  title={item.title}
+                  body={item.body}
+                />
+              ))}
             </PanelBody>
           </Panel>
 
           <Panel className="overflow-hidden">
-            <PanelChrome label="view-rules.md" status="style direction" />
+            <PanelChrome
+              label="view-rules.md"
+              status={m.dashboard.styleStatus}
+            />
             <PanelBody className="space-y-4">
-              <TerminalLabel>reading system</TerminalLabel>
+              <TerminalLabel>{m.dashboard.styleLabel}</TerminalLabel>
               <ul className="space-y-3 text-sm leading-7 text-[var(--ink-secondary)]">
-                <li>Mono-first typography with calmer size steps.</li>
-                <li>Higher-contrast text and cooler status colors.</li>
-                <li>No background grid or decorative noise.</li>
+                {m.dashboard.styleBullets.map((bullet) => (
+                  <li key={bullet}>{bullet}</li>
+                ))}
               </ul>
             </PanelBody>
           </Panel>

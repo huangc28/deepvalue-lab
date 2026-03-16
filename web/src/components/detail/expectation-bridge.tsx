@@ -1,4 +1,5 @@
 import { cx } from '../../lib/cx'
+import { useI18n } from '../../i18n/context'
 import type { FactItem } from '../../types/stocks'
 
 export function ExpectationBridge({
@@ -14,6 +15,7 @@ export function ExpectationBridge({
   baseFairValue: number
   bullFairValue: number
 }) {
+  const { m, text } = useI18n()
   const currentPricePosition = toRailPosition(
     currentPrice,
     bearFairValue,
@@ -29,10 +31,13 @@ export function ExpectationBridge({
     <div className="space-y-5">
       <div className="grid gap-3 xl:grid-cols-[repeat(4,minmax(0,1fr))]">
         {items.map((item, index) => (
-          <div key={item.label} className="flex items-center gap-3">
+          <div
+            key={`${text(item.label)}-${index}`}
+            className="flex items-center gap-3"
+          >
             <StepCard
-              label={item.label}
-              value={item.value}
+              label={text(item.label)}
+              value={text(item.value)}
               step={index + 1}
               className="flex-1"
             />
@@ -45,8 +50,8 @@ export function ExpectationBridge({
 
       <div className="rounded-[1.15rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] px-4 py-5">
         <div className="flex items-center justify-between gap-3 font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--ink-muted)]">
-          <span>Bear / Base / Bull Range</span>
-          <span>Current Price In Context</span>
+          <span>{m.detail.expectationBridge.range}</span>
+          <span>{m.detail.expectationBridge.currentPriceInContext}</span>
         </div>
 
         <div className="relative mt-8 pb-8">
@@ -60,25 +65,25 @@ export function ExpectationBridge({
           />
 
           <Marker
-            label="Bear"
+            label={m.detail.scenario.Bear}
             value={formatCurrency(bearFairValue)}
             left={0}
             tone="muted"
           />
           <Marker
-            label="Current"
+            label={m.detail.expectationBridge.current}
             value={formatCurrency(currentPrice)}
             left={currentPricePosition}
             tone="accent"
           />
           <Marker
-            label="Base"
+            label={m.detail.scenario.Base}
             value={formatCurrency(baseFairValue)}
             left={basePosition}
             tone="positive"
           />
           <Marker
-            label="Bull"
+            label={m.detail.scenario.Bull}
             value={formatCurrency(bullFairValue)}
             left={100}
             tone="muted"

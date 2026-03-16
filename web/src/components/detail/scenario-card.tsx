@@ -1,26 +1,32 @@
+import { useI18n } from '../../i18n/context'
 import type { Scenario } from '../../types/stocks'
 import { Panel, PanelBody, PanelChrome } from '../ui/panel'
 
 export function ScenarioCard({ scenario }: { scenario: Scenario }) {
+  const { m, text } = useI18n()
+
   return (
     <Panel className="h-full overflow-hidden">
       <PanelChrome label={`${scenario.label.toLowerCase()}.scenario`} />
       <PanelBody className="space-y-4">
         <p className="font-serif text-[1.9rem] tracking-[-0.04em] text-[var(--ink-primary)]">
-          {scenario.label}
+          {m.detail.scenario[scenario.label]}
         </p>
         <ScenarioField
-          label="Operating assumption"
-          value={scenario.operatingAssumption}
+          label={m.detail.scenario.operatingAssumption}
+          value={text(scenario.operatingAssumption)}
         />
         <ScenarioField
-          label="Valuation assumption"
-          value={scenario.valuationAssumption}
+          label={m.detail.scenario.valuationAssumption}
+          value={text(scenario.valuationAssumption)}
         />
-        <ScenarioField label="Fair value" value={scenario.fairValue} />
         <ScenarioField
-          label="What must be true"
-          value={scenario.whatMustBeTrue}
+          label={m.detail.scenario.fairValue}
+          value={text(scenario.fairValue)}
+        />
+        <ScenarioField
+          label={m.detail.scenario.whatMustBeTrue}
+          value={text(scenario.whatMustBeTrue)}
         />
       </PanelBody>
     </Panel>
