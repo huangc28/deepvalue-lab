@@ -152,6 +152,13 @@ Required content:
 Scenario minimum rule:
 
 - all three scenarios are required unless the user explicitly asks for a shorter format
+- each scenario must be auditable from the stated assumptions
+
+Scenario audit rule:
+
+- if the report uses `EPS x P/E`, the earnings and multiple assumptions must be explicit
+- if the report uses `EV / sales`, `EV / EBITDA`, or similar, the report must make the EV-to-equity-to-per-share bridge explicit enough to follow
+- if the report uses milestone logic, the path from milestone assumptions to fair value must be explicit enough to follow
 
 ### 4.10 What The Current Price Implies
 
@@ -219,6 +226,7 @@ Minimum acceptable output:
 
 - at least one current official source
 - enough sources to support the report's key claims
+- every material claim used in thesis support, news-to-model, or scenario support must be backed by a listed source
 
 ## 5. Technicals Rule In The Contract
 
@@ -235,6 +243,18 @@ Current default technical language:
 - stretched
 
 The report should not claim that RSI or MRC proves intrinsic value.
+
+## 6.5 Benchmark Quality Rule
+
+Completeness alone is not sufficient.
+
+A report that includes every section but fails one of the following is still below DeepValue Lab standard:
+
+- valuation method does not clearly fit the company type
+- news-to-model includes only upside and omits the main downside variables
+- scenario fair values are not auditable from the stated assumptions
+- material claims in the body are not backed by the listed sources
+- conclusion praises company quality without clearly stating price-versus-value judgment
 
 ## 6. Conclusion Style Rule
 

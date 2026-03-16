@@ -258,6 +258,49 @@ The report should not feel like:
 
 - a generic company summary
 - a news recap
+
+## 9. Benchmark Quality Rule
+
+The target quality bar is the internal DeepValue Lab benchmark represented by the earlier AMAT-style analysis.
+
+That benchmark is not defined by tone.
+It is defined by analytical properties:
+
+- the business is classified correctly and the valuation lens clearly matches that business type
+- the current valuation snapshot uses the metrics that matter for that business, not generic ratios
+- recent news is translated into both upside and downside model changes
+- the report includes the main counterweights that cap the valuation multiple
+- the scenario worksheet is auditable rather than hand-wavy
+- the conclusion explains what the market already prices in and whether there is real safety margin
+
+In practice, this means a report is below standard if it:
+
+- is directionally right but not numerically auditable
+- includes upside drivers but does not model the main negative variables
+- gives per-share fair values without showing the bridge assumptions that produce them
+- uses claims in the body that are not supported by listed current sources
+
+## 10. Auditable Scenario Rule
+
+Bear, base, and bull cases must be traceable.
+
+If a scenario uses:
+
+- `EPS x P/E`, the report must make the EPS and multiple assumptions explicit
+- `EV / sales`, `EV / EBITDA`, or similar enterprise multiples, the report must make the enterprise-value-to-equity bridge explicit enough to audit
+- milestone or pre-revenue logic, the report must make the path from milestone assumptions to fair value explicit
+
+The goal is not spreadsheet perfection.
+The goal is that another agent or human can reproduce the direction and arithmetic of the scenario without guessing hidden assumptions.
+
+## 11. Source Discipline Rule
+
+Every material claim used in thesis, news-to-model, or scenario support must be backed by a source listed in the report.
+
+If the report uses a partnership, customer, guidance, regulatory, or technical claim to support valuation or thesis quality, that source must appear in `Sources Used`.
+
+Unsupported helpful color is acceptable in conversation.
+Unsupported evidence is not acceptable in a DeepValue Lab report.
 - a valuation-only memo
 - a technical chart summary detached from business analysis
 

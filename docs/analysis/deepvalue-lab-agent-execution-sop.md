@@ -182,6 +182,21 @@ Before treating the task as finished, check that the report includes:
 
 If any section is missing, the report is incomplete.
 
+### Step 13: Perform A Benchmark Quality Check
+
+Before finishing, check whether the report clears the DeepValue Lab benchmark quality bar.
+
+Minimum benchmark checks:
+
+- does the valuation lens clearly fit the company type
+- does the news-to-model section include the main downside variables, not just upside
+- are the scenario outputs auditable from the stated assumptions
+- if the report uses EV-based multiples, is the bridge to per-share value explicit enough to follow
+- are all material claims in the body supported by the listed sources
+- does the conclusion clearly separate company quality from price attractiveness
+
+If any of these fail, the report may be complete by section count but is still below standard.
+
 ## 4. Output Rules
 
 The final report should:
@@ -247,5 +262,6 @@ DeepValue Lab agent workflow is:
 4. technicals as timing support
 5. structured report
 6. completion check
+7. benchmark quality check
 
 This sequence is mandatory for consistent quality.
