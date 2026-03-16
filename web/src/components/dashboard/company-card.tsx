@@ -19,9 +19,9 @@ export function CompanyCard({ stock }: { stock: StockSummary }) {
       params={{ ticker: stock.ticker }}
       className="block"
     >
-      <Panel className="group h-full overflow-hidden transition duration-200 hover:-translate-y-0.5 hover:border-[var(--line-strong)] hover:shadow-[0_34px_90px_rgba(0,0,0,0.32)]">
+        <Panel className="group h-full overflow-hidden transition duration-200 hover:-translate-y-0.5 hover:border-[var(--line-strong)] hover:shadow-[0_34px_90px_rgba(0,0,0,0.32)]">
         <PanelChrome
-          label={`${stock.ticker.toLowerCase()}.md`}
+          label={m.detail.panelLabels.companyCard}
           status={stock.lastUpdated}
         />
         <PanelBody className="space-y-6">

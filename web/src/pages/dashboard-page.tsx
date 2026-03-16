@@ -67,7 +67,7 @@ export function DashboardPage() {
   return (
     <div className="flex flex-col gap-8">
       <Panel className="overflow-hidden bg-[linear-gradient(135deg,_rgba(22,27,34,1),_rgba(13,17,23,1))]">
-        <PanelChrome label="main.ts" status={m.dashboard.heroStatus} />
+        <PanelChrome label={m.dashboard.heroLabel} status={m.dashboard.heroStatus} />
         <PanelBody className="space-y-8 p-8">
           <PanelLead
             label="deepvalue-lab://watchlist"
@@ -84,7 +84,7 @@ export function DashboardPage() {
           <div className="grid gap-5 xl:grid-cols-[1.3fr_0.9fr]">
             <Panel className="overflow-hidden bg-[var(--surface-panel-alt)]">
               <PanelChrome
-                label="decision-summary.log"
+                label={m.dashboard.summaryLabel}
                 status={m.dashboard.summaryStatus}
               />
               <PanelBody>
@@ -107,7 +107,7 @@ export function DashboardPage() {
 
             <Panel className="overflow-hidden bg-[var(--surface-panel-alt)]">
               <PanelChrome
-                label="operator-notes.md"
+                label={m.dashboard.operatorPanelLabel}
                 status={m.dashboard.operatorStatus}
               />
               <PanelBody className="space-y-4">
@@ -126,7 +126,7 @@ export function DashboardPage() {
       <div className="grid gap-6 2xl:grid-cols-[1fr_22rem]">
         <Panel className="overflow-hidden">
           <PanelChrome
-            label="watchlist.board"
+            label={m.dashboard.boardLabel}
             status={`${filteredStocks.length} ${m.dashboard.boardVisible}`}
           />
           <PanelBody className="space-y-6">
@@ -244,7 +244,7 @@ export function DashboardPage() {
         <div className="space-y-6">
           <Panel className="overflow-hidden">
             <PanelChrome
-              label="signals.log"
+              label={m.dashboard.signalsLabel}
               status={m.dashboard.signalsStatus}
             />
             <PanelBody className="space-y-4">
@@ -260,7 +260,7 @@ export function DashboardPage() {
 
           <Panel className="overflow-hidden">
             <PanelChrome
-              label="view-rules.md"
+              label={m.dashboard.stylePanelLabel}
               status={m.dashboard.styleStatus}
             />
             <PanelBody className="space-y-4">

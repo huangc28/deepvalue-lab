@@ -51,7 +51,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
     <div className="flex flex-col gap-8">
       <Panel className="overflow-hidden bg-[linear-gradient(135deg,_rgba(22,27,34,1),_rgba(13,17,23,1))]">
         <PanelChrome
-          label={`${stock.ticker.toLowerCase()}.analysis`}
+          label={m.detail.heroPanelLabel}
           status={stock.lastUpdated}
         />
         <PanelBody className="space-y-8 p-8">
@@ -122,7 +122,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
       <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="space-y-6">
           <ResearchSection
-            fileLabel="scenario-model.json"
+            fileLabel={m.detail.panelLabels.scenarioModel}
             title={m.detail.scenariosTitle}
             description={m.detail.scenariosDescription}
           >
@@ -134,7 +134,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           </ResearchSection>
 
           <ResearchSection
-            fileLabel="pricing-context.md"
+            fileLabel={m.detail.panelLabels.pricingContext}
             title={m.detail.currentPriceImpliesTitle}
           >
             <div className="space-y-4">
@@ -152,7 +152,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           </ResearchSection>
 
           <ResearchSection
-            fileLabel="entry-timing.tsx"
+            fileLabel={m.detail.panelLabels.entryTiming}
             title={m.detail.technicalEntryStatusTitle}
             description={m.detail.technicalEntryStatusDescription}
           >
@@ -180,7 +180,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           </ResearchSection>
 
           <ResearchSection
-            fileLabel="conclusion.md"
+            fileLabel={m.detail.panelLabels.conclusion}
             title={m.detail.conclusionTitle}
           >
             <InfoList
@@ -207,7 +207,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           </ResearchSection>
 
           <ResearchSection
-            fileLabel="valuation-context.ts"
+            fileLabel={m.detail.panelLabels.valuationContext}
             title={m.detail.valuationContextTitle}
             description={m.detail.valuationContextDescription}
           >
@@ -230,7 +230,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           </ResearchSection>
 
           <ResearchSection
-            fileLabel="thesis.md"
+            fileLabel={m.detail.panelLabels.thesis}
             title={m.detail.thesisTitle}
             description={text(stock.thesisStatement)}
           >
@@ -238,7 +238,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           </ResearchSection>
 
           <ResearchSection
-            fileLabel="snapshot.json"
+            fileLabel={m.detail.panelLabels.snapshot}
             title={m.detail.currentValuationSnapshotTitle}
             description={m.detail.currentValuationSnapshotDescription}
           >
@@ -269,7 +269,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           </ResearchSection>
 
           <ResearchSection
-            fileLabel="news-to-model.log"
+            fileLabel={m.detail.panelLabels.newsToModel}
             title={m.detail.newsToModelTitle}
             description={m.detail.newsToModelDescription}
           >
@@ -296,7 +296,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           </ResearchSection>
 
           <ResearchSection
-            fileLabel="thesis-status.md"
+            fileLabel={m.detail.panelLabels.thesisStatus}
             title={m.detail.thesisStatusTitle}
           >
             <InfoList
@@ -321,7 +321,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           </ResearchSection>
 
           <ResearchSection
-            fileLabel="risks-catalysts.md"
+            fileLabel={m.detail.panelLabels.risksAndCatalysts}
             title={m.detail.risksAndCatalystsTitle}
             description={m.detail.risksAndCatalystsDescription}
           >
@@ -343,7 +343,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
 
           <div className="grid gap-6 lg:grid-cols-2">
             <ResearchSection
-              fileLabel="monitor-next.md"
+              fileLabel={m.detail.panelLabels.monitorNext}
               title={m.detail.monitorNextTitle}
               description={m.detail.monitorNextDescription}
             >
@@ -351,7 +351,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
             </ResearchSection>
 
             <ResearchSection
-              fileLabel="sources.yml"
+              fileLabel={m.detail.panelLabels.sources}
               title={m.detail.sourcesUsedTitle}
               description={m.detail.sourcesUsedDescription}
             >
@@ -360,7 +360,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           </div>
 
           <ResearchSection
-            fileLabel="history.log"
+            fileLabel={m.detail.panelLabels.history}
             title={m.detail.historyTitle}
             description={m.detail.historyDescription}
           >
@@ -371,7 +371,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
         <aside className="space-y-6">
           <Panel className="overflow-hidden">
             <PanelChrome
-              label="sticky-summary.ts"
+              label={m.detail.panelLabels.stickySummary}
               status={m.detail.stickySummaryStatus}
             />
             <PanelBody className="space-y-4">
@@ -401,7 +401,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
 
           <Panel className="overflow-hidden">
             <PanelChrome
-              label="section-index.json"
+              label={m.detail.panelLabels.sectionIndex}
               status={m.detail.navigationStatus}
             />
             <PanelBody className="space-y-3">
@@ -495,8 +495,7 @@ function ResearchSection({
       <PanelChrome label={fileLabel} />
       <PanelBody className="space-y-5">
         <div>
-          <TerminalLabel>{fileLabel}</TerminalLabel>
-          <h3 className="mt-2 font-serif text-[1.95rem] tracking-[-0.04em] text-[var(--ink-primary)]">
+          <h3 className="font-serif text-[1.95rem] tracking-[-0.04em] text-[var(--ink-primary)]">
             {title}
           </h3>
           {description ? (

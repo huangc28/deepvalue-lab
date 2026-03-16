@@ -16,7 +16,7 @@ export function WatchlistTable({ stocks }: { stocks: StockSummary[] }) {
   return (
     <Panel className="overflow-hidden">
       <PanelChrome
-        label="watchlist.table"
+        label={m.detail.panelLabels.watchlistTable}
         status={`${stocks.length} ${m.table.names}`}
       />
       <PanelBody className="overflow-x-auto p-0">
