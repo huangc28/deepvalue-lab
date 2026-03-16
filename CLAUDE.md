@@ -87,6 +87,39 @@ Required report logic:
 12. What To Monitor Next
 13. Sources Used
 
+## Skills
+
+Claude should treat the repo skill files under `.agents/skills/` as task-specific operating instructions.
+
+When a task clearly matches one of these skills, open the referenced `SKILL.md` first and follow it in addition to this file.
+
+Core skills for this repo:
+
+- Stock analysis skill:
+  `.agents/skills/deepvalue-stock-analysis/SKILL.md`
+  Use this when the user asks to:
+  - analyze a stock
+  - update a company thesis
+  - decide cheap / fair / rich
+  - translate recent news into valuation model changes
+  - judge thesis intact / watch / broken
+  - evaluate technical entry timing after valuation
+
+- NotebookLM workflow skill:
+  `.agents/skills/nlm-skill/SKILL.md`
+  Use this when the task is about:
+  - NotebookLM or `nlm`
+  - notebook management
+  - source ingestion
+  - research import
+  - NotebookLM automation or content generation
+
+Skill usage rules:
+- Read only the skill(s) relevant to the current task.
+- Use the skill as an execution guide, not as a replacement for current repo state.
+- If the skill and current repository disagree, the repository wins.
+- After completing a non-trivial task successfully, update NotebookLM with a concise durable writeback.
+
 ## Frontend Context
 
 Current frontend stack:
