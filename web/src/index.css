@@ -1,15 +1,26 @@
 @import 'tailwindcss';
 
 :root {
-  --surface-canvas: #f5f1e8;
-  --surface-elevated: #fbf8f2;
-  --surface-muted: #ede6d7;
-  --line-subtle: rgba(32, 40, 35, 0.12);
-  --line-strong: rgba(32, 40, 35, 0.24);
-  --ink-primary: #172019;
-  --ink-secondary: #405045;
-  --ink-muted: #6b7a70;
-  --accent-support: #a1b9a7;
+  --surface-canvas: #09090a;
+  --surface-panel: #0f1012;
+  --surface-panel-alt: #15161a;
+  --surface-muted: #141417;
+  --surface-chip: #17181c;
+  --line-subtle: rgba(219, 214, 197, 0.12);
+  --line-strong: rgba(219, 214, 197, 0.2);
+  --ink-primary: #f1ede2;
+  --ink-secondary: #c7c0af;
+  --ink-muted: #8f8a7e;
+  --ink-faint: #6a655d;
+  --accent-copper: #d39b7b;
+  --accent-sage: #88a58e;
+  --accent-amber: #c69b62;
+  --signal-positive: #5c8a68;
+  --signal-positive-soft: #a7c7ae;
+  --signal-watch: #ab7b47;
+  --signal-watch-soft: #d7af79;
+  --signal-danger: #9b5b4c;
+  --signal-danger-soft: #d4a293;
 }
 
 html {
@@ -27,11 +38,17 @@ body {
   min-width: 320px;
   background:
     radial-gradient(
-      circle at top left,
-      rgba(161, 185, 167, 0.22),
-      transparent 32%
+      circle at top center,
+      rgba(211, 155, 123, 0.16),
+      transparent 24%
     ),
-    linear-gradient(180deg, #f6f3ec 0%, #f2eee4 100%);
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(136, 165, 142, 0.08),
+      transparent 28%
+    ),
+    linear-gradient(180deg, #0a0a0b 0%, #09090a 100%);
+  background-attachment: fixed;
 }
 
 * {
@@ -52,6 +69,23 @@ select {
 
 #root {
   min-height: 100vh;
+}
+
+.grid-shell {
+  position: relative;
+}
+
+.grid-shell::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(circle at center, black 45%, transparent 100%);
+  opacity: 0.34;
 }
 
 .font-serif {

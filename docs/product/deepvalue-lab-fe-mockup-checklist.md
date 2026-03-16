@@ -15,6 +15,7 @@ Date:
 - [x] Align on client-side rendering for mockup phase
 - [x] Align on `React + TypeScript + Vite + TanStack Router + Tailwind CSS`
 - [x] Write web app design guideline
+- [x] Write visual style direction
 - [x] Write FE mockup PRD
 
 ## Phase 1: Project Setup
@@ -39,78 +40,78 @@ Date:
 
 ## Phase 3: Shared UI Primitives
 
-- [ ] Build page container and section shell primitives
-- [ ] Build reusable badge or status chip component
-- [ ] Build metric block component for price and fair value display
-- [ ] Build filter chip component
-- [ ] Build segmented toggle for `Cards | Table`
-- [ ] Build top navigation/search area
+- [x] Build page container and section shell primitives
+- [x] Build reusable badge or status chip component
+- [x] Build metric block component for price and fair value display
+- [x] Build filter chip component
+- [x] Build segmented toggle for `Cards | Table`
+- [x] Build top navigation/search area
 - [ ] Build empty-state and no-results patterns
 
 ## Phase 4: Dashboard
 
-- [ ] Build dashboard page layout
-- [ ] Build decision summary strip
-- [ ] Build filter and sort controls
-- [ ] Build right-side insight rail or secondary insights section
-- [ ] Implement cards view as the default dashboard mode
-- [ ] Implement table view as the secondary dashboard mode
-- [ ] Ensure cards and table use the same underlying data
-- [ ] Ensure clicking a card or row navigates to the same detail page
+- [x] Build dashboard page layout
+- [x] Build decision summary strip
+- [x] Build filter and sort controls
+- [x] Build right-side insight rail or secondary insights section
+- [x] Implement cards view as the default dashboard mode
+- [x] Implement table view as the secondary dashboard mode
+- [x] Ensure cards and table use the same underlying data
+- [x] Ensure clicking a card or row navigates to the same detail page
 
 ## Phase 5: Company Card Design
 
-- [ ] Build company card component
-- [ ] Show company name and ticker
-- [ ] Show business type visibly on the card
-- [ ] Show current price and base fair value
-- [ ] Show discount or premium percentage
-- [ ] Show valuation, thesis, and entry statuses
-- [ ] Show action state prominently
-- [ ] Show one-line decision summary
-- [ ] Show last updated information
-- [ ] Validate that the card can be scanned quickly
+- [x] Build company card component
+- [x] Show company name and ticker
+- [x] Show business type visibly on the card
+- [x] Show current price and base fair value
+- [x] Show discount or premium percentage
+- [x] Show valuation, thesis, and entry statuses
+- [x] Show action state prominently
+- [x] Show one-line decision summary
+- [x] Show last updated information
+- [x] Validate that the card can be scanned quickly
 
 ## Phase 6: Table View Design
 
-- [ ] Build watchlist table component
-- [ ] Add key columns for price, valuation, news, thesis, entry, and action
-- [ ] Add sorting behavior
-- [ ] Ensure the table remains readable at desktop widths
+- [x] Build watchlist table component
+- [x] Add key columns for price, valuation, news, thesis, entry, and action
+- [x] Add sorting behavior
+- [x] Ensure the table remains readable at desktop widths
 - [ ] Define reduced behavior for smaller screens
 
 ## Phase 7: Stock Detail Page
 
-- [ ] Build top-of-page hero summary
-- [ ] Build `Decision` section
-- [ ] Build `Business Classification` section
-- [ ] Build `Valuation` section
-- [ ] Build `Thesis` section
-- [ ] Build `Variant Perception` section
-- [ ] Build `Valuation Lens` section
-- [ ] Build `Current Valuation Snapshot` section
-- [ ] Build `News to Model` section
-- [ ] Build auditable `Bear / Base / Bull` scenario cards
-- [ ] Build `What The Current Price Implies` section
-- [ ] Build `Entry Timing` section
-- [ ] Build `Thesis Status` section
-- [ ] Build `Risks and Catalysts` section
-- [ ] Build `What To Monitor Next` section
-- [ ] Build `Sources Used` section
-- [ ] Build `History` section
-- [ ] Ensure the first screen explains the current conclusion clearly
-- [ ] Ensure valuation appears before technical entry in the reading order
-- [ ] Ensure the page supports both quick scanning and analytical auditability
+- [x] Build top-of-page hero summary
+- [x] Build `Decision` section
+- [x] Build `Business Classification` section
+- [x] Build `Valuation` section
+- [x] Build `Thesis` section
+- [x] Build `Variant Perception` section
+- [x] Build `Valuation Lens` section
+- [x] Build `Current Valuation Snapshot` section
+- [x] Build `News to Model` section
+- [x] Build auditable `Bear / Base / Bull` scenario cards
+- [x] Build `What The Current Price Implies` section
+- [x] Build `Entry Timing` section
+- [x] Build `Thesis Status` section
+- [x] Build `Risks and Catalysts` section
+- [x] Build `What To Monitor Next` section
+- [x] Build `Sources Used` section
+- [x] Build `History` section
+- [x] Ensure the first screen explains the current conclusion clearly
+- [x] Ensure valuation appears before technical entry in the reading order
+- [x] Ensure the page supports both quick scanning and analytical auditability
 
 ## Phase 8: Interaction And State
 
-- [ ] Implement search behavior
+- [x] Implement search behavior
 - [ ] Implement filters such as `cheap`, `thesis intact`, and `favorable entry`
-- [ ] Implement sorting options such as `most actionable` and `largest discount`
-- [ ] Implement `Cards | Table` view toggle
-- [ ] Preserve filter and sort state while switching views
-- [ ] Use route params or search params where appropriate
-- [ ] Highlight changed or review-worthy items clearly
+- [x] Implement sorting options such as `most actionable` and `largest discount`
+- [x] Implement `Cards | Table` view toggle
+- [x] Preserve filter and sort state while switching views
+- [x] Use route params or search params where appropriate
+- [x] Highlight changed or review-worthy items clearly
 
 ## Phase 9: Responsive Review
 
@@ -123,18 +124,18 @@ Date:
 
 ## Phase 10: UX Review
 
-- [ ] Confirm dashboard feels like a decision dashboard, not a spreadsheet homepage
-- [ ] Confirm cards are the strongest default entry point
-- [ ] Confirm table view is useful without becoming visually dominant
-- [ ] Confirm business type is visible early enough to frame valuation context
-- [ ] Confirm variant perception is explicit, not implied
-- [ ] Confirm valuation lens is visible and understandable
-- [ ] Confirm bear / base / bull are more than three target prices
-- [ ] Confirm the page explains what the current price implies
-- [ ] Confirm technicals remain supporting information
-- [ ] Confirm news is presented as model impact, not headline feed
-- [ ] Confirm sources and monitor-next items are first-class content, not hidden metadata
-- [ ] Confirm the interface answers `what changed` and `what should I do next`
+- [x] Confirm dashboard feels like a decision dashboard, not a spreadsheet homepage
+- [x] Confirm cards are the strongest default entry point
+- [x] Confirm table view is useful without becoming visually dominant
+- [x] Confirm business type is visible early enough to frame valuation context
+- [x] Confirm variant perception is explicit, not implied
+- [x] Confirm valuation lens is visible and understandable
+- [x] Confirm bear / base / bull are more than three target prices
+- [x] Confirm the page explains what the current price implies
+- [x] Confirm technicals remain supporting information
+- [x] Confirm news is presented as model impact, not headline feed
+- [x] Confirm sources and monitor-next items are first-class content, not hidden metadata
+- [x] Confirm the interface answers `what changed` and `what should I do next`
 
 ## Phase 11: Handoff Readiness
 

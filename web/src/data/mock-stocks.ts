@@ -90,6 +90,14 @@ export const mockStocks: StockDetail[] = [
     ],
     currentPriceImplies:
       'The current price implies the market is underwriting only moderate AI upside and a prolonged capex penalty.',
+    risks: [
+      'Overseas fab dilution persists longer than expected.',
+      'Geopolitical pressure disrupts customer ordering behavior.',
+    ],
+    catalysts: [
+      'Packaging supply remains constrained in a constructive way.',
+      'Node ramp execution supports a cleaner margin recovery.',
+    ],
     monitorNext: [
       'Quarterly revenue against management guidance',
       'Advanced packaging utilization and pricing commentary',
@@ -185,6 +193,14 @@ export const mockStocks: StockDetail[] = [
     ],
     currentPriceImplies:
       'The market appears to be underwriting structurally lower growth and limited AI monetization.',
+    risks: [
+      'AI monetization fails to offset slower core growth.',
+      'The market continues to compress software multiples despite stable execution.',
+    ],
+    catalysts: [
+      'Higher monetization of AI features expands ARPU.',
+      'Stable retention and cash generation support re-rating.',
+    ],
     monitorNext: [
       'Net new ARR momentum',
       'AI feature monetization uptake',
@@ -273,6 +289,14 @@ export const mockStocks: StockDetail[] = [
     ],
     currentPriceImplies:
       'The market already prices in continued AI strength and a stable software contribution.',
+    risks: [
+      'AI revenue concentration proves less durable than expected.',
+      'Leverage and valuation leave limited room for disappointment.',
+    ],
+    catalysts: [
+      'Custom AI programs continue scaling faster than expected.',
+      'Software resilience keeps the blended earnings profile stable.',
+    ],
     monitorNext: [
       'Quarterly AI semiconductor revenue',
       'Software renewal stability',
@@ -363,6 +387,14 @@ export const mockStocks: StockDetail[] = [
     ],
     currentPriceImplies:
       'The current price implies that the market is already underwriting strong execution and meaningful AI payoff.',
+    risks: [
+      'AI capex keeps rising without proportional monetization.',
+      'Ad growth normalizes faster than the market expects.',
+    ],
+    catalysts: [
+      'AI tools improve monetization and engagement faster than expected.',
+      'Margin resilience sustains premium platform economics.',
+    ],
     monitorNext: [
       'Ad pricing and impression trends',
       'Capex discipline versus AI spend',
@@ -456,6 +488,14 @@ export const mockStocks: StockDetail[] = [
     ],
     currentPriceImplies:
       'The market is pricing a prolonged visibility discount despite continued strategic importance.',
+    risks: [
+      'Export controls continue to reduce order visibility.',
+      'Customer capex pauses extend the timing discount.',
+    ],
+    catalysts: [
+      'Order visibility improves as strategic EUV demand remains intact.',
+      'Customers resume longer-horizon capacity planning.',
+    ],
     monitorNext: [
       'Order intake versus expectations',
       'Export restriction developments',
@@ -546,6 +586,14 @@ export const mockStocks: StockDetail[] = [
     ],
     currentPriceImplies:
       'The market is already underwriting a meaningful part of the profitability transition.',
+    risks: [
+      'Competitive intensity slows margin progression.',
+      'Regulatory or incentive pressure reduces operating leverage.',
+    ],
+    catalysts: [
+      'Incremental margins continue to surprise positively.',
+      'Marketplace discipline improves durability of the compounding case.',
+    ],
     monitorNext: [
       'Adjusted EBITDA progression',
       'Competitive intensity',
@@ -633,6 +681,14 @@ export const mockStocks: StockDetail[] = [
     ],
     currentPriceImplies:
       'The market is still skeptical on AI scale economics, but not fully dismissive.',
+    risks: [
+      'AI traction fails to scale into durable profit conversion.',
+      'Margin progression lags despite data center momentum.',
+    ],
+    catalysts: [
+      'Data center momentum proves more durable than expected.',
+      'AI product attach improves mix and earnings power.',
+    ],
     monitorNext: [
       'Data center segment growth',
       'Gross margin progression',
@@ -722,6 +778,14 @@ export const mockStocks: StockDetail[] = [
     ],
     currentPriceImplies:
       'The market is now underwriting lower growth and less confidence in premium resilience.',
+    risks: [
+      'Traffic softness lasts longer than expected.',
+      'Margin pressure compresses the premium multiple further.',
+    ],
+    catalysts: [
+      'Comparable sales stabilize faster than feared.',
+      'Inventory and margin discipline restore premium confidence.',
+    ],
     monitorNext: [
       'Comparable sales progression',
       'Gross margin recovery',

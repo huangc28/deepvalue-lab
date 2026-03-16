@@ -68,6 +68,8 @@ export interface StockDetail extends StockSummary {
   newsToModel: NewsToModelItem[]
   scenarios: Scenario[]
   currentPriceImplies: string
+  risks: string[]
+  catalysts: string[]
   monitorNext: string[]
   sourcesUsed: string[]
   history: string[]

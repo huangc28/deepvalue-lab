@@ -3,6 +3,7 @@
 Frontend mockup workspace for the DeepValue Lab web app.
 
 Current scope:
+
 - dashboard shell
 - stock detail route
 - local mock data only
@@ -10,6 +11,7 @@ Current scope:
 ## Local Setup
 
 Requirements:
+
 - Node.js 22+
 - pnpm
 
