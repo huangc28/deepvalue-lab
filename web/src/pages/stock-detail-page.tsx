@@ -14,6 +14,7 @@ import {
 } from '../components/ui/status-badge'
 import { TerminalLabel } from '../components/ui/terminal-label'
 import { getStockByTicker } from '../data/mock-stocks'
+import type { FactItem } from '../types/stocks'
 
 interface StockDetailPageProps {
   ticker: string
@@ -102,13 +103,14 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
       <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="space-y-6">
           <ResearchSection
-            fileLabel="decision.memo"
-            title="Decision"
-            description={stock.currentPriceImplies}
+            fileLabel="conclusion.md"
+            title="Provisional Conclusion"
+            description={stock.provisionalConclusion ?? stock.summary}
           >
             <InfoList
               items={[
-                ['Current Call', stock.summary],
+                ['Current Call', stock.provisionalConclusion ?? stock.summary],
+                ['Decision Summary', stock.summary],
                 [
                   'Next Step',
                   stock.monitorNext[0] ?? 'Review the next material update.',
@@ -233,7 +235,12 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
             title="What The Current Price Implies"
             description={stock.currentPriceImplies}
           >
-            <BulletList items={[stock.currentPriceImplies]} />
+            <div className="space-y-4">
+              <BulletList items={[stock.currentPriceImplies]} />
+              {stock.currentPriceImpliedFacts?.length ? (
+                <InfoList items={toInfoItems(stock.currentPriceImpliedFacts)} />
+              ) : null}
+            </div>
           </ResearchSection>
 
           <div className="grid gap-6 lg:grid-cols-2">
@@ -263,13 +270,18 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
               title="Technical Entry Status"
               description="Technicals stay in the execution layer after valuation and thesis work."
             >
-              <InfoList
-                items={[
-                  ['Entry Status', toTitle(stock.technicalEntryStatus)],
-                  ['Timing Note', stock.summary],
-                  ['Framework', 'RSI + EMA + MRC-compatible stretch logic'],
-                ]}
-              />
+              <div className="space-y-4">
+                <InfoList
+                  items={[
+                    ['Entry Status', toTitle(stock.technicalEntryStatus)],
+                    ['Timing Note', stock.technicalCommentary ?? stock.summary],
+                    ['Framework', 'RSI + EMA + MRC-compatible stretch logic'],
+                  ]}
+                />
+                {stock.technicalSignals?.length ? (
+                  <InfoList items={toInfoItems(stock.technicalSignals)} />
+                ) : null}
+              </div>
             </ResearchSection>
           </div>
 
@@ -308,7 +320,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
               title="Sources Used"
               description="Every major claim should stay traceable to a current source."
             >
-              <BulletList items={stock.sourcesUsed} />
+              <SourceList items={stock.sourcesUsed} />
             </ResearchSection>
           </div>
 
@@ -353,7 +365,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
             <PanelChrome label="section-index.json" status="navigation" />
             <PanelBody className="space-y-3">
               {[
-                'Decision',
+                'Provisional Conclusion',
                 'Business Classification',
                 'Thesis',
                 'Valuation Lens',
@@ -454,6 +466,49 @@ function SideMetric({ label, value }: { label: string; value: string }) {
       </span>
     </div>
   )
+}
+
+function SourceList({
+  items,
+}: {
+  items: Array<string | { label: string; url?: string }>
+}) {
+  return (
+    <ul className="space-y-3">
+      {items.map((item) => {
+        const key =
+          typeof item === 'string' ? item : `${item.label}-${item.url}`
+
+        return (
+          <li
+            key={key}
+            className="rounded-[1.1rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] px-4 py-4 text-sm leading-7 text-[var(--ink-secondary)]"
+          >
+            {typeof item === 'string' || !item.url ? (
+              typeof item === 'string' ? (
+                item
+              ) : (
+                item.label
+              )
+            ) : (
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noreferrer"
+                className="text-[var(--accent-copper)] underline-offset-4 transition hover:text-[var(--ink-primary)] hover:underline"
+              >
+                {item.label}
+              </a>
+            )}
+          </li>
+        )
+      })}
+    </ul>
+  )
+}
+
+function toInfoItems(items: FactItem[]) {
+  return items.map(({ label, value }) => [label, value] as [string, string])
 }
 
 function toTitle(value: string) {

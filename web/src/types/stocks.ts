@@ -39,6 +39,16 @@ export interface Scenario {
   whatMustBeTrue: string
 }
 
+export interface FactItem {
+  label: string
+  value: string
+}
+
+export interface SourceReference {
+  label: string
+  url?: string
+}
+
 export interface StockSummary {
   id: string
   ticker: string
@@ -68,9 +78,13 @@ export interface StockDetail extends StockSummary {
   newsToModel: NewsToModelItem[]
   scenarios: Scenario[]
   currentPriceImplies: string
+  currentPriceImpliedFacts?: FactItem[]
+  provisionalConclusion?: string
+  technicalCommentary?: string
+  technicalSignals?: FactItem[]
   risks: string[]
   catalysts: string[]
   monitorNext: string[]
-  sourcesUsed: string[]
+  sourcesUsed: Array<string | SourceReference>
   history: string[]
 }

@@ -4,113 +4,223 @@ export const mockStocks: StockDetail[] = [
   {
     id: 'tsm',
     ticker: 'TSM',
-    companyName: 'Taiwan Semiconductor',
-    businessType: 'Semicap / Foundry Compounder',
-    currentPrice: 171.4,
-    valuationStatus: 'cheap',
+    companyName: 'Taiwan Semiconductor Manufacturing',
+    businessType: 'Capital-Intensive Semiconductor Infrastructure',
+    currentPrice: 338.31,
+    valuationStatus: 'fair',
     newsImpactStatus: 'improving',
     thesisStatus: 'intact',
     technicalEntryStatus: 'neutral',
-    actionState: 'watch for confirmation',
+    actionState: 'fairly valued',
     dashboardBucket: 'needs-review',
-    baseFairValue: 210,
-    bearFairValue: 184,
-    bullFairValue: 245,
-    discountToBase: -18.4,
+    baseFairValue: 375,
+    bearFairValue: 294,
+    bullFairValue: 446,
+    discountToBase: -9.8,
     summary:
-      'Base valuation still suggests upside, but entry timing has not fully stabilized.',
+      'Elite business quality remains intact, but the current price already underwrites a strong 2026 outcome.',
     lastUpdated: '2026-03-16',
     thesisStatement:
-      'Leadership in advanced nodes and packaging keeps TSM central to AI compute demand.',
+      'TSMC has become the bottleneck owner of leading-edge compute and advanced packaging, so it can compound earnings better than an old foundry framing suggests.',
     thesisBullets: [
-      'Advanced packaging demand remains supply-constrained in a constructive way.',
-      'Margin profile depends on execution against overseas fab dilution.',
-      'The market still discounts geopolitical and capital intensity risks aggressively.',
+      'TSMC owns the key manufacturing bottlenecks in advanced compute and packaging.',
+      'AI and HPC demand can support faster and longer earnings compounding than a classic foundry model implies.',
+      'The underwriting risk is whether overseas fab dilution and N2 ramp inefficiency offset that structural demand tailwind.',
     ],
     variantPerception:
-      'The market may be over-penalizing TSM for capex intensity while underestimating packaging bottlenecks as a durable support.',
+      "The market is no longer missing TSMC's quality, but it may still underestimate how infrastructure-like the earnings base has become while overestimating how much near-term multiple expansion is left.",
     valuationLens: {
       primary: 'Forward P/E',
-      crossCheck: 'Normalized FCF yield',
+      crossCheck: 'Trailing FCF yield',
       rationale:
-        'TSM behaves like a high-quality foundry compounder with strong cash generation, but capex intensity still warrants a cross-check.',
+        'TSMC is profitable, net-cash, and structurally differentiated, so forward ADR P/E is the cleanest anchor while elevated capex makes FCF yield only a cautious cross-check.',
     },
     currentValuationSnapshot: {
-      marketCap: '$890B',
-      enterpriseValue: '$845B',
-      multiples: ['19.8x forward P/E', '3.2% normalized FCF yield'],
-      balanceSheetNote: 'Net cash remains a support against cyclical downside.',
+      marketCap: '$1.75T',
+      enterpriseValue: '$1.69T',
+      multiples: ['31.7x trailing ADR P/E', '1.8% trailing FCF yield'],
+      balanceSheetNote:
+        'Net cash of about $65.6B cushions downside, but 2026 capex remains unusually elevated.',
     },
     newsToModel: [
       {
         event:
-          'Advanced packaging capacity expansion stayed sold out through next year.',
-        modelVariableChanged: 'Revenue mix and scenario probability',
+          '4Q25 results and 1Q26 guidance were stronger than a normal seasonal frame.',
+        modelVariableChanged: 'Revenue growth and base-case confidence',
         impact:
-          'Raises confidence in the base and bull cases because high-value AI packaging remains capacity-constrained.',
+          "Supports keeping 2026 revenue assumptions near management's full-year target instead of fading toward a low-20s growth setup.",
+        affectedScenario: 'base',
+      },
+      {
+        event:
+          'Management guided for close to 30% 2026 US-dollar revenue growth and said AI accelerators were already a high-teens share of 2025 revenue.',
+        modelVariableChanged: 'Scenario probability and multiple support',
+        impact:
+          'Confirms AI is already material, not just optional upside, and shifts probability toward base and bull.',
         affectedScenario: 'base / bull',
       },
       {
         event:
-          'Overseas fab ramp commentary points to near-term margin dilution.',
+          'Management warned that overseas fab ramp and N2 start-up costs will dilute gross margin by roughly 4% to 6% combined in early periods.',
         modelVariableChanged: 'Gross margin',
         impact:
-          'Keeps the bear case relevant and caps multiple expansion near term.',
+          'Caps base-case margin assumptions and keeps the bear case live even if revenue growth stays healthy.',
         affectedScenario: 'bear / base',
+      },
+      {
+        event:
+          'Management flagged tariff-policy and rising component-price risk in consumer-related and price-sensitive segments.',
+        modelVariableChanged: 'Demand mix and valuation multiple',
+        impact:
+          'Reduces confidence in non-AI demand resilience and limits how far the market can re-rate TSM as a pure AI winner.',
+        affectedScenario: 'bear / base',
+      },
+      {
+        event:
+          'February 2026 monthly revenue and January-February growth tracked at roughly +29.9% year over year.',
+        modelVariableChanged: 'Near-term revenue confirmation',
+        impact:
+          'Provides real-time confirmation that the near-30% growth framework is not just conference-call language.',
+        affectedScenario: 'base',
+      },
+      {
+        event:
+          'The board approved about $44.96B of capital appropriations and up to $30B of additional capital into TSMC Global.',
+        modelVariableChanged: 'Capex intensity and FCF quality',
+        impact:
+          'Reinforces multi-year demand confidence, but also weakens any near-term bull case built mainly on free cash flow.',
+        affectedScenario: 'base / bull',
       },
     ],
     scenarios: [
       {
         label: 'Bear',
         operatingAssumption:
-          'AI demand moderates and overseas dilution drags margins.',
-        valuationAssumption: '17x forward earnings',
-        fairValue: '$184',
+          '2026 revenue reaches about $149.4B, up roughly 22%, with net margin around 42.5%.',
+        valuationAssumption: 'ADR EPS about $12.24 on a 24x target P/E',
+        fairValue: '$294',
         whatMustBeTrue:
-          'Packaging constraints ease faster than expected and macro stays soft.',
+          'AI remains healthy, but consumer weakness, tariff friction, or worse-than-expected overseas and N2 dilution prevents margin leverage from matching revenue growth.',
       },
       {
         label: 'Base',
         operatingAssumption:
-          'AI-related demand stays robust with manageable overseas dilution.',
-        valuationAssumption: '19x forward earnings',
-        fairValue: '$210',
+          '2026 revenue reaches about $157.9B, up roughly 29%, with net margin around 44.0%.',
+        valuationAssumption: 'ADR EPS about $13.40 on a 28x target P/E',
+        fairValue: '$375',
         whatMustBeTrue:
-          'Management executes node and packaging ramps without major geopolitical disruption.',
+          "Management's near-30% revenue outlook broadly holds, advanced-node and CoWoS demand stay tight, and margin dilution stays manageable rather than thesis-changing.",
       },
       {
         label: 'Bull',
         operatingAssumption:
-          'AI demand and pricing power persist, while margins recover faster.',
-        valuationAssumption: '21x forward earnings',
-        fairValue: '$245',
+          '2026 revenue reaches about $164.0B, up roughly 34%, with net margin around 45.5%.',
+        valuationAssumption: 'ADR EPS about $14.39 on a 31x target P/E',
+        fairValue: '$446',
         whatMustBeTrue:
-          'Advanced nodes and packaging remain bottlenecked in a constructive way.',
+          "AI demand stays supply-constrained in a healthy way, packaging remains a bottleneck in TSMC's favor, and margin dilution proves milder than current guidance implies.",
       },
     ],
     currentPriceImplies:
-      'The current price implies the market is underwriting only moderate AI upside and a prolonged capex penalty.',
+      'At $338.31, the stock already underwrites something closer to base than to stress: roughly $13 of ADR EPS, about $153B of revenue, and around a 44% net margin if investors hold the name near 26x forward earnings.',
+    currentPriceImpliedFacts: [
+      {
+        label: 'Implied Forward Multiple',
+        value: 'About 26x forward earnings',
+      },
+      {
+        label: 'Implied ADR EPS',
+        value: 'About $13.0',
+      },
+      {
+        label: 'Implied Revenue',
+        value: 'About $153B',
+      },
+      {
+        label: 'Implied Net Margin',
+        value: 'About 44%',
+      },
+    ],
+    provisionalConclusion:
+      'TSM looks fair to slightly attractive, not cheap. The hidden support is that the business is more infrastructure-like than the old foundry label implies; the key risk is that investors treat that truth as a license to ignore capital intensity and margin dilution.',
+    technicalCommentary:
+      'The pullback has reduced heat, but the chart is not yet washed out enough to qualify as a favorable entry and has not confirmed a fresh momentum turn.',
+    technicalSignals: [
+      {
+        label: 'RSI (22)',
+        value: '47.3',
+      },
+      {
+        label: 'RSI EMA (12)',
+        value: '52.8',
+      },
+      {
+        label: 'Price Vs 50DMA',
+        value: '-2.0%',
+      },
+      {
+        label: 'Price Vs 200DMA',
+        value: '+20.3%',
+      },
+      {
+        label: '200-Day Mean Deviation',
+        value: '+1.2 standard deviations',
+      },
+    ],
     risks: [
-      'Overseas fab dilution persists longer than expected.',
-      'Geopolitical pressure disrupts customer ordering behavior.',
+      "Overseas fab ramp and N2 dilution prove worse than management's current warning bands.",
+      'Tariff friction or higher component costs weaken non-AI demand more than expected.',
+      'The premium multiple compresses if growth is merely good rather than exceptional.',
     ],
     catalysts: [
-      'Packaging supply remains constrained in a constructive way.',
-      'Node ramp execution supports a cleaner margin recovery.',
+      "Advanced packaging remains supply-constrained in TSMC's favor.",
+      'AI and HPC demand continue compounding faster than old foundry framing suggests.',
+      "Margin dilution lands closer to the low end of management's warning range.",
     ],
     monitorNext: [
-      'Quarterly revenue against management guidance',
-      'Advanced packaging utilization and pricing commentary',
-      'Margin dilution from overseas fabs',
+      'Whether 1Q26 revenue and gross margin land near the high end of guidance.',
+      'Whether monthly revenue keeps tracking near the 30% full-year growth frame.',
+      "Whether overseas fab ramp and N2 dilution land near the low or high end of management's warning bands.",
+      'Whether advanced packaging capacity stays tight in a healthy way or begins to loosen.',
+      'Whether tariff or component-cost pressure alters customer ordering behavior outside the AI buildout.',
     ],
     sourcesUsed: [
-      'Latest earnings release',
-      'Latest investor presentation',
-      'Recent management guidance commentary',
+      {
+        label: 'TSMC fundamentals',
+        url: 'https://investor.tsmc.com/english/fundamentals',
+      },
+      {
+        label: 'TSMC 2025 Q4 quarterly results page',
+        url: 'https://investor.tsmc.com/english/quarterly-results/2025/q4',
+      },
+      {
+        label: 'TSMC 4Q25 earnings release PDF',
+        url: 'https://pr.tsmc.com/system/files/newspdf/attachment/8794aecab1dd085ed6e7360aadaa060f2a270ab3/4Q25%20%28E%29_with%20guidance_final_wmn.pdf',
+      },
+      {
+        label: 'TSMC 4Q25 earnings call transcript PDF',
+        url: 'https://investor.tsmc.com/english/encrypt/files/encrypt_file/reports/2026-01/51d09df96cd89ac19d65af39032b038dc2896a24/TSMC%204Q25%20Transcript.pdf',
+      },
+      {
+        label: 'TSMC board resolutions, 2026-02-10',
+        url: 'https://pr.tsmc.com/english/news/3287',
+      },
+      {
+        label: 'TSMC January 2026 revenue report',
+        url: 'https://pr.tsmc.com/english/news/3284',
+      },
+      {
+        label: 'TSMC February 2026 revenue report',
+        url: 'https://pr.tsmc.com/english/news/3290',
+      },
+      {
+        label: 'Stooq TSM daily history',
+        url: 'https://stooq.com/q/d/l/?s=tsm.us&i=d',
+      },
     ],
     history: [
-      '2026-03-12: Fair value range widened after packaging capacity update.',
-      '2026-03-16: Technical status moved from stretched to neutral.',
+      '2026-03-16: Replaced placeholder TSM mock with point-in-time data from the archived professional report.',
+      '2026-03-16: Valuation status reset from cheap to fair after updating the price to $338.31 and the base fair value to $375.',
     ],
   },
   {
