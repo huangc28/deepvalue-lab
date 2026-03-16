@@ -526,98 +526,215 @@ export const mockStocks: StockDetail[] = [
     id: 'avgo',
     ticker: 'AVGO',
     companyName: 'Broadcom',
-    businessType: 'Capital-Intensive Hybrid',
-    currentPrice: 1412,
-    valuationStatus: 'fair',
+    businessType: 'Hybrid Mature Compounder',
+    currentPrice: 322.16,
+    valuationStatus: 'rich',
     newsImpactStatus: 'improving',
     thesisStatus: 'intact',
     technicalEntryStatus: 'neutral',
-    actionState: 'fairly valued',
-    dashboardBucket: 'needs-review',
-    baseFairValue: 1450,
-    bearFairValue: 1220,
-    bullFairValue: 1620,
-    discountToBase: -2.6,
+    actionState: 'trim zone',
+    dashboardBucket: 'at-risk',
+    baseFairValue: 250,
+    bearFairValue: 204,
+    bullFairValue: 334,
+    discountToBase: 28.9,
     summary:
-      'The AI story remains supportive, but the current price already discounts a solid portion of that upside.',
+      'The business remains high quality, but the current price is already underwriting something close to a bull-path outcome.',
     lastUpdated: '2026-03-16',
     thesisStatement:
-      'Broadcom is a hybrid semiconductor and infrastructure software business with meaningful AI optionality.',
+      'Broadcom is one of the few scaled platforms monetizing AI infrastructure from both the compute-network side and the enterprise software side.',
     thesisBullets: [
-      'Custom AI silicon remains the key support for a premium narrative.',
-      'Software resilience helps cushion cyclicality elsewhere in the portfolio.',
-      'Multiple expansion is vulnerable if AI growth broadens more slowly than expected.',
+      'AI semiconductor and networking demand remains the main driver of premium growth expectations.',
+      'Infrastructure software provides a steadier cash-flow floor than a pure semiconductor business would have.',
+      'The stock now requires continued high-margin AI execution plus software stability, not just a good business narrative.',
     ],
     variantPerception:
-      'The debate is less about quality and more about how much AI upside is already embedded in the multiple.',
+      'The market is right to award Broadcom a premium to traditional semis, but it may be overpaying for a narrow outcome where AI stays explosive, software remains stable, and the multiple stays unusually rich despite leverage.',
     valuationLens: {
-      primary: 'Forward EV/EBITDA',
-      crossCheck: 'Forward P/E',
+      primary: 'Forward non-GAAP P/E',
+      crossCheck: 'EV / adjusted EBITDA',
       rationale:
-        'Broadcom blends capital intensity, acquisition history, and cash generation, so EV-based valuation is the cleaner anchor.',
+        'Forward non-GAAP P/E is the cleanest primary lens because acquisition-related amortization heavily distorts GAAP earnings, while EV / adjusted EBITDA remains the right cross-check because leverage still matters.',
     },
     currentValuationSnapshot: {
-      marketCap: '$655B',
-      enterpriseValue: '$705B',
-      multiples: ['24.0x forward EV/EBITDA', '28.1x forward P/E'],
+      marketCap: '$1.52T',
+      enterpriseValue: '$1.58T',
+      multiples: [
+        '1.4% trailing FCF yield',
+        '38.2x EV / FY2025 adjusted EBITDA',
+      ],
       balanceSheetNote:
-        'Leverage remains relevant after large capital allocation moves.',
+        'Net debt is still about $63.1B, which supports the quality case less than a simple net-cash AI leader would.',
     },
     newsToModel: [
       {
-        event: 'Management reiterated strong custom AI demand.',
-        modelVariableChanged: 'Revenue growth and multiple support',
+        event:
+          'Q1 FY2026 revenue rose 25% year over year to $14.92B, with adjusted EBITDA margin at 68%.',
+        modelVariableChanged: 'Margin resilience and base-case confidence',
         impact:
-          'Supports the upper half of the base case, but does not yet justify a large step-up in fair value.',
+          'This supports the idea that Broadcom is converting AI excitement into real earnings and keeps the base case above a normal mature-chip framework.',
         affectedScenario: 'base / bull',
+      },
+      {
+        event:
+          'AI semiconductor revenue reached $4.1B in Q1, and management guided to $4.4B in Q2.',
+        modelVariableChanged:
+          'Semiconductor growth assumptions and scenario probability',
+        impact:
+          'This raises growth assumptions and improves the probability of the bull case, while also increasing reliance on hyperscaler AI capex.',
+        affectedScenario: 'base / bull',
+      },
+      {
+        event:
+          'Infrastructure software revenue reached $6.7B in Q1, up 47% year over year.',
+        modelVariableChanged: 'Cash-flow stability and multiple durability',
+        impact:
+          'This strengthens the stabilizer case for software and supports a premium multiple versus a pure semi name, but it should not be mistaken for AI-like growth across the whole company.',
+        affectedScenario: 'base',
+      },
+      {
+        event:
+          'Q2 FY2026 guidance called for about $15.0B of revenue and adjusted EBITDA margin of about 66%.',
+        modelVariableChanged: 'Near-term floor and multiple support',
+        impact:
+          'This gives Broadcom a solid near-term floor, but it is not strong enough by itself to justify the current stock price unless investors keep paying a very high multiple.',
+        affectedScenario: 'base',
+      },
+      {
+        event:
+          'Q1 cash from operations was $6.1B and free cash flow was $6.0B, while net debt remains about $63.1B.',
+        modelVariableChanged: 'Cash conversion and valuation ceiling',
+        impact:
+          'Cash generation remains strong enough to support the quality case and gradual deleveraging, but leverage still caps how far the multiple should stretch.',
+        affectedScenario: 'base / bear',
       },
     ],
     scenarios: [
       {
         label: 'Bear',
         operatingAssumption:
-          'AI custom silicon demand normalizes faster than expected.',
-        valuationAssumption: '20x forward EV/EBITDA',
-        fairValue: '$1220',
+          'FY2026 revenue of about $61.5B; adjusted EBITDA margin about 65.5%; non-GAAP EPS about $6.80.',
+        valuationAssumption: '30x forward non-GAAP P/E',
+        fairValue: '$204',
         whatMustBeTrue:
-          'AI revenue concentration proves less durable than the market hopes.',
+          'AI demand remains good but not exceptional, software behaves mainly as a stabilizer, and the market stops paying an AI-platform multiple to a leveraged hybrid.',
       },
       {
         label: 'Base',
         operatingAssumption:
-          'AI demand remains healthy and software stays resilient.',
-        valuationAssumption: '23x forward EV/EBITDA',
-        fairValue: '$1450',
-        whatMustBeTrue: 'Execution stays balanced across semi and software.',
+          'FY2026 revenue of about $64.0B; adjusted EBITDA margin about 66.5%; non-GAAP EPS about $7.35.',
+        valuationAssumption: '34x forward non-GAAP P/E',
+        fairValue: '$250',
+        whatMustBeTrue:
+          'AI networking and custom silicon keep expanding, software revenue remains durable, and investors continue to grant Broadcom a premium multiple well above a standard mature semi peer set.',
       },
       {
         label: 'Bull',
         operatingAssumption:
-          'AI programs scale faster and deserve a higher blended multiple.',
-        valuationAssumption: '25x forward EV/EBITDA',
-        fairValue: '$1620',
+          'FY2026 revenue of about $68.5B; adjusted EBITDA margin about 67.5%; non-GAAP EPS about $8.35.',
+        valuationAssumption: '40x forward non-GAAP P/E',
+        fairValue: '$334',
         whatMustBeTrue:
-          'Customer AI programs expand with less cyclicality than expected.',
+          'Hyperscaler AI spending stays very strong, Broadcom captures more wallet share in custom accelerators and networking, software retention holds, and the market remains willing to value the company like a durable AI platform despite leverage.',
       },
     ],
     currentPriceImplies:
-      'The market already prices in continued AI strength and a stable software contribution.',
+      'At $322.16, the market is not merely underwriting a good year. It is underwriting something close to a bull path: about $8.05 of EPS if investors keep paying 40x forward earnings, or about $9.48 of EPS if the multiple slips to 34x.',
+    currentPriceImpliedFacts: [
+      {
+        label: 'Implied forward multiple',
+        value: '40x on about $8.05 of EPS',
+      },
+      {
+        label: 'Implied EPS at 34x',
+        value: 'about $9.48',
+      },
+      {
+        label: 'Base-case EV / EBITDA',
+        value: 'about 37x',
+      },
+      {
+        label: 'What that means',
+        value:
+          'The stock already needs very strong AI-driven earnings growth or an unusually rich multiple to hold up.',
+      },
+    ],
+    provisionalConclusion:
+      'AVGO looks rich. The business is high quality, but the stock already prices in a great deal of good news and appears to require something near a bull-case combination of earnings and multiple support to work from here.',
+    technicalCommentary:
+      'The stock has corrected from recent highs, but it is not washed out enough to qualify as a clearly favorable entry, and valuation is too demanding to let a middling technical setup do the work.',
+    technicalSignals: [
+      {
+        label: 'RSI (22)',
+        value: '45.7',
+      },
+      {
+        label: 'RSI EMA (12)',
+        value: '48.3',
+      },
+      {
+        label: 'Price vs 50-day average',
+        value: '-3.1%',
+      },
+      {
+        label: 'Price vs 200-day average',
+        value: 'about flat',
+      },
+      {
+        label: '200-day z-score',
+        value: 'near 0',
+      },
+    ],
     risks: [
-      'AI revenue concentration proves less durable than expected.',
-      'Leverage and valuation leave limited room for disappointment.',
+      'Customer concentration around hyperscaler AI capex becomes a bigger issue if one or two large customers slow custom-accelerator deployment.',
+      'The market stops valuing Broadcom like a durable AI platform and falls back toward a still-premium, but more ordinary, hybrid multiple.',
+      'Leverage remains meaningful enough to cap valuation support relative to net-cash AI leaders.',
     ],
     catalysts: [
-      'Custom AI programs continue scaling faster than expected.',
-      'Software resilience keeps the blended earnings profile stable.',
+      'AI semiconductor revenue keeps stepping up beyond the $4.4B Q2 guide.',
+      'Infrastructure software remains durable after the VMware integration settles into a steadier base.',
+      'Net debt begins to fall more visibly, making a premium EV-based valuation easier to defend.',
     ],
     monitorNext: [
-      'Quarterly AI semiconductor revenue',
-      'Software renewal stability',
-      'Leverage trajectory',
+      'Whether AI semiconductor revenue keeps stepping up beyond the $4.4B Q2 guide.',
+      'Whether infrastructure software stays durable after the VMware integration settles into a steadier base.',
+      'Whether adjusted EBITDA margin can stay in the mid-to-high 60s as revenue mix evolves.',
+      'Whether net debt begins to fall more visibly.',
+      'Whether hyperscaler AI capex concentration becomes a bigger risk.',
     ],
-    sourcesUsed: ['Latest earnings release', 'Recent investor commentary'],
+    sourcesUsed: [
+      {
+        label: 'Broadcom Q1 FY2026 earnings release',
+        url: 'https://investors.broadcom.com/news-releases/news-release-details/broadcom-inc-announces-first-quarter-fiscal-year-2026-financial',
+      },
+      {
+        label: 'Broadcom Q1 FY2026 earnings call transcript PDF',
+        url: 'https://investors.broadcom.com/static-files/687f8f31-c645-43f8-bf60-b00e73e8954f',
+      },
+      {
+        label: 'Broadcom Q1 FY2026 10-Q filing',
+        url: 'https://www.sec.gov/Archives/edgar/data/1730168/000173016826000027/avgo-20260201.htm',
+      },
+      {
+        label: 'Broadcom Q4 FY2025 earnings call transcript PDF',
+        url: 'https://investors.broadcom.com/static-files/ca0fe149-c0cd-4748-8183-f897f42a64f8',
+      },
+      {
+        label: 'Nasdaq AVGO quote page',
+        url: 'https://www.nasdaq.com/market-activity/stocks/avgo',
+      },
+      {
+        label: 'Nasdaq AVGO quote API reference',
+        url: 'https://api.nasdaq.com/api/quote/AVGO/info?assetclass=stocks',
+      },
+      {
+        label: 'Yahoo Finance AVGO chart API',
+        url: 'https://query1.finance.yahoo.com/v8/finance/chart/AVGO?range=1y&interval=1d&includePrePost=false',
+      },
+    ],
     history: [
-      '2026-03-15: News impact moved to improving after AI demand update.',
+      '2026-03-16: Replaced the placeholder AVGO mock with the archived professional analysis report.',
+      '2026-03-16: Valuation status moved to rich after updating the point-in-time price to $322.16 and base fair value to $250.',
     ],
   },
   {
