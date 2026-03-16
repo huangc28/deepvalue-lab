@@ -114,6 +114,29 @@ The best places for this judgment are usually:
 - Provisional Conclusion
 - Thesis Status
 
+## Cross-Check Rule
+
+After choosing the primary valuation lens, add a secondary valuation cross-check when it improves decision usefulness.
+
+Examples:
+
+- mature compounder: primary `forward P/E`, cross-check `FCF yield`
+- high-growth platform: primary `forward EV/sales`, cross-check `forward P/E` or `FCF yield`
+- capital-intensive hybrid: primary `EV/EBIT` or `EV/EBITDA`, cross-check `P/E` or normalized `FCF`
+
+Rules:
+
+- the primary lens must still be chosen by business type
+- the cross-check must not replace the primary lens
+- use the cross-check to help investors judge how demanding the current valuation is from a second angle
+- if a common cross-check is not useful because of SBC, dilution, tax effects, capex distortion, cyclicality, or accounting noise, say so explicitly instead of forcing it into the report
+
+Preferred placement:
+
+- mention the cross-check in `Valuation Lens`
+- include the relevant number in `Current Valuation Snapshot`
+- use it only as supporting evidence in the conclusion, not as the main driver unless the business type truly fits it
+
 ## Technicals Rule
 
 Use technicals only as an execution layer after valuation is established.
