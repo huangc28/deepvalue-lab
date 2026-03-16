@@ -108,7 +108,6 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           <ResearchSection
             fileLabel="conclusion.md"
             title={m.detail.conclusionTitle}
-            description={text(stock.provisionalConclusion ?? stock.summary)}
           >
             <InfoList
               items={[
@@ -135,17 +134,13 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
               description={m.detail.businessClassificationDescription}
             >
               <InfoList
-                items={[
-                  [m.detail.businessType, text(stock.businessType)],
-                  [m.detail.whyItFits, text(stock.valuationLens.rationale)],
-                ]}
+                items={[[m.detail.businessType, text(stock.businessType)]]}
               />
             </ResearchSection>
 
             <ResearchSection
               fileLabel="variant-perception.md"
               title={m.detail.variantPerceptionTitle}
-              description={text(stock.variantPerception)}
             >
               <BulletList items={[stock.variantPerception]} />
             </ResearchSection>
@@ -250,7 +245,6 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           <ResearchSection
             fileLabel="pricing-context.md"
             title={m.detail.currentPriceImpliesTitle}
-            description={text(stock.currentPriceImplies)}
           >
             <div className="space-y-4">
               <BulletList items={[stock.currentPriceImplies]} />
@@ -270,10 +264,6 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
             <ResearchSection
               fileLabel="thesis-status.md"
               title={m.detail.thesisStatusTitle}
-              description={m.detail.thesisStatusDescription.replace(
-                '{status}',
-                m.status.thesisValue[stock.thesisStatus],
-              )}
             >
               <InfoList
                 items={[
@@ -443,7 +433,7 @@ function ResearchSection({
 }: {
   fileLabel: string
   title: string
-  description: string
+  description?: string
   children: ReactNode
 }) {
   return (
@@ -455,9 +445,11 @@ function ResearchSection({
           <h3 className="mt-2 font-serif text-[1.95rem] tracking-[-0.04em] text-[var(--ink-primary)]">
             {title}
           </h3>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--ink-secondary)]">
-            {description}
-          </p>
+          {description ? (
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--ink-secondary)]">
+              {description}
+            </p>
+          ) : null}
         </div>
 
         {children}
