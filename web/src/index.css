@@ -1,30 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap');
 @import 'tailwindcss';
 
 :root {
-  --surface-canvas: #09090a;
-  --surface-panel: #0f1012;
-  --surface-panel-alt: #15161a;
-  --surface-muted: #141417;
-  --surface-chip: #17181c;
-  --line-subtle: rgba(219, 214, 197, 0.12);
-  --line-strong: rgba(219, 214, 197, 0.2);
-  --ink-primary: #f1ede2;
-  --ink-secondary: #c7c0af;
-  --ink-muted: #8f8a7e;
-  --ink-faint: #6a655d;
-  --accent-copper: #d39b7b;
-  --accent-sage: #88a58e;
-  --accent-amber: #c69b62;
-  --signal-positive: #5c8a68;
-  --signal-positive-soft: #a7c7ae;
-  --signal-watch: #ab7b47;
-  --signal-watch-soft: #d7af79;
-  --signal-danger: #9b5b4c;
-  --signal-danger-soft: #d4a293;
+  --surface-canvas: #0d1117;
+  --surface-panel: #161b22;
+  --surface-panel-alt: #11161d;
+  --surface-muted: #0f141b;
+  --surface-chip: #1c2128;
+  --line-subtle: rgba(240, 246, 252, 0.08);
+  --line-strong: rgba(240, 246, 252, 0.16);
+  --ink-primary: #f0f6fc;
+  --ink-secondary: #c9d1d9;
+  --ink-muted: #8b949e;
+  --ink-faint: #6e7681;
+  --accent-copper: #58a6ff;
+  --accent-sage: #7ee787;
+  --accent-amber: #d2a8ff;
+  --signal-positive: #2ea043;
+  --signal-positive-soft: #7ee787;
+  --signal-watch: #9e6a03;
+  --signal-watch-soft: #e3b341;
+  --signal-danger: #da3633;
+  --signal-danger-soft: #ffa198;
 }
 
 html {
-  font-family: 'IBM Plex Sans', 'Inter', 'Segoe UI', sans-serif;
+  font-family:
+    'JetBrains Mono', 'SFMono-Regular', 'SF Mono', 'Cascadia Code',
+    'Roboto Mono', ui-monospace, monospace;
   background: var(--surface-canvas);
   color: var(--ink-primary);
   font-synthesis: none;
@@ -36,18 +39,7 @@ html {
 body {
   margin: 0;
   min-width: 320px;
-  background:
-    radial-gradient(
-      circle at top center,
-      rgba(211, 155, 123, 0.16),
-      transparent 24%
-    ),
-    radial-gradient(
-      circle at 20% 20%,
-      rgba(136, 165, 142, 0.08),
-      transparent 28%
-    ),
-    linear-gradient(180deg, #0a0a0b 0%, #09090a 100%);
+  background: linear-gradient(180deg, #0d1117 0%, #0b1016 100%);
   background-attachment: fixed;
 }
 
@@ -71,24 +63,8 @@ select {
   min-height: 100vh;
 }
 
-.grid-shell {
-  position: relative;
-}
-
-.grid-shell::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
-  background-size: 28px 28px;
-  mask-image: radial-gradient(circle at center, black 45%, transparent 100%);
-  opacity: 0.34;
-}
-
 .font-serif {
   font-family:
-    'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', 'Georgia', serif;
+    'JetBrains Mono', 'SFMono-Regular', 'SF Mono', 'Cascadia Code',
+    'Roboto Mono', ui-monospace, monospace;
 }

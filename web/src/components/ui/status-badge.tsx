@@ -44,14 +44,14 @@ const actionTone: Record<ActionState, StatusTone> = {
 
 const toneClass: Record<StatusTone, string> = {
   positive:
-    'border-[color:rgba(105,154,116,0.35)] bg-[color:rgba(82,128,92,0.14)] text-[var(--signal-positive-soft)]',
+    'border-[color:rgba(46,160,67,0.36)] bg-[color:rgba(46,160,67,0.14)] text-[var(--signal-positive-soft)]',
   neutral:
-    'border-[color:rgba(132,142,151,0.26)] bg-[color:rgba(104,112,122,0.14)] text-[var(--ink-secondary)]',
+    'border-[color:rgba(110,118,129,0.34)] bg-[color:rgba(110,118,129,0.14)] text-[var(--ink-secondary)]',
   watch:
-    'border-[color:rgba(190,145,82,0.35)] bg-[color:rgba(165,122,62,0.16)] text-[var(--signal-watch-soft)]',
-  risk: 'border-[color:rgba(182,105,86,0.34)] bg-[color:rgba(143,71,54,0.16)] text-[var(--signal-danger-soft)]',
+    'border-[color:rgba(227,179,65,0.34)] bg-[color:rgba(158,106,3,0.16)] text-[var(--signal-watch-soft)]',
+  risk: 'border-[color:rgba(218,54,51,0.32)] bg-[color:rgba(218,54,51,0.14)] text-[var(--signal-danger-soft)]',
   accent:
-    'border-[color:rgba(193,136,104,0.34)] bg-[color:rgba(193,136,104,0.14)] text-[var(--accent-copper)]',
+    'border-[color:rgba(88,166,255,0.28)] bg-[color:rgba(56,139,253,0.14)] text-[var(--accent-copper)]',
 }
 
 export function ValuationBadge({ value }: { value: ValuationStatus }) {

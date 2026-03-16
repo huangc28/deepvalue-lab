@@ -43,7 +43,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
 
   return (
     <div className="flex flex-col gap-8">
-      <Panel className="overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(211,155,123,0.12),_transparent_25%),linear-gradient(135deg,_rgba(15,16,18,1),_rgba(9,9,10,1))]">
+      <Panel className="overflow-hidden bg-[linear-gradient(135deg,_rgba(22,27,34,1),_rgba(13,17,23,1))]">
         <PanelChrome
           label={`${stock.ticker.toLowerCase()}.analysis`}
           status={stock.lastUpdated}
@@ -58,13 +58,13 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
                 ← open /dashboard
               </Link>
               <TerminalLabel>{stock.businessType}</TerminalLabel>
-              <h2 className="mt-3 font-serif text-6xl leading-[0.95] tracking-[-0.05em] text-[var(--ink-primary)]">
+              <h2 className="mt-3 font-serif text-[3.4rem] leading-[0.96] tracking-[-0.05em] text-[var(--ink-primary)] md:text-[4.2rem]">
                 {stock.companyName}
               </h2>
               <p className="mt-3 font-mono text-sm uppercase tracking-[0.16em] text-[var(--ink-muted)]">
                 {stock.ticker} · updated {stock.lastUpdated}
               </p>
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--ink-secondary)]">
+              <p className="mt-6 max-w-2xl text-base leading-8 text-[var(--ink-secondary)]">
                 {stock.summary}
               </p>
             </div>
@@ -394,7 +394,7 @@ function ResearchSection({
       <PanelBody className="space-y-5">
         <div>
           <TerminalLabel>{fileLabel}</TerminalLabel>
-          <h3 className="mt-2 font-serif text-4xl tracking-[-0.04em] text-[var(--ink-primary)]">
+          <h3 className="mt-2 font-serif text-[1.95rem] tracking-[-0.04em] text-[var(--ink-primary)]">
             {title}
           </h3>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--ink-secondary)]">

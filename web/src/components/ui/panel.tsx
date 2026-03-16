@@ -9,7 +9,7 @@ export function Panel({
   return (
     <section
       className={cx(
-        'rounded-[1.6rem] border border-[var(--line-subtle)] bg-[var(--surface-panel)] shadow-[0_30px_80px_rgba(0,0,0,0.22)]',
+        'rounded-[1.6rem] border border-[var(--line-subtle)] bg-[var(--surface-panel)] shadow-[0_18px_48px_rgba(1,4,9,0.24)]',
         className,
       )}
       {...props}
@@ -67,11 +67,11 @@ export function PanelLead({
     <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
       <div className="max-w-3xl">
         {label ? (
-          <p className="font-mono text-[0.74rem] uppercase tracking-[0.22em] text-[var(--accent-copper)]">
+          <p className="font-mono text-[0.72rem] uppercase tracking-[0.2em] text-[var(--accent-copper)]">
             {label}
           </p>
         ) : null}
-        <h2 className="mt-2 font-serif text-4xl leading-[1.02] tracking-[-0.04em] text-[var(--ink-primary)]">
+        <h2 className="mt-2 font-serif text-[2.35rem] leading-[1.08] tracking-[-0.04em] text-[var(--ink-primary)]">
           {title}
         </h2>
         {description ? (

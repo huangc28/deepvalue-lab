@@ -6,7 +6,7 @@ export function ScenarioCard({ scenario }: { scenario: Scenario }) {
     <Panel className="h-full overflow-hidden">
       <PanelChrome label={`${scenario.label.toLowerCase()}.scenario`} />
       <PanelBody className="space-y-4">
-        <p className="font-serif text-3xl tracking-[-0.04em] text-[var(--ink-primary)]">
+        <p className="font-serif text-[1.9rem] tracking-[-0.04em] text-[var(--ink-primary)]">
           {scenario.label}
         </p>
         <ScenarioField

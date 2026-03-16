@@ -24,7 +24,7 @@ export function CompanyCard({ stock }: { stock: StockSummary }) {
         <PanelBody className="space-y-6">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="font-serif text-[2rem] leading-none tracking-[-0.04em] text-[var(--ink-primary)]">
+              <p className="font-serif text-[1.55rem] leading-[1.1] tracking-[-0.04em] text-[var(--ink-primary)]">
                 {stock.companyName}
               </p>
               <p className="mt-2 font-mono text-[0.78rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">

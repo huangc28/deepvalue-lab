@@ -63,7 +63,7 @@ export function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <Panel className="overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(211,155,123,0.18),_transparent_22%),linear-gradient(135deg,_rgba(15,16,18,1),_rgba(9,9,10,1))]">
+      <Panel className="overflow-hidden bg-[linear-gradient(135deg,_rgba(22,27,34,1),_rgba(13,17,23,1))]">
         <PanelChrome
           label="main.ts"
           status="decision-support research cockpit"
@@ -77,7 +77,7 @@ export function DashboardPage() {
                 DeepValue Research Board
               </>
             }
-            description="Track cheap versus fair value, thesis integrity, news-to-model changes, and entry timing in one dark research workspace. This mockup now follows the DeepValue Terminal Editorial direction."
+            description="Track cheap versus fair value, thesis integrity, news-to-model changes, and entry timing in one calm dark workspace tuned for long research reading."
             aside={<AccentBadge label="cards default · table secondary" />}
           />
 
@@ -126,7 +126,7 @@ export function DashboardPage() {
             <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
               <div>
                 <TerminalLabel>browse.tsx</TerminalLabel>
-                <h3 className="mt-2 font-serif text-4xl tracking-[-0.04em] text-[var(--ink-primary)]">
+                <h3 className="mt-2 font-serif text-[2rem] tracking-[-0.04em] text-[var(--ink-primary)]">
                   Browse the watchlist like a live research file.
                 </h3>
               </div>
@@ -144,7 +144,7 @@ export function DashboardPage() {
                       }
                       className={
                         bucketFilter === filter.value
-                          ? 'rounded-full border border-[color:rgba(211,155,123,0.28)] bg-[color:rgba(211,155,123,0.12)] px-4 py-2 font-mono text-[0.72rem] uppercase tracking-[0.16em] text-[var(--ink-primary)]'
+                          ? 'rounded-full border border-[color:rgba(88,166,255,0.3)] bg-[color:rgba(56,139,253,0.16)] px-4 py-2 font-mono text-[0.72rem] uppercase tracking-[0.16em] text-[var(--ink-primary)]'
                           : 'rounded-full border border-[var(--line-subtle)] bg-[var(--surface-chip)] px-4 py-2 font-mono text-[0.72rem] uppercase tracking-[0.16em] text-[var(--ink-muted)] transition hover:border-[var(--line-strong)] hover:text-[var(--ink-primary)]'
                       }
                     >
@@ -249,11 +249,11 @@ export function DashboardPage() {
           <Panel className="overflow-hidden">
             <PanelChrome label="view-rules.md" status="style direction" />
             <PanelBody className="space-y-4">
-              <TerminalLabel>design ratio</TerminalLabel>
+              <TerminalLabel>reading system</TerminalLabel>
               <ul className="space-y-3 text-sm leading-7 text-[var(--ink-secondary)]">
-                <li>70% research cockpit</li>
-                <li>20% editor / code metaphor</li>
-                <li>10% terminal flavor</li>
+                <li>Mono-first typography with calmer size steps.</li>
+                <li>Higher-contrast text and cooler status colors.</li>
+                <li>No background grid or decorative noise.</li>
               </ul>
             </PanelBody>
           </Panel>
@@ -308,7 +308,7 @@ function ViewToggleButton({
       onClick={onClick}
       className={
         isActive
-          ? 'rounded-full bg-[color:rgba(211,155,123,0.16)] px-4 py-2 font-mono text-[0.72rem] uppercase tracking-[0.16em] text-[var(--ink-primary)]'
+          ? 'rounded-full bg-[color:rgba(56,139,253,0.18)] px-4 py-2 font-mono text-[0.72rem] uppercase tracking-[0.16em] text-[var(--ink-primary)]'
           : 'rounded-full px-4 py-2 font-mono text-[0.72rem] uppercase tracking-[0.16em] text-[var(--ink-muted)] transition hover:text-[var(--ink-primary)]'
       }
     >

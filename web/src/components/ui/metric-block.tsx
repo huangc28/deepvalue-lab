@@ -21,7 +21,7 @@ export function MetricBlock({
       <p className="font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--ink-muted)]">
         {label}
       </p>
-      <p className="mt-3 font-mono text-2xl font-semibold tracking-[-0.03em] text-[var(--ink-primary)]">
+      <p className="mt-3 font-mono text-[1.55rem] font-semibold tracking-[-0.03em] text-[var(--ink-primary)]">
         {value}
       </p>
       {detail ? (

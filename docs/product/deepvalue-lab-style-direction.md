@@ -2,7 +2,7 @@
 
 Purpose:
 - define the visual and tonal direction for the DeepValue Lab web app
-- translate the reference style from SkillsMP into a DeepValue-appropriate product language
+- translate external style references into a DeepValue-appropriate product language
 - give future designers and AI agents a stable style context for implementation
 
 Date:
@@ -13,6 +13,28 @@ Status:
 
 Reference:
 - SkillsMP homepage style: [https://skillsmp.com/](https://skillsmp.com/)
+- Daily Dip homepage style: [https://www.daily-dip.com/](https://www.daily-dip.com/)
+
+## Current Direction Update
+
+The first style pass borrowed too much from the SkillsMP interpretation:
+- warmer accents
+- a serif-heavy heading system
+- a subtle background grid
+
+After visual review, the current preferred direction is:
+- keep the panel-based research cockpit structure
+- keep the code/file labeling language in moderation
+- shift typography and readability closer to Daily Dip
+
+This means the current production direction is:
+- mono-first typography
+- calmer type scale
+- cooler GitHub-dark-like palette
+- higher text contrast
+- no background grid
+
+If old notes conflict with this update, follow this update.
 
 ## Core Style Decision
 
@@ -25,15 +47,18 @@ The style direction should be:
 - research-first
 - structured rather than flashy
 
-The chosen direction is:
+The chosen direction is still:
 
 `DeepValue Terminal Editorial`
 
-This means:
-- use some terminal and code-editor visual language
+But the current visual translation should be closer to Daily Dip than to SkillsMP.
+
+This now means:
+- use restrained editor and code-file language
 - keep the interface productized and readable
 - preserve a strong research-tool feeling
-- avoid turning the experience into terminal cosplay
+- avoid literal terminal cosplay
+- bias toward readability over stylistic cleverness
 
 ## What We Are Borrowing From SkillsMP
 
@@ -92,14 +117,15 @@ This is a high-contrast interface, but not a loud one.
 
 ### Background
 
-The default app background should be dark and layered.
+The default app background should be dark, flat, and calm.
 
 Recommended treatment:
-- near-black or charcoal base
-- subtle grid or blueprint pattern
-- very low-contrast atmospheric gradient or glow in selected hero areas
+- near-black or GitHub-dark-like base
+- no grid or blueprint pattern
+- no decorative texture unless it clearly improves hierarchy
+- optional very restrained tonal gradient in hero areas only
 
-The background should help the product feel like an analytical canvas, not a flat admin panel.
+The background should reduce noise and improve long-session readability.
 
 ### Panels
 
@@ -125,14 +151,15 @@ Typography should carry much of the product character.
 
 ### Type System Split
 
-Use a two-family system:
+Use a mono-first system:
 - monospace for labels, metrics, metadata, section names, badges, compact controls
-- serif or refined sans for major headings and analytical summaries
+- monospace can also be used for major headings when handled with calmer size steps
+- do not rely on serif contrast as the main source of personality
 
 Recommended role split:
-- headings: elegant serif or serious display face
-- interface labels and data: clean monospace
-- body copy: readable sans or restrained monospace depending on density
+- headings: larger, calmer monospace
+- interface labels and data: compact monospace
+- body copy: readable monospace with enough line-height
 
 ### Typography Intent
 
@@ -141,13 +168,7 @@ Monospace should signal:
 - exactness
 - analytical discipline
 
-Serif or display headings should signal:
-- editorial confidence
-- importance
-- intellectual weight
-
-This contrast is important.
-It keeps the product from feeling mechanically flat.
+The product should feel disciplined through hierarchy, spacing, and contrast rather than through a serif display face.
 
 ## Color System
 
@@ -156,30 +177,23 @@ The palette should be restrained and low-noise.
 ### Base Palette
 
 Recommended base colors:
-- charcoal / black background
-- warm dark gray surfaces
-- off-white text
+- charcoal / GitHub-dark-like background
+- cooler dark gray surfaces
+- high-contrast off-white text
 - muted secondary grays
 
 ### Accent Palette
 
-Accents should lean warm and muted rather than neon.
+Accents should be cooler and clearer than the first pass.
 
 Suggested accent families:
-- copper
-- dusty amber
-- muted sage
-- warm sand
-- soft terracotta
+- muted blue for navigation, labels, and active controls
+- disciplined green for constructive states
+- amber for watch states
+- restrained red for risk states
+- optional purple for secondary accent use only
 
-These accents should feel like:
-- highlighted notes
-- analytical emphasis
-- understated signal
-
-Not:
-- trading heatmap colors
-- gaming UI glows
+These accents should feel like GitHub-dark-style UI signals, not like trading heatmaps.
 
 ### Semantic Color Rules
 
