@@ -42,8 +42,9 @@ Follow this workflow in order:
 9. Determine thesis status.
 10. Determine technical entry status.
 11. Write the report using the required contract.
-12. Perform a completion check before finishing.
-13. Perform a benchmark quality check before finishing.
+12. Generate the structured `StockDetail` data object for the frontend.
+13. Perform a completion check before finishing.
+14. Perform a benchmark quality check before finishing.
 
 ## NotebookLM Rule
 
@@ -159,6 +160,94 @@ Technical entry status must be one of:
 - neutral
 - stretched
 
+## Structured Data Generation
+
+After writing the markdown report, generate a `StockDetail` object that the frontend can consume directly.
+
+The type definition lives at `web/src/types/stocks.ts`. The `LocalizedText` type is `string | Record<'en' | 'zh-TW', string>`.
+
+### Report-to-StockDetail Field Mapping
+
+**StockSummary fields (always required):**
+
+| Field | Source |
+|---|---|
+| `id` | lowercase ticker |
+| `ticker` | ticker symbol |
+| `companyName` | full company name |
+| `businessType` | from Business Classification section |
+| `currentPrice` | verified current price (number) |
+| `valuationStatus` | derived: `'cheap'` if price < bear fair value × 1.1, `'rich'` if price > bull fair value × 0.9, else `'fair'` |
+| `newsImpactStatus` | net direction of news-to-model items: `'improving'` / `'unchanged'` / `'deteriorating'` |
+| `thesisStatus` | from Thesis Status section: `'intact'` / `'watch'` / `'broken'` |
+| `technicalEntryStatus` | from Technical Entry Status section: `'favorable'` / `'neutral'` / `'stretched'` |
+| `actionState` | derived from valuation + thesis + technical status combination |
+| `dashboardBucket` | derived from actionState |
+| `baseFairValue` | base case fair value (number) |
+| `bearFairValue` | bear case fair value (number) |
+| `bullFairValue` | bull case fair value (number) |
+| `discountToBase` | computed: `((currentPrice - baseFairValue) / baseFairValue) * 100` |
+| `summary` | 1-2 sentence decision summary from Provisional Conclusion |
+| `lastUpdated` | analysis date (YYYY-MM-DD) |
+
+**StockDetail fields:**
+
+| Field | Source |
+|---|---|
+| `thesisStatement` | from Thesis section — the core thesis sentence |
+| `thesisBullets` | from Thesis section — supporting bullet points |
+| `variantPerception` | from Variant Perception section |
+| `valuationLens` | `{ primary, crossCheck, rationale }` from Valuation Lens section |
+| `currentValuationSnapshot` | `{ marketCap?, enterpriseValue?, multiples[], balanceSheetNote? }` from Current Valuation Snapshot |
+| `newsToModel` | array of `{ event, modelVariableChanged, impact, affectedScenario }` from News-To-Model section |
+| `scenarios` | array of 3 `{ label, keyMetrics?: { revenue, eps, targetPE }, operatingAssumption, valuationAssumption, fairValue, whatMustBeTrue }` |
+| `currentPriceImplies` | full paragraph from What The Current Price Implies |
+| `currentPriceImpliesBrief` | single sentence (max ~25 words) summary for hero card |
+| `currentPriceImpliedFacts` | array of `{ label, value }` — implied EPS, revenue, margin, multiple facts |
+| `provisionalConclusion` | from Provisional Conclusion section |
+| `technicalCommentary` | prose summary from Technical Entry Status |
+| `technicalSignals` | array of `{ label, value }` — RSI, EMA, support/resistance levels |
+| `risks` | from risk items in the report |
+| `catalysts` | from catalyst items in the report |
+| `monitorNext` | from What To Monitor Next section |
+| `sourcesUsed` | array of `string` or `{ label, url? }` from Sources Used |
+| `history` | array with at least one entry for this analysis date |
+
+### Scenario Key Metrics Extraction
+
+Extract from Bear/Base/Bull tables in the report:
+
+| Field | Source in report |
+|---|---|
+| `keyMetrics.revenue` | FY revenue row — format as short token like `$46.5B` |
+| `keyMetrics.eps` | Non-GAAP EPS row — format like `$6.56` |
+| `keyMetrics.targetPE` | Target P/E row — format like `28x` |
+
+### Computed Fields
+
+These fields are calculated during transform, not pulled from report text:
+
+- `discountToBase`: `((currentPrice - baseFairValue) / baseFairValue) * 100`
+- `dashboardBucket`: derived from `actionState`
+- Upside/downside percentages: derived from `currentPrice` vs bull/bear fair values
+
+### Output Location
+
+- Write the `StockDetail` object as a new entry or update in `web/src/data/mock-stocks.ts`
+- If the stock already exists in the array, replace its entry
+- If new, append to the `mockStocks` array
+- English-only content uses plain strings; bilingual stocks (like TSM) use `{ en, 'zh-TW' }` objects
+- Default to English-only unless the user requests bilingual content
+
+### Validation
+
+After generating the structured data:
+
+- Verify the object satisfies the `StockDetail` interface (all required fields present)
+- Verify fair values in scenarios match the summary-level `bearFairValue` / `baseFairValue` / `bullFairValue`
+- Verify `discountToBase` is correctly computed
+- Run `cd web && pnpm lint && pnpm build` to confirm type safety
+
 ## Guardrails
 
 Do not:
@@ -195,6 +284,11 @@ Before finishing, verify that the report includes:
 - sources
 
 If any of these are missing, keep working.
+
+Also verify that:
+
+- the `StockDetail` object was generated and written to `mock-stocks.ts`
+- `pnpm lint` and `pnpm build` pass after the structured data update
 
 Then check whether the report meets the DeepValue Lab benchmark quality bar.
 

@@ -1323,6 +1323,217 @@ export const mockStocks: StockDetail[] = [
     ],
     history: ['2026-03-16: News impact downgraded to deteriorating.'],
   },
+  {
+    id: 'pltr',
+    ticker: 'PLTR',
+    companyName: 'Palantir Technologies',
+    businessType: 'High-Growth AI Infrastructure Platform',
+    currentPrice: 152.25,
+    valuationStatus: 'rich',
+    newsImpactStatus: 'improving',
+    thesisStatus: 'intact',
+    technicalEntryStatus: 'stretched',
+    actionState: 'trim zone',
+    dashboardBucket: 'needs-review',
+    baseFairValue: 94,
+    bearFairValue: 53,
+    bullFairValue: 157,
+    discountToBase: 61.97,
+    summary:
+      'Exceptional AI platform business priced for perfection — bull case offers no upside from current levels, base case implies ~38% downside.',
+    lastUpdated: '2026-03-17',
+    thesisStatement:
+      'Palantir has become the de facto AI operating system for US government and an increasingly dominant platform for enterprise AI deployment, but at ~$365B market cap the price requires near-bull execution to avoid multiple compression.',
+    thesisBullets: [
+      'AIP Bootcamp model (75% conversion rate) is structurally changing the unit economics of enterprise AI adoption.',
+      'US commercial revenue growing 137% Y/Y is the highest-quality acceleration signal in enterprise software.',
+      'Government exposure is a net positive in the DOGE era — Palantir is the efficiency enabler, not the cost center being cut.',
+      'Key underwriting risk: the current price already requires sustained 40-50%+ growth for multiple years with stable margins.',
+    ],
+    variantPerception:
+      'The market may be underestimating the AIP Bootcamp conversion flywheel as a structural (not cyclical) advantage, and overestimating the sustainability of 60%+ growth rates from a $7B+ revenue base. If US commercial growth decelerates from 137% to 60-70% by late 2026, the multiple will compress quickly.',
+    valuationLens: {
+      primary: 'Forward EV/Sales on FY2026 guided revenue, validated by forward P/E on adjusted EPS',
+      crossCheck: 'FCF yield on estimated FY2026 free cash flow',
+      rationale:
+        'GAAP EPS ($0.63 FY2025) is distorted by $1.65B SBC (~37% of revenue), making P/E alone unreliable. EV/Sales captures the growth story while FCF yield grounds valuation in cash generation reality.',
+    },
+    currentValuationSnapshot: {
+      marketCap: '~$365B',
+      enterpriseValue: '~$363B',
+      multiples: [
+        '~238x trailing GAAP P/E (distorted by SBC)',
+        '~127x forward adj. P/E on FY2026E',
+        '~50x forward EV/Sales on FY2026 guidance ($7.19B)',
+        '~1.0% FCF yield on FY2026E adj. FCF (~$3.6B)',
+        'Rule of 40: 127% (Q4 2025)',
+      ],
+      balanceSheetNote:
+        'Strong balance sheet with $2.1B+ FCF in FY2025, minimal debt. Cash-generative business with no leverage concern.',
+    },
+    newsToModel: [
+      {
+        event:
+          'Q4 2025 revenue $1.41B (+70% Y/Y) crushed estimates; FY2026 guided $7.19B (+61%) vs. $6.22B consensus',
+        modelVariableChanged: 'Revenue trajectory and growth visibility',
+        impact:
+          'Dramatically raises near-term revenue expectations and pushes bull case probability higher',
+        affectedScenario: 'Base / Bull',
+      },
+      {
+        event:
+          'US commercial revenue +137% Y/Y to $507M; AIP Bootcamp 75% conversion rate',
+        modelVariableChanged: 'Commercial growth rate and platform stickiness',
+        impact:
+          'Highest-quality revenue acceleration signal — proves AIP flywheel is working at unprecedented enterprise conversion speed',
+        affectedScenario: 'Bull',
+      },
+      {
+        event:
+          'Pentagon budget cut order: 8% ($50B) annual reduction over 5 years; DOGE efficiency drive',
+        modelVariableChanged: 'Government revenue risk and multiple',
+        impact:
+          'Headline risk but Palantir tools are positioned as the DOGE efficiency enabler. Net impact likely neutral-to-positive for Palantir specifically',
+        affectedScenario: 'Bear / Base',
+      },
+      {
+        event:
+          '$1B DHS blanket purchase agreement, $448M Navy ShipOS, $240M DoD contracts won',
+        modelVariableChanged: 'Government revenue backlog and visibility',
+        impact:
+          'Large new wins directly offset Pentagon cut concerns — Palantir gaining share of a potentially shrinking pie',
+        affectedScenario: 'Base',
+      },
+      {
+        event:
+          'SBC of $1.65B in FY2025 (+29% Y/Y); diluted shares growing ~5% annually',
+        modelVariableChanged: 'Per-share earnings dilution',
+        impact:
+          'At ~37% of revenue, SBC remains a real drag on per-share economics and reduces FCF-per-share growth relative to revenue growth',
+        affectedScenario: 'Bear / Base',
+      },
+    ],
+    scenarios: [
+      {
+        label: 'Bear',
+        keyMetrics: { revenue: '$9.4B', eps: '$1.17', targetPE: '45x' },
+        operatingAssumption:
+          'FY2026 revenue $7.2B (low-end guidance), FY2027 growth decelerates to 30% → $9.4B. Adjusted operating margin gives back to 40%. SBC remains ~30% of revenue.',
+        valuationAssumption: '45x forward P/E on FY2027E adjusted EPS of $1.17',
+        fairValue: '$53',
+        whatMustBeTrue:
+          'US commercial growth decelerates sharply to sub-50% by H2 2026, government cuts hit Palantir directly, AIP conversion rates decline, and market re-rates from growth to sustainable economics.',
+      },
+      {
+        label: 'Base',
+        keyMetrics: { revenue: '$10.1B', eps: '$1.45', targetPE: '65x' },
+        operatingAssumption:
+          'FY2026 revenue $7.19B (guidance midpoint, +61%), FY2027 growth 40% → $10.1B. Adjusted operating margin 45%, adjusted net margin ~37%. SBC declines to ~25% of revenue.',
+        valuationAssumption:
+          '65x forward P/E on FY2027E adjusted EPS of $1.45 — premium justified by 40%+ growth, 80%+ gross margins, and AI platform lock-in',
+        fairValue: '$94',
+        whatMustBeTrue:
+          'US commercial continues 70-90% growth in FY2026, government revenue grows 30-40%, AIP adoption broadens, and market sustains premium multiple for AI platform leadership.',
+      },
+      {
+        label: 'Bull',
+        keyMetrics: { revenue: '$11.3B', eps: '$1.85', targetPE: '85x' },
+        operatingAssumption:
+          'FY2026 revenue $7.5B (beats guidance), FY2027 $11.3B (+50%) as AIP becomes enterprise standard. Adjusted operating margin 50%, adjusted net margin ~42%. International begins contributing.',
+        valuationAssumption:
+          '85x forward P/E on FY2027E adjusted EPS of $1.85 — dominant AI OS with government moat and multi-year 40%+ growth runway',
+        fairValue: '$157',
+        whatMustBeTrue:
+          'AIP becomes the default enterprise AI deployment platform, government wins accelerate as primary DOGE vendor, international unlocks second growth vector, and no meaningful hyperscaler competition emerges.',
+      },
+    ],
+    currentPriceImplies:
+      'At $152.25, the market is pricing ~50x FY2026 guided EV/Sales and ~127x FY2026E adjusted EPS. Working backward, a 65x forward multiple implies the market needs FY2027 adjusted EPS of ~$2.34, requiring ~$16B revenue at 37% net margin — 125% growth from FY2026 guidance, far above even the bull case. The stock sits at the very top of the bull case ($157) with zero margin of safety. The market is underwriting sustained hyper-growth, expanding margins, durable government positioning, and no meaningful competition for multiple years.',
+    currentPriceImpliesBrief:
+      'Market prices in near-bull execution with no margin of safety — base case implies ~38% downside.',
+    currentPriceImpliedFacts: [
+      {
+        label: 'Implied FY2027 Adj. EPS (at 65x P/E)',
+        value: '~$2.34 — requires revenue far above bull case',
+      },
+      {
+        label: 'Implied FY2027 Revenue',
+        value: '~$16B — 125% above FY2026 guidance',
+      },
+      {
+        label: 'Forward EV/Sales (FY2026)',
+        value: '~50x — extreme premium over any software peer',
+      },
+      {
+        label: 'FCF Yield (FY2026E)',
+        value: '~1.0% — requires years of 40%+ compounding for reasonable cash return',
+      },
+    ],
+    provisionalConclusion:
+      'Rich. Palantir is an exceptional business — perhaps the best-positioned AI infrastructure platform in the world. But exceptional business quality does not make any price justified. At $152, the stock prices in the bull case with no safety margin. Base case fair value of ~$94 suggests ~38% downside. The stock becomes interesting below $100. At current levels, this is a watch-and-admire situation.',
+    technicalCommentary:
+      'Price at $152 sits below the 50-day SMA ($158) and 100-day SMA ($169), forming a resistance shelf. The stock pulled back ~25% from ATH of $207.52 but remains far above the 200-day SMA. The technical picture is mixed-to-bearish with no clear support base established after the pullback.',
+    technicalSignals: [
+      { label: 'RSI (14-day)', value: '~57-61 — neutral, not oversold' },
+      { label: '20-day SMA', value: '$137 — price above' },
+      { label: '50-day SMA', value: '$158 — price below (resistance)' },
+      { label: '100-day SMA', value: '$169 — price below (resistance)' },
+      { label: '200-day SMA', value: '$162 — price below' },
+      { label: 'Key support', value: '~$149' },
+      { label: 'Key resistance', value: '$207 (ATH)' },
+    ],
+    risks: [
+      'Valuation compression if growth decelerates from 60%+ to 30-40% — multiple could halve',
+      'Pentagon budget cuts could directly impact government segment despite efficiency-tool positioning',
+      'SBC dilution at ~37% of revenue erodes per-share economics and overstates adjusted profitability',
+      'International deprioritization caps long-term TAM if US market saturates',
+      'Hyperscaler competition: AWS, Azure, and GCP could build internal AI deployment platforms that commoditize Palantir\'s AIP value proposition',
+      'Customer concentration risk in government segment',
+    ],
+    catalysts: [
+      'Q1 2026 earnings beat with sustained US commercial 100%+ growth',
+      'FY2026 guidance raise above $7.5B',
+      'Major new government contract wins proving DOGE-era positioning',
+      'International expansion pivot signaling new growth vector',
+      'SBC declining below 25% of revenue, improving per-share economics',
+    ],
+    monitorNext: [
+      'Q1 2026 earnings: whether revenue meets $1.53-1.54B guidance and US commercial sustains 100%+ Y/Y',
+      'FY2026 guidance revisions at Q1 earnings',
+      'Pentagon budget execution: whether 8% cuts materialize and how they affect Palantir specifically',
+      'AIP Bootcamp conversion trend: whether 75% rate holds or normalizes with broader customer base',
+      'SBC trajectory as % of revenue — declining toward 20% or staying at 30%+',
+      'International revenue signals and any expansion pivot',
+      'Alex Karp insider selling patterns',
+    ],
+    sourcesUsed: [
+      {
+        label: 'Palantir Q4 2025 Earnings Press Release',
+        url: 'https://investors.palantir.com/news-details/2026/Palantir-Reports-Q4-2025-U-S--Comm-Revenue-Growth-of-137-YY-and-Revenue-Growth-of-70-YY-Issues-FY-2026-Revenue-Guidance-of-61-YY-and-U-S--Comm-Revenue-Guidance-of-115-YY-Crushing-Consensus-Expectations/',
+      },
+      {
+        label: 'CNBC — Palantir Q4 2025 Earnings',
+        url: 'https://www.cnbc.com/2026/02/02/palantir-pltr-q4-2025-earnings.html',
+      },
+      {
+        label: 'StockAnalysis.com — PLTR FY2025 Financials',
+        url: 'https://stockanalysis.com/stocks/pltr/financials/',
+      },
+      {
+        label: 'Bloomberg — Pentagon Budget Cuts Loom',
+        url: 'https://www.bloomberg.com/news/articles/2025-02-24/palantir-s-pricey-multiple-in-focus-as-pentagon-budget-cuts-loom',
+      },
+      {
+        label: 'Investing.com — PLTR Technical Analysis',
+        url: 'https://www.investing.com/equities/palantir-technologies-inc-technical',
+      },
+      {
+        label: 'Capital.com — Palantir Stock Forecast',
+        url: 'https://capital.com/en-int/market-updates/palantir-stock-forecast-06-03-2026',
+      },
+    ],
+    history: ['2026-03-17: Initial DeepValue Lab analysis at $152.25. Verdict: rich — exceptional business, extreme valuation.'],
+  },
 ]
 
 export function getStockByTicker(ticker: string) {
