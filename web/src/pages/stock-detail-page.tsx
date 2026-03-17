@@ -228,9 +228,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           fileLabel={m.detail.panelLabels.thesis}
           title={m.detail.thesisTitle}
           description={text(stock.thesisStatement)}
-        >
-          <BulletList items={stock.thesisBullets} />
-        </ResearchSection>
+        />
 
         <ResearchSection
           fileLabel={m.detail.panelLabels.snapshot}
@@ -418,7 +416,7 @@ function ResearchSection({
   fileLabel: string
   title: string
   description?: string
-  children: ReactNode
+  children?: ReactNode
 }) {
   return (
     <Panel className="overflow-hidden">

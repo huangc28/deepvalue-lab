@@ -123,23 +123,22 @@ export function DashboardPage() {
         </PanelBody>
       </Panel>
 
-      <div className="grid gap-6 2xl:grid-cols-[1fr_22rem]">
+      <div>
         <Panel className="overflow-hidden">
           <PanelChrome
             label={m.dashboard.boardLabel}
             status={`${filteredStocks.length} ${m.dashboard.boardVisible}`}
           />
           <PanelBody className="space-y-6">
-            <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
-              <div>
-                <TerminalLabel>{m.dashboard.browseLabel}</TerminalLabel>
-                <h3 className="mt-2 font-serif text-[2rem] tracking-[-0.04em] text-[var(--ink-primary)]">
-                  {m.dashboard.browseTitle}
-                </h3>
-              </div>
-
-              <div className="flex flex-col gap-3 xl:items-end">
-                <div className="flex flex-wrap gap-2">
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+              <div className="flex flex-col gap-3">
+                <div>
+                  <TerminalLabel>{m.dashboard.browseLabel}</TerminalLabel>
+                  <h3 className="mt-2 font-serif text-[2rem] tracking-[-0.04em] text-[var(--ink-primary)]">
+                    {m.dashboard.browseTitle}
+                  </h3>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
                   {filters.map((filter) => (
                     <button
                       key={filter.value}
@@ -151,17 +150,19 @@ export function DashboardPage() {
                       }
                       className={
                         bucketFilter === filter.value
-                          ? 'rounded-full border border-[color:rgba(88,166,255,0.3)] bg-[color:rgba(56,139,253,0.16)] px-4 py-2 font-mono text-[0.72rem] uppercase tracking-[0.16em] text-[var(--ink-primary)]'
-                          : 'rounded-full border border-[var(--line-subtle)] bg-[var(--surface-chip)] px-4 py-2 font-mono text-[0.72rem] uppercase tracking-[0.16em] text-[var(--ink-muted)] transition hover:border-[var(--line-strong)] hover:text-[var(--ink-primary)]'
+                          ? 'rounded-full border border-[color:rgba(88,166,255,0.3)] bg-[color:rgba(56,139,253,0.16)] px-2.5 py-0.5 font-mono text-[0.68rem] uppercase tracking-[0.1em] text-[var(--ink-primary)]'
+                          : 'rounded-full border border-[var(--line-subtle)] bg-[var(--surface-chip)] px-2.5 py-0.5 font-mono text-[0.68rem] uppercase tracking-[0.1em] text-[var(--ink-muted)] transition hover:border-[var(--line-strong)] hover:text-[var(--ink-primary)]'
                       }
                     >
                       {filter.label}
                     </button>
                   ))}
                 </div>
+              </div>
 
-                <div className="flex flex-col gap-3 md:flex-row">
-                  <label className="flex items-center gap-3 rounded-full border border-[var(--line-subtle)] bg-[var(--surface-chip)] px-4 py-3 font-mono text-[0.74rem] text-[var(--ink-secondary)]">
+              <div className="flex flex-col gap-3 xl:items-end">
+                <div className="flex flex-wrap gap-2">
+                  <label className="flex items-center gap-2 rounded-full border border-[var(--line-subtle)] bg-[var(--surface-chip)] px-3 py-1.5 font-mono text-[0.74rem] text-[var(--ink-secondary)]">
                     <span className="text-[var(--accent-copper)]">
                       {m.dashboard.searchLabel}
                     </span>
@@ -174,11 +175,11 @@ export function DashboardPage() {
                         })
                       }}
                       placeholder={m.dashboard.searchPlaceholder}
-                      className="min-w-[16rem] bg-transparent text-[var(--ink-primary)] outline-none placeholder:text-[var(--ink-faint)]"
+                      className="w-40 min-w-0 bg-transparent text-[var(--ink-primary)] outline-none placeholder:text-[var(--ink-faint)] focus-visible:outline-none"
                     />
                   </label>
 
-                  <div className="flex items-center gap-3 rounded-full border border-[var(--line-subtle)] bg-[var(--surface-chip)] px-4 py-3 font-mono text-[0.74rem] text-[var(--ink-secondary)]">
+                  <div className="flex items-center gap-2 rounded-full border border-[var(--line-subtle)] bg-[var(--surface-chip)] px-3 py-1.5 font-mono text-[0.74rem] text-[var(--ink-secondary)]">
                     <span className="text-[var(--accent-copper)]">
                       {m.dashboard.sortLabel}
                     </span>
@@ -203,7 +204,7 @@ export function DashboardPage() {
                     </select>
                   </div>
 
-                  <div className="flex rounded-full border border-[var(--line-subtle)] bg-[var(--surface-chip)] p-1">
+                  <div className="flex rounded-full border border-[var(--line-subtle)] bg-[var(--surface-chip)] p-0.5">
                     <ViewToggleButton
                       isActive={viewMode === 'cards'}
                       onClick={() =>
@@ -240,39 +241,6 @@ export function DashboardPage() {
             )}
           </PanelBody>
         </Panel>
-
-        <div className="space-y-6">
-          <Panel className="overflow-hidden">
-            <PanelChrome
-              label={m.dashboard.signalsLabel}
-              status={m.dashboard.signalsStatus}
-            />
-            <PanelBody className="space-y-4">
-              {m.dashboard.signals.map((item) => (
-                <InsightRow
-                  key={item.title}
-                  title={item.title}
-                  body={item.body}
-                />
-              ))}
-            </PanelBody>
-          </Panel>
-
-          <Panel className="overflow-hidden">
-            <PanelChrome
-              label={m.dashboard.stylePanelLabel}
-              status={m.dashboard.styleStatus}
-            />
-            <PanelBody className="space-y-4">
-              <TerminalLabel>{m.dashboard.styleLabel}</TerminalLabel>
-              <ul className="space-y-3 text-sm leading-7 text-[var(--ink-secondary)]">
-                {m.dashboard.styleBullets.map((bullet) => (
-                  <li key={bullet}>{bullet}</li>
-                ))}
-              </ul>
-            </PanelBody>
-          </Panel>
-        </div>
       </div>
     </div>
   )
@@ -323,24 +291,11 @@ function ViewToggleButton({
       onClick={onClick}
       className={
         isActive
-          ? 'rounded-full bg-[color:rgba(56,139,253,0.18)] px-4 py-2 font-mono text-[0.72rem] uppercase tracking-[0.16em] text-[var(--ink-primary)]'
-          : 'rounded-full px-4 py-2 font-mono text-[0.72rem] uppercase tracking-[0.16em] text-[var(--ink-muted)] transition hover:text-[var(--ink-primary)]'
+          ? 'rounded-full bg-[color:rgba(56,139,253,0.18)] px-3 py-1 font-mono text-[0.7rem] uppercase tracking-[0.12em] text-[var(--ink-primary)]'
+          : 'rounded-full px-3 py-1 font-mono text-[0.7rem] uppercase tracking-[0.12em] text-[var(--ink-muted)] transition hover:text-[var(--ink-primary)]'
       }
     >
       {children}
     </button>
-  )
-}
-
-function InsightRow({ title, body }: { title: string; body: string }) {
-  return (
-    <div className="rounded-[1.1rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] p-4">
-      <p className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-[var(--accent-copper)]">
-        {title}
-      </p>
-      <p className="mt-2 text-sm leading-6 text-[var(--ink-secondary)]">
-        {body}
-      </p>
-    </div>
   )
 }

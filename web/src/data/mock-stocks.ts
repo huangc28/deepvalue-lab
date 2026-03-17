@@ -1036,99 +1036,191 @@ export const mockStocks: StockDetail[] = [
     id: 'amd',
     ticker: 'AMD',
     companyName: 'Advanced Micro Devices',
-    businessType: 'Semicap / Hybrid Growth',
-    currentPrice: 162.7,
-    valuationStatus: 'cheap',
-    newsImpactStatus: 'improving',
+    businessType:
+      'High-growth semiconductor compounder / AI infrastructure challenger',
+    currentPrice: 193,
+    valuationStatus: 'fair',
+    newsImpactStatus: 'unchanged',
     thesisStatus: 'watch',
-    technicalEntryStatus: 'favorable',
-    actionState: 'watch for confirmation',
+    technicalEntryStatus: 'neutral',
+    actionState: 'needs review',
     dashboardBucket: 'needs-review',
-    baseFairValue: 188,
-    bearFairValue: 145,
-    bullFairValue: 220,
-    discountToBase: -13.5,
+    baseFairValue: 184,
+    bearFairValue: 98,
+    bullFairValue: 292,
+    discountToBase: 4.9,
     summary:
-      'The setup is getting more attractive, but the thesis still needs stronger proof on AI scale and margins.',
-    lastUpdated: '2026-03-16',
+      'AMD is fair to slightly expensive on the base case and only becomes clearly attractive if the dual-source AI GPU thesis validates more strongly.',
+    lastUpdated: '2026-03-17',
     thesisStatement:
-      'AMD has real AI and data center upside, but the market still needs clearer evidence on durable profit conversion.',
+      "AMD is the only credible merchant challenger to NVIDIA in AI GPU compute, but today's price already requires substantial execution on AI GPU ramp, ROCm adoption, and continued EPYC stability.",
     thesisBullets: [
-      'Data center momentum remains the central support for the case.',
-      'AI acceleration can improve mix, but scale still needs to prove itself.',
-      'Margin durability remains a key watch item.',
+      'MI350 volume production, MI450 roadmap cadence, and ongoing EPYC share gains keep the structural AI and data center case alive.',
+      'The main upside is hyperscaler and enterprise dual-sourcing that drives AI GPU share from low-single digits toward the mid-teens over three to five years.',
+      'The main watch item is whether ROCm adoption and hyperscaler wins are strong enough to overcome NVIDIA CUDA switching costs.',
     ],
     variantPerception:
-      'The market may still be too skeptical on long-term AI relevance, but not enough evidence exists yet for a full thesis-intact call.',
+      'The market may be overweighting near-term margin noise and guidance disappointment while underweighting the structural diversification of AI GPU demand away from a single vendor.',
     valuationLens: {
-      primary: 'Forward P/E',
+      primary: 'Forward non-GAAP EPS x target P/E',
       crossCheck: 'EV/Sales',
       rationale:
-        'AMD is a hybrid growth semiconductor business where earnings power matters, but revenue scale is still part of the narrative.',
+        'AMD is a profitable high-growth semiconductor platform whose economics are best judged on forward earnings power, while EV/Revenue helps anchor sector-relative positioning during the ramp phase.',
     },
     currentValuationSnapshot: {
-      marketCap: '$265B',
-      enterpriseValue: '$258B',
-      multiples: ['26.4x forward P/E', '7.4x forward EV/Sales'],
-      balanceSheetNote: 'Balance sheet is not the main risk driver here.',
+      marketCap: '~$314B',
+      enterpriseValue: '~$312.5B',
+      multiples: [
+        '~29x forward P/E on 2026E non-GAAP EPS',
+        '~6.7x EV / 2026E revenue',
+      ],
+      balanceSheetNote:
+        'AMD carries about $1.5B of net cash, so leverage is not the key underwriting risk.',
     },
     newsToModel: [
       {
-        event: 'Data center demand commentary improved.',
-        modelVariableChanged: 'Revenue growth and thesis quality',
+        event:
+          'Q4 2025 beat on revenue and EPS, but Q1 2026 guidance and gross margin came in below elevated whisper expectations.',
+        modelVariableChanged: 'H1 revenue sequencing and near-term EPS',
         impact:
-          'Supports the base case, but does not fully eliminate execution risk.',
+          'This pressures near-term earnings but looks more like timing and mix than a structural break in the AI GPU story.',
+        affectedScenario: 'base',
+      },
+      {
+        event:
+          'MI308 China export license remains only partially restored, with Q1 assumptions far below the Q4 shipping run rate.',
+        modelVariableChanged: 'China revenue optionality and downside risk',
+        impact:
+          'License resolution is meaningful upside, while broader restrictions on MI350 and MI450 class products remain a real bear-case risk.',
+        affectedScenario: 'bear / bull',
+      },
+      {
+        event:
+          'MI350 entered volume production and MI450 gained an early Oracle commitment for 2026 deployment.',
+        modelVariableChanged: 'AI GPU ramp confidence and multiple ceiling',
+        impact:
+          'This raises confidence that AMD can sustain an annual accelerator cadence and modestly narrows the execution discount versus NVIDIA.',
         affectedScenario: 'base / bull',
+      },
+      {
+        event:
+          'EPYC share gains continue while Client remains supported by Ryzen AI PC demand.',
+        modelVariableChanged: 'Earnings floor stability',
+        impact:
+          'CPU and client strength help support the base case even if the AI GPU ramp is not perfectly smooth.',
+        affectedScenario: 'base',
+      },
+      {
+        event:
+          'Embedded recovery remains slower than expected after the prior inventory digestion cycle.',
+        modelVariableChanged: 'Revenue mix and margin recovery',
+        impact:
+          'Embedded is a mix-positive recovery lever, so prolonged stagnation caps upside and keeps the margin profile more dependent on Data Center execution.',
+        affectedScenario: 'bear / base',
       },
     ],
     scenarios: [
       {
         label: 'Bear',
         operatingAssumption:
-          'AI ramp remains slower and gross margins disappoint.',
-        valuationAssumption: '23x forward earnings',
-        fairValue: '$145',
+          'FY2026 revenue of about $40B, with AI ramp disappointment, slower embedded recovery, and non-GAAP net margin around 20%.',
+        valuationAssumption: '20x forward non-GAAP EPS',
+        fairValue: '$98',
         whatMustBeTrue:
-          'Execution fails to translate into sustainable AI economics.',
+          'Export controls broaden, hyperscaler training wins remain elusive, ROCm adoption stalls, and AMD fails to translate AI demand into durable economics.',
       },
       {
         label: 'Base',
         operatingAssumption:
-          'Data center and AI continue ramping with stable margins.',
-        valuationAssumption: '25x forward earnings',
-        fairValue: '$188',
-        whatMustBeTrue: 'Management proves sustained data center traction.',
+          'FY2026 revenue of about $46.5B, AI GPU roughly doubles, embedded normalizes gradually, and non-GAAP net margin reaches about 23%.',
+        valuationAssumption: '28x forward non-GAAP EPS',
+        fairValue: '$184',
+        whatMustBeTrue:
+          'Data Center scales toward roughly $20B+, gross margin stabilizes around 55-57%, and export controls do not worsen from the current framework.',
       },
       {
         label: 'Bull',
         operatingAssumption:
-          'AI contribution scales meaningfully and mix improves faster.',
-        valuationAssumption: '28x forward earnings',
-        fairValue: '$220',
+          'FY2026 revenue reaches about $54B, Data Center GPU scales toward $25B, embedded recovery accelerates, and non-GAAP net margin reaches about 26%.',
+        valuationAssumption: '34x forward non-GAAP EPS',
+        fairValue: '$292',
         whatMustBeTrue:
-          'AI product traction persists beyond early deployments.',
+          'Two to three hyperscalers commit to MI450 at scale, ROCm reaches meaningful adoption, and China license treatment improves instead of tightening.',
       },
     ],
     currentPriceImplies:
-      'The market is still skeptical on AI scale economics, but not fully dismissive.',
+      'At about $193, the market is effectively underwriting the full consensus 2026 path without paying for much upside surprise. It assumes about 34% revenue growth, AI GPU revenue roughly doubling, gross margin stability around 55-57%, and no meaningful re-rating beyond the current 29x forward multiple.',
+    currentPriceImpliedFacts: [
+      {
+        label: '2026 revenue growth implied',
+        value: 'about +34%, from $34.6B to roughly $46.5B',
+      },
+      {
+        label: 'AI GPU revenue implied',
+        value: 'roughly $18-20B in 2026, up from about $9.5B in 2025',
+      },
+      {
+        label: 'Embedded recovery implied',
+        value: 'slow normalization, not a return to peak embedded levels',
+      },
+      {
+        label: 'Multiple assumption',
+        value:
+          'around 29x forward P/E, which implies sustained execution but not a full NVIDIA-style premium',
+      },
+    ],
+    provisionalConclusion:
+      'AMD looks fair to slightly expensive on the base case. The setup becomes attractive only if you believe the dual-source AI GPU thesis is still underpriced and that MI450 plus ROCm traction can push results beyond consensus.',
+    technicalCommentary:
+      'The post-earnings selloff has removed some froth, but the stock is still in a multi-month consolidation and does not yet show a clearly favorable momentum-turn setup. Better risk/reward would likely come closer to $175-185 with improving confirmation.',
+    technicalSignals: [
+      {
+        label: 'Drawdown from 52-week high',
+        value: 'about -28% from $267.08',
+      },
+      {
+        label: 'Recent character',
+        value: 'multi-month consolidation after a post-earnings selloff',
+      },
+      {
+        label: 'Preferred accumulation zone',
+        value: '$175-185 with stronger momentum confirmation',
+      },
+    ],
     risks: [
-      'AI traction fails to scale into durable profit conversion.',
-      'Margin progression lags despite data center momentum.',
+      'CUDA switching costs and hyperscaler inertia keep AMD share gains narrower than the bull case assumes.',
+      'Export controls expand to MI350 or MI450 class products, reducing one of the most important upside levers.',
+      'Embedded recovery remains slow, capping margin expansion and making the AI ramp carry too much of the valuation burden.',
     ],
     catalysts: [
-      'Data center momentum proves more durable than expected.',
-      'AI product attach improves mix and earnings power.',
+      'Additional hyperscaler MI450 commitments would materially improve confidence that AMD becomes a real dual-source AI GPU supplier.',
+      'Clearer China license treatment or a return toward prior MI308 shipping levels would lift revenue assumptions without changing the core roadmap.',
+      'ROCm ecosystem progress that is visible in cloud instances, framework support, or named customer adoption would help narrow the software moat discount.',
     ],
     monitorNext: [
-      'Data center segment growth',
-      'Gross margin progression',
-      'AI product attach and visibility',
+      'Q1 2026 earnings: whether gross margin stabilizes and Data Center re-accelerates.',
+      'Hyperscaler procurement signals for MI350 and MI450 in both training and inference workloads.',
+      'Export control and China license developments around MI308, MI350, and MI450 class products.',
+      'ROCm ecosystem momentum, including cloud marketplace presence and framework adoption.',
+      'Embedded segment recovery trajectory and whether it returns to a more meaningful mix-positive contributor.',
     ],
     sourcesUsed: [
-      'Latest quarterly update',
-      'Recent product and management commentary',
+      'AMD Q4 2025 Press Release, AMD Investor Relations, February 3, 2026',
+      'AMD Q4 2025 Earnings Call Transcript, The Motley Fool, February 3, 2026',
+      'AMD Q4 2025 Earnings Summary, CNBC, February 3, 2026',
+      'AMD Q4 2025 Record Revenue and Earnings, Investing.com, February 2026',
+      'AMD Q4 2025 Beats Forecasts, StockTitan, February 2026',
+      'AMD 2026 Consensus Analyst Estimates, MarketBeat',
+      'AMD Export Controls Revenue Impact, The Register and NextPlatform, May 2025',
+      'AMD MI350 and MI450 roadmap coverage, September 2025 to March 2026',
+      'AMD balance sheet data, StockAnalysis.com',
+      'AMD forward P/E reference, ValueInvesting.io',
+      'AMD 52-week price history, MacroTrends',
     ],
-    history: ['2026-03-16: Technical entry improved to favorable.'],
+    history: [
+      '2026-03-17: Replaced the placeholder AMD mock with the archived professional analysis report.',
+      '2026-03-17: Valuation moved to fair with base fair value reset to $184 against a point-in-time price of about $193.',
+    ],
   },
   {
     id: 'lulu',

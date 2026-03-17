@@ -90,30 +90,6 @@ export const messages = {
         cards: 'cards',
         table: 'table',
       },
-      signalsStatus: 'changed since last review',
-      signalsLabel: 'Recent Changes',
-      signals: [
-        {
-          title: 'TSM fair value revised',
-          body: 'Packaging bottlenecks improved confidence in the base case.',
-        },
-        {
-          title: 'ASML thesis downgraded to watch',
-          body: 'Export visibility remains the main pressure point.',
-        },
-        {
-          title: 'ADBE entered the strongest alignment bucket',
-          body: 'Valuation support and favorable entry conditions now overlap.',
-        },
-      ],
-      styleStatus: 'style direction',
-      stylePanelLabel: 'Reading Style',
-      styleLabel: 'reading system',
-      styleBullets: [
-        'Mono-first typography with calmer size steps.',
-        'Higher-contrast text and cooler status colors.',
-        'No background grid or decorative noise.',
-      ],
     },
     card: {
       price: 'price',
@@ -331,30 +307,6 @@ export const messages = {
         cards: '卡片',
         table: '表格',
       },
-      signalsStatus: '自上次檢視後的變化',
-      signalsLabel: '最近變化',
-      signals: [
-        {
-          title: 'TSM 公允價值已調整',
-          body: '先進封裝瓶頸改善後，base case 信心提升。',
-        },
-        {
-          title: 'ASML thesis 下調為 watch',
-          body: '出口能見度仍是主要壓力來源。',
-        },
-        {
-          title: 'ADBE 進入最高對齊分桶',
-          body: '估值支撐與有利進場條件現在同時出現。',
-        },
-      ],
-      styleStatus: '風格方向',
-      stylePanelLabel: '閱讀風格',
-      styleLabel: '閱讀系統',
-      styleBullets: [
-        '以 mono 為主的字體階層，字級更收斂。',
-        '更高對比的文字與更冷靜的狀態色。',
-        '移除背景格線與多餘裝飾噪音。',
-      ],
     },
     card: {
       price: '價格',
