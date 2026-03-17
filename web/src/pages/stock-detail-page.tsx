@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 
 import { Link } from '@tanstack/react-router'
 
@@ -94,12 +94,17 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
               value={`$${stock.bearFairValue.toFixed(0)} - $${stock.bullFairValue.toFixed(0)}`}
             />
             <MetricBlock
-              label={m.detail.discountToBase}
+              label={
+                stock.discountToBase > 0
+                  ? m.detail.premiumToBase
+                  : m.detail.discountToBase
+              }
               value={`${stock.discountToBase > 0 ? '+' : ''}${stock.discountToBase.toFixed(1)}%`}
+              tone={stock.discountToBase > 0 ? 'negative' : 'positive'}
             />
             <MetricBlock
-              label={m.detail.whatToDoNow}
-              value={m.status.actionValue[stock.actionState]}
+              label={m.detail.upsideDownside}
+              value={`+${(((stock.bullFairValue - stock.currentPrice) / stock.currentPrice) * 100).toFixed(0)}% / -${(((stock.currentPrice - stock.bearFairValue) / stock.currentPrice) * 100).toFixed(0)}%`}
             />
           </div>
 
@@ -110,7 +115,9 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
             />
             <HeroInsightCard
               label={m.detail.heroPriceImpliesLabel}
-              value={text(stock.currentPriceImplies)}
+              value={text(
+                stock.currentPriceImpliesBrief ?? stock.currentPriceImplies,
+              )}
               meta={[
                 [m.detail.nearestScenario, m.detail.scenario[nearestScenario]],
               ]}
@@ -130,6 +137,35 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
               <ScenarioCard key={scenario.label} scenario={scenario} />
             ))}
           </div>
+        </ResearchSection>
+
+        <ResearchSection
+          fileLabel={m.detail.panelLabels.snapshot}
+          title={m.detail.currentValuationSnapshotTitle}
+          description={m.detail.currentValuationSnapshotDescription}
+        >
+          <InfoList
+            items={[
+              [
+                m.detail.marketCap,
+                text(stock.currentValuationSnapshot.marketCap ?? 'n/a'),
+              ],
+              [
+                m.detail.enterpriseValue,
+                text(stock.currentValuationSnapshot.enterpriseValue ?? 'n/a'),
+              ],
+              [
+                m.detail.keyMultiples,
+                stock.currentValuationSnapshot.multiples
+                  .map((item) => text(item))
+                  .join(' · '),
+              ],
+              [
+                m.detail.balanceSheetContext,
+                text(stock.currentValuationSnapshot.balanceSheetNote ?? 'n/a'),
+              ],
+            ]}
+          />
         </ResearchSection>
 
         <ResearchSection
@@ -206,22 +242,13 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           title={m.detail.valuationContextTitle}
           description={m.detail.valuationContextDescription}
         >
-          <div className="grid gap-6 lg:grid-cols-2">
-            <ContextBlock title={m.detail.businessClassificationTitle}>
-              <InfoList
-                items={[[m.detail.businessType, text(stock.businessType)]]}
-              />
-            </ContextBlock>
-            <ContextBlock title={m.detail.valuationLensTitle}>
-              <InfoList
-                items={[
-                  [m.detail.primaryLens, text(stock.valuationLens.primary)],
-                  [m.detail.crossCheck, text(stock.valuationLens.crossCheck)],
-                  [m.detail.whyItFits, text(stock.valuationLens.rationale)],
-                ]}
-              />
-            </ContextBlock>
-          </div>
+          <InfoList
+            items={[
+              [m.detail.primaryLens, text(stock.valuationLens.primary)],
+              [m.detail.crossCheck, text(stock.valuationLens.crossCheck)],
+              [m.detail.whyItFits, text(stock.valuationLens.rationale)],
+            ]}
+          />
         </ResearchSection>
 
         <ResearchSection
@@ -231,57 +258,21 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
         />
 
         <ResearchSection
-          fileLabel={m.detail.panelLabels.snapshot}
-          title={m.detail.currentValuationSnapshotTitle}
-          description={m.detail.currentValuationSnapshotDescription}
-        >
-          <InfoList
-            items={[
-              [
-                m.detail.marketCap,
-                text(stock.currentValuationSnapshot.marketCap ?? 'n/a'),
-              ],
-              [
-                m.detail.enterpriseValue,
-                text(stock.currentValuationSnapshot.enterpriseValue ?? 'n/a'),
-              ],
-              [
-                m.detail.keyMultiples,
-                stock.currentValuationSnapshot.multiples
-                  .map((item) => text(item))
-                  .join(' · '),
-              ],
-              [
-                m.detail.balanceSheetContext,
-                text(stock.currentValuationSnapshot.balanceSheetNote ?? 'n/a'),
-              ],
-            ]}
-          />
-        </ResearchSection>
-
-        <ResearchSection
           fileLabel={m.detail.panelLabels.newsToModel}
           title={m.detail.newsToModelTitle}
           description={m.detail.newsToModelDescription}
         >
-          <div className="space-y-4">
+          <div className="space-y-3">
             {stock.newsToModel.map((item) => (
-              <div
+              <NewsToModelCard
                 key={text(item.event)}
-                className="rounded-[1.1rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] p-4"
-              >
-                <InfoList
-                  items={[
-                    [m.detail.event, text(item.event)],
-                    [
-                      m.detail.modelVariableChanged,
-                      text(item.modelVariableChanged),
-                    ],
-                    [m.detail.impact, text(item.impact)],
-                    [m.detail.affectedScenario, text(item.affectedScenario)],
-                  ]}
-                />
-              </div>
+                event={text(item.event)}
+                impact={text(item.impact)}
+                modelVariable={text(item.modelVariableChanged)}
+                scenario={text(item.affectedScenario)}
+                eventLabel={m.detail.modelVariableChanged}
+                impactLabel={m.detail.impact}
+              />
             ))}
           </div>
         </ResearchSection>
@@ -392,20 +383,6 @@ function HeroInsightCard({
   )
 }
 
-function ContextBlock({
-  title,
-  children,
-}: {
-  title: string
-  children: ReactNode
-}) {
-  return (
-    <div className="space-y-4 rounded-[1.15rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] p-4">
-      <TerminalLabel>{title}</TerminalLabel>
-      {children}
-    </div>
-  )
-}
 
 function ResearchSection({
   fileLabel,
@@ -536,6 +513,61 @@ function SourceList({
         )
       })}
     </ul>
+  )
+}
+
+function NewsToModelCard({
+  event,
+  impact,
+  modelVariable,
+  scenario,
+  eventLabel,
+  impactLabel,
+}: {
+  event: string
+  impact: string
+  modelVariable: string
+  scenario: string
+  eventLabel: string
+  impactLabel: string
+}) {
+  const [expanded, setExpanded] = useState(false)
+
+  return (
+    <button
+      type="button"
+      onClick={() => setExpanded((prev) => !prev)}
+      className="w-full cursor-pointer rounded-[1.1rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] px-4 py-4 text-left transition hover:border-[var(--line-strong)]"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-sm leading-7 text-[var(--ink-secondary)]">
+          {event}
+        </p>
+        <span className="mt-1 shrink-0 rounded-full border border-[var(--line-subtle)] bg-[var(--surface-chip)] px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-[var(--ink-muted)]">
+          {scenario}
+        </span>
+      </div>
+      {expanded ? (
+        <div className="mt-3 space-y-2 border-t border-[var(--line-subtle)] pt-3">
+          <div className="grid gap-1 md:grid-cols-[11rem_1fr]">
+            <p className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[var(--ink-muted)]">
+              {eventLabel}
+            </p>
+            <p className="text-xs leading-6 text-[var(--ink-secondary)]">
+              {modelVariable}
+            </p>
+          </div>
+          <div className="grid gap-1 md:grid-cols-[11rem_1fr]">
+            <p className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[var(--ink-muted)]">
+              {impactLabel}
+            </p>
+            <p className="text-xs leading-6 text-[var(--ink-secondary)]">
+              {impact}
+            </p>
+          </div>
+        </div>
+      ) : null}
+    </button>
   )
 }
 

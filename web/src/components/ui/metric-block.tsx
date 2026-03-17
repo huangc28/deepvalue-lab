@@ -4,11 +4,13 @@ export function MetricBlock({
   label,
   value,
   detail,
+  tone,
   className,
 }: {
   label: string
   value: string
   detail?: string
+  tone?: 'positive' | 'negative'
   className?: string
 }) {
   return (
@@ -21,7 +23,14 @@ export function MetricBlock({
       <p className="font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--ink-muted)]">
         {label}
       </p>
-      <p className="mt-3 font-mono text-[1.55rem] font-semibold tracking-[-0.03em] text-[var(--ink-primary)]">
+      <p
+        className={cx(
+          'mt-3 font-mono text-[1.55rem] font-semibold tracking-[-0.03em]',
+          tone === 'positive' && 'text-[var(--signal-positive)]',
+          tone === 'negative' && 'text-[var(--signal-negative,#e5534b)]',
+          !tone && 'text-[var(--ink-primary)]',
+        )}
+      >
         {value}
       </p>
       {detail ? (

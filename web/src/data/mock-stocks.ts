@@ -1122,6 +1122,7 @@ export const mockStocks: StockDetail[] = [
     scenarios: [
       {
         label: 'Bear',
+        keyMetrics: { revenue: '$40B', eps: '$4.91', targetPE: '20x' },
         operatingAssumption:
           'FY2026 revenue of about $40B, with AI ramp disappointment, slower embedded recovery, and non-GAAP net margin around 20%.',
         valuationAssumption: '20x forward non-GAAP EPS',
@@ -1131,6 +1132,7 @@ export const mockStocks: StockDetail[] = [
       },
       {
         label: 'Base',
+        keyMetrics: { revenue: '$46.5B', eps: '$6.56', targetPE: '28x' },
         operatingAssumption:
           'FY2026 revenue of about $46.5B, AI GPU roughly doubles, embedded normalizes gradually, and non-GAAP net margin reaches about 23%.',
         valuationAssumption: '28x forward non-GAAP EPS',
@@ -1140,6 +1142,7 @@ export const mockStocks: StockDetail[] = [
       },
       {
         label: 'Bull',
+        keyMetrics: { revenue: '$54B', eps: '$8.59', targetPE: '34x' },
         operatingAssumption:
           'FY2026 revenue reaches about $54B, Data Center GPU scales toward $25B, embedded recovery accelerates, and non-GAAP net margin reaches about 26%.',
         valuationAssumption: '34x forward non-GAAP EPS',
@@ -1150,23 +1153,24 @@ export const mockStocks: StockDetail[] = [
     ],
     currentPriceImplies:
       'At about $193, the market is effectively underwriting the full consensus 2026 path without paying for much upside surprise. It assumes about 34% revenue growth, AI GPU revenue roughly doubling, gross margin stability around 55-57%, and no meaningful re-rating beyond the current 29x forward multiple.',
+    currentPriceImpliesBrief:
+      'Market prices in full consensus ~34% growth and AI GPU doubling with no re-rating — no upside surprise baked in.',
     currentPriceImpliedFacts: [
       {
-        label: '2026 revenue growth implied',
-        value: 'about +34%, from $34.6B to roughly $46.5B',
+        label: 'Revenue Growth',
+        value: '~+34% ($34.6B → $46.5B)',
       },
       {
-        label: 'AI GPU revenue implied',
-        value: 'roughly $18-20B in 2026, up from about $9.5B in 2025',
+        label: 'AI GPU Revenue',
+        value: '~$18-20B, up from ~$9.5B',
       },
       {
-        label: 'Embedded recovery implied',
-        value: 'slow normalization, not a return to peak embedded levels',
+        label: 'Embedded Recovery',
+        value: 'Slow normalization, not peak',
       },
       {
-        label: 'Multiple assumption',
-        value:
-          'around 29x forward P/E, which implies sustained execution but not a full NVIDIA-style premium',
+        label: 'Forward Multiple',
+        value: '~29x P/E — execution, not NVIDIA premium',
       },
     ],
     provisionalConclusion:

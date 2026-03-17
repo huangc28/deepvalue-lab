@@ -33,8 +33,15 @@ export interface NewsToModelItem {
   affectedScenario: LocalizedText
 }
 
+export interface ScenarioKeyMetrics {
+  revenue?: string
+  eps?: string
+  targetPE?: string
+}
+
 export interface Scenario {
   label: 'Bear' | 'Base' | 'Bull'
+  keyMetrics?: ScenarioKeyMetrics
   operatingAssumption: LocalizedText
   valuationAssumption: LocalizedText
   fairValue: LocalizedText
@@ -80,6 +87,7 @@ export interface StockDetail extends StockSummary {
   newsToModel: NewsToModelItem[]
   scenarios: Scenario[]
   currentPriceImplies: LocalizedText
+  currentPriceImpliesBrief?: LocalizedText
   currentPriceImpliedFacts?: FactItem[]
   provisionalConclusion?: LocalizedText
   technicalCommentary?: LocalizedText
