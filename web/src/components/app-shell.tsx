@@ -8,25 +8,25 @@ export function AppShell() {
   return (
     <div className="min-h-screen text-[var(--ink-primary)]">
       <header className="sticky top-0 z-30 border-b border-[var(--line-subtle)] bg-[color:rgba(13,17,23,0.9)] backdrop-blur">
-        <div className="mx-auto flex w-full max-w-[92rem] items-center justify-between gap-6 px-6 py-4">
-          <div className="flex items-center gap-4">
-            <div className="rounded-full border border-[var(--line-subtle)] bg-[var(--surface-chip)] px-3 py-1 font-mono text-xs text-[var(--ink-secondary)]">
+        <div className="mx-auto flex w-full max-w-[92rem] items-center justify-between gap-4 px-4 py-3 sm:gap-6 sm:px-6 sm:py-4">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="hidden rounded-full border border-[var(--line-subtle)] bg-[var(--surface-chip)] px-3 py-1 font-mono text-xs text-[var(--ink-secondary)] sm:flex">
               <span className="mr-2 inline-block h-2.5 w-2.5 rounded-full bg-[var(--signal-positive)]" />
               {m.app.ready}
             </div>
             <div>
-              <p className="font-mono text-[0.72rem] uppercase tracking-[0.22em] text-[var(--ink-muted)]">
+              <p className="hidden font-mono text-[0.72rem] uppercase tracking-[0.22em] text-[var(--ink-muted)] sm:block">
                 ~/ deepvalue-lab
               </p>
-              <h1 className="font-serif text-[1.35rem] tracking-[-0.03em]">
+              <h1 className="font-serif text-[1.1rem] tracking-[-0.03em] sm:text-[1.35rem]">
                 research.app
               </h1>
             </div>
           </div>
 
-          <nav className="flex items-center gap-3 text-sm font-medium text-[var(--ink-secondary)]">
+          <nav className="flex items-center gap-2 text-sm font-medium text-[var(--ink-secondary)] sm:gap-3">
             <div className="flex items-center gap-2 rounded-full border border-[var(--line-subtle)] bg-[var(--surface-chip)] p-1 font-mono text-[0.68rem] uppercase tracking-[0.16em]">
-              <span className="px-2 text-[var(--ink-muted)]">
+              <span className="hidden px-2 text-[var(--ink-muted)] sm:inline">
                 {m.app.language}
               </span>
               <LocaleButton
@@ -56,7 +56,7 @@ export function AppShell() {
         </div>
       </header>
 
-      <main className="mx-auto flex w-full max-w-[92rem] flex-col gap-8 px-6 py-8">
+      <main className="mx-auto flex w-full max-w-[92rem] flex-col gap-6 px-4 py-6 sm:gap-8 sm:px-6 sm:py-8">
         <Outlet />
       </main>
     </div>

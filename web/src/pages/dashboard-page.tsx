@@ -81,7 +81,7 @@ export function DashboardPage() {
             aside={<AccentBadge label={m.badge.cardsDefault} />}
           />
 
-          <div className="grid gap-5 xl:grid-cols-[1.3fr_0.9fr]">
+          <div className="grid gap-5 lg:grid-cols-[1.3fr_0.9fr]">
             <Panel className="overflow-hidden bg-[var(--surface-panel-alt)]">
               <PanelChrome
                 label={m.dashboard.summaryLabel}
@@ -231,7 +231,7 @@ export function DashboardPage() {
             </div>
 
             {viewMode === 'cards' ? (
-              <div className="grid gap-5 xl:grid-cols-2">
+              <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
                 {filteredStocks.map((stock) => (
                   <CompanyCard key={stock.id} stock={stock} />
                 ))}

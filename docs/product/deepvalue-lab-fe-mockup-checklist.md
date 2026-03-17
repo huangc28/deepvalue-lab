@@ -124,12 +124,12 @@ Date:
 
 ## Phase 9: Responsive Review
 
-- [ ] Validate 3-column card grid on desktop
-- [ ] Validate 2-column card grid on tablet
-- [ ] Validate 1-column card stack on mobile
-- [ ] Ensure dashboard controls remain usable on smaller screens
-- [ ] Ensure detail page hero remains readable on mobile
-- [ ] Decide whether insight rail collapses or moves below content on small screens
+- [x] Validate 3-column card grid on desktop
+- [x] Validate 2-column card grid on tablet
+- [x] Validate 1-column card stack on mobile
+- [x] Ensure dashboard controls remain usable on smaller screens
+- [x] Ensure detail page hero remains readable on mobile
+- [x] Decide whether insight rail collapses or moves below content on small screens
 
 ## Phase 10: UX Review
 

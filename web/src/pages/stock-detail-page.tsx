@@ -64,7 +64,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
                 {m.detail.backToDashboard}
               </Link>
               <TerminalLabel>{text(stock.businessType)}</TerminalLabel>
-              <h2 className="mt-3 font-serif text-[3.4rem] leading-[0.96] tracking-[-0.05em] text-[var(--ink-primary)] md:text-[4.2rem]">
+              <h2 className="mt-3 font-serif text-[2.4rem] leading-[0.96] tracking-[-0.05em] text-[var(--ink-primary)] sm:text-[3.4rem] md:text-[4.2rem]">
                 {stock.companyName}
               </h2>
               <p className="mt-3 font-mono text-sm uppercase tracking-[0.16em] text-[var(--ink-muted)]">
@@ -84,7 +84,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
             </div>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             <MetricBlock
               label={m.detail.currentPrice}
               value={`$${stock.currentPrice.toFixed(1)}`}
@@ -132,7 +132,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           title={m.detail.scenariosTitle}
           description={m.detail.scenariosDescription}
         >
-          <div className="grid gap-5 xl:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-3">
             {stock.scenarios.map((scenario) => (
               <ScenarioCard key={scenario.label} scenario={scenario} />
             ))}
