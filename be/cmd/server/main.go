@@ -40,7 +40,11 @@ func main() {
 		router.AsRoute(stocks.NewReportsListHandler),
 		router.AsRoute(stocks.NewPublishHandler),
 		router.AsRoute(subscriptions.NewCreateHandler),
-		fx.Populate(&cfg, &logger, &mux),
+		fx.Populate(
+			&cfg,
+			&logger,
+			&mux,
+		),
 	)
 
 	startCtx, startCancel := context.WithTimeout(context.Background(), 15*time.Second)

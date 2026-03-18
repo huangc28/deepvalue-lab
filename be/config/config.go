@@ -55,10 +55,10 @@ func NewViper() *viper.Viper {
 	return v
 }
 
-func NewConfig(v *viper.Viper) (Config, error) {
-	var cfg Config
+func NewConfig(v *viper.Viper) (*Config, error) {
+	var cfg *Config
 	if err := v.Unmarshal(&cfg); err != nil {
-		return Config{}, err
+		return &Config{}, err
 	}
 	return cfg, nil
 }
