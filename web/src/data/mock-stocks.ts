@@ -1534,6 +1534,214 @@ export const mockStocks: StockDetail[] = [
     ],
     history: ['2026-03-17: Initial DeepValue Lab analysis at $152.25. Verdict: rich — exceptional business, extreme valuation.'],
   },
+  {
+    id: 'sofi',
+    ticker: 'SOFI',
+    companyName: 'SoFi Technologies',
+    businessType: 'Digital Bank + Fintech Platform in Transition',
+    currentPrice: 17.37,
+    valuationStatus: 'fair',
+    newsImpactStatus: 'deteriorating',
+    thesisStatus: 'watch',
+    technicalEntryStatus: 'neutral',
+    actionState: 'watch for confirmation',
+    dashboardBucket: 'needs-review',
+    baseFairValue: 17,
+    bearFairValue: 8,
+    bullFairValue: 27,
+    discountToBase: 2.18,
+    summary:
+      'Core fintech flywheel is executing, but Muddy Waters charge-off allegations create a live binary — wait for management rebuttal before sizing.',
+    lastUpdated: '2026-03-18',
+    thesisStatement:
+      'SoFi is building a deposit-funded digital financial services flywheel — but the personal loan book quality is now under formal short-seller challenge, making credit disclosure the single most important near-term variable.',
+    thesisBullets: [
+      '$37.5B deposit base gives SoFi a structural low-cost funding advantage no non-bank fintech can replicate.',
+      'Financial Services segment (+78% YoY in Q4) is becoming the dominant, high-multiple revenue stream.',
+      'FY2026 adj. EPS guidance of $0.60 implies ~50% EPS growth if credit quality is confirmed.',
+      'Muddy Waters alleges personal loan charge-offs of 6.1% vs. stated 2.9% — unresolved; this is the key underwriting risk.',
+    ],
+    variantPerception:
+      'The market may be underweighting how quickly the charge-off allegation could be resolved positively — if management provides specific, auditable methodology disclosure, the overhang lifts and the stock re-rates toward $24-27. Conversely, the market may be underweighting the dilution drag: shares grew ~14% in FY2025, which materially compresses per-share economics relative to headline revenue growth.',
+    valuationLens: {
+      primary: 'Forward P/E on FY2026 guided adj. EPS of $0.60',
+      crossCheck: 'P/TBV vs. ROE trajectory (bank-angle cross-check)',
+      rationale:
+        'SoFi has a bank charter but is priced as a fintech compounder. Forward P/E captures the EPS scaling thesis; P/TBV anchors the credit-quality risk — at 2.56x TBV, SoFi needs to demonstrate a path to 15%+ ROE to justify the premium sustainably.',
+    },
+    currentValuationSnapshot: {
+      marketCap: '~$22.2B',
+      enterpriseValue: '~$23.8B (market cap + $1.82B debt - cash)',
+      multiples: [
+        '~29x forward P/E on FY2026 adj. EPS guidance ($0.60)',
+        '~44.5x trailing GAAP P/E (on $0.39 diluted EPS FY2025)',
+        '2.56x P/Tangible Book Value ($6.78 TBV/share)',
+        '2.07x P/Book Value ($8.38 book/share)',
+      ],
+      balanceSheetNote:
+        'Total assets $50.7B, deposits $37.5B (low-cost funding moat), long-term debt $1.82B (down 41% YoY — positive), GAAP ROE ~5.6% (FY2025) — well below the ~15% needed to sustainably justify 2.5x+ P/TBV.',
+    },
+    newsToModel: [
+      {
+        event:
+          'Q4 2025 adj. net revenue $1.013B (+37% YoY), first $1B quarter; GAAP EPS $0.13 beat $0.12 estimate',
+        modelVariableChanged: 'Revenue trajectory and earnings validation',
+        impact:
+          'Confirms the base case trajectory; Q1 2026 guided at $1.04B (+26% YoY) is in line with 30% full-year growth',
+        affectedScenario: 'Base / Bull',
+      },
+      {
+        event:
+          'Muddy Waters short report (March 17): alleges personal loan charge-offs of 6.1% vs. stated 2.9%; questions fair-value methodology and balance sheet integrity',
+        modelVariableChanged: 'Credit loss provisions, net income, and balance sheet credibility',
+        impact:
+          'If partially correct, FY2026 adj. EPS could be $0.35-0.45 vs. $0.60 guided. Most important unresolved variable in the model — changes bear case probability from low to material',
+        affectedScenario: 'Bear',
+      },
+      {
+        event:
+          'Financial Services segment +78% YoY in Q4; full-year FS revenue >$1.5B (+88% YoY)',
+        modelVariableChanged: 'Revenue mix shift toward fee-based income',
+        impact:
+          'As FS becomes >40% of revenue, a higher P/E multiple becomes more defensible — this is the primary re-rating catalyst if credit quality is confirmed',
+        affectedScenario: 'Base / Bull',
+      },
+      {
+        event:
+          'Deposit base grew to $37.5B (+44% YoY), providing low-cost funding',
+        modelVariableChanged: 'Net interest margin sustainability',
+        impact:
+          'Structurally reduces cost of funds below non-bank fintechs; insulates NIM from warehouse line volatility — a durable structural advantage',
+        affectedScenario: 'Base / Bull',
+      },
+      {
+        event:
+          'Diluted shares grew from 1.10B (FY2024) to 1.25B (FY2025) — ~14% dilution in one year',
+        modelVariableChanged: 'Per-share EPS and equity dilution',
+        impact:
+          'Share count growth partially validates the "dilution treadmill" allegation; reduces EPS compounding relative to headline revenue growth',
+        affectedScenario: 'Bear / Base',
+      },
+    ],
+    scenarios: [
+      {
+        label: 'Bear',
+        keyMetrics: { revenue: '$4.3B', eps: '$0.35', targetPE: '20x' },
+        operatingAssumption:
+          'Muddy Waters allegations prove partially correct — true charge-offs ~4.5%; FY2026 provisions rise materially. Adj. EPS misses guidance at $0.35. Financial Services growth slows to 40% YoY. Dilution continues at 10%+.',
+        valuationAssumption: '20x forward P/E on FY2026 bear adj. EPS of $0.35; cross-checked vs. 1.2x P/TBV floor of ~$8',
+        fairValue: '$8',
+        whatMustBeTrue:
+          'Charge-off allegations have material merit; reserve builds hit EPS; management credibility damaged; multiple contracts to bank-like levels on credit quality concerns.',
+      },
+      {
+        label: 'Base',
+        keyMetrics: { revenue: '$4.66B', eps: '$0.60', targetPE: '28x' },
+        operatingAssumption:
+          'Muddy Waters allegations largely refuted. FY2026 adj. net revenue $4.655B (guidance), adj. EPS $0.60 (guidance). Financial Services +60% YoY. Deposits grow to $44B. Share dilution moderates to ~5%.',
+        valuationAssumption: '28x forward P/E on FY2026 adj. EPS of $0.60 — premium to bank peers justified by 30%+ revenue growth and improving fee mix',
+        fairValue: '$17',
+        whatMustBeTrue:
+          'Personal loan credit quality confirmed at stated levels. FY2026 guidance reaffirmed at Q1 earnings. Financial Services flywheel continues converting members to multi-product users.',
+      },
+      {
+        label: 'Bull',
+        keyMetrics: { revenue: '$5.0B', eps: '$0.72', targetPE: '38x' },
+        operatingAssumption:
+          'Muddy Waters report fully refuted; stock overhang lifts. FY2026 adj. EPS beats at $0.72. Financial Services +75%+. Fed cuts 2x, boosting student loan refi volume +25%. Deposits reach $50B+. Dilution declines to <3%.',
+        valuationAssumption: '38x forward P/E on FY2026 adj. EPS of $0.72 — justified by 35%+ revenue growth, improving fee mix, and credible path to 15%+ ROE within 2-3 years',
+        fairValue: '$27',
+        whatMustBeTrue:
+          'Charge-off allegations proven false; rate cuts accelerate refi demand; Technology Platform re-accelerates; path to 15%+ ROE becomes credible within 3 years.',
+      },
+    ],
+    currentPriceImplies:
+      'At $17.37, the market prices SOFI at ~29x forward adj. EPS — essentially underwriting base-case guidance execution with no margin of safety. The 2.56x P/TBV implies SoFi delivers 12-15% ROE within 3 years, which requires FY2027-2028 adj. net income of ~$1.3-1.6B on equity that will likely reach $12-14B. That is achievable if the Financial Services flywheel sustains and credit quality is clean — but there is now a live unresolved challenge to the credit assumption that the current price does not discount.',
+    currentPriceImpliesBrief:
+      'Market prices in base-case execution with no buffer — Muddy Waters allegations are the unresolved variable that determines whether this is fair or dangerous.',
+    currentPriceImpliedFacts: [
+      {
+        label: 'Implied FY2026 adj. EPS (at 28x P/E)',
+        value: '~$0.62 — essentially guidance, no miss tolerance',
+      },
+      {
+        label: 'Implied P/TBV',
+        value: '2.56x — requires path to 12-15% ROE within 3 years',
+      },
+      {
+        label: 'Implied charge-off scenario',
+        value: 'Stated 2.9% largely accurate; ~30-50% of Muddy Waters allegations discounted',
+      },
+      {
+        label: 'Implied diluted share growth',
+        value: 'Moderating — market underwriting <8% annual dilution going forward',
+      },
+    ],
+    provisionalConclusion:
+      'Fair — with a binary resolution pending. At $17.37 the stock prices in the base case with essentially no margin of safety. Bull case offers ~55% upside; bear case is ~$8 if Muddy Waters has merit. Wait for management\'s formal, specific response to the charge-off allegations before sizing. The business is genuine; the credit question is not.',
+    technicalCommentary:
+      'RSI (14-day) ~34-37, approaching oversold but not at washout. Price sits below 50-day SMA ($22.50) and 200-day SMA ($26.00), confirming the downtrend. Down ~30% YTD and ~44% from ATH. Muddy Waters overhang means technical exhaustion alone is not a sufficient entry signal — $14-15 range is the next support zone to watch.',
+    technicalSignals: [
+      { label: 'RSI (14-day)', value: '~34-37 — approaching oversold, not yet at washout' },
+      { label: '50-day SMA', value: '$22.50 — price well below (resistance)' },
+      { label: '200-day SMA', value: '$26.00 — price well below (resistance)' },
+      { label: 'YTD decline', value: '~30% from ~$25 highs' },
+      { label: 'ATH decline', value: '~44% from ~$31 ATH' },
+      { label: 'Next support', value: '$14-15 (pre-Muddy Waters base)' },
+    ],
+    risks: [
+      'Muddy Waters charge-off allegations (6.1% vs. 2.9% stated) — if partially validated, material EPS downside and credibility damage',
+      'Ongoing share dilution (~14% in FY2025) eroding per-share value creation',
+      'P/TBV of 2.56x demands 12-15% ROE trajectory — currently only ~5.6% GAAP ROE',
+      'Interest rate risk: personal loan originations sensitive to rate environment; higher rates reduce refi demand',
+      'Deposit concentration: $37.5B in HYSA accounts could face outflows if competitors raise rates or Fed hikes',
+      'Technology Platform (Galileo/Technisys) growth stagnation if fintech client investment budgets remain compressed',
+    ],
+    catalysts: [
+      'Formal management rebuttal to Muddy Waters with specific accounting methodology disclosure',
+      'Q1 2026 earnings reaffirming $0.60 adj. EPS guidance and stable charge-off trends',
+      'Fed rate cut(s) in 2026 boosting student loan refi volume materially',
+      'Financial Services segment becoming the majority of adj. earnings (re-rating trigger)',
+      'Share buyback program announcement (signals SBC dilution is plateauing)',
+    ],
+    monitorNext: [
+      'Management formal response to Muddy Waters: specificity and timeline are the key credibility signals',
+      'Q1 2026 earnings (April/May): charge-off disclosures, provision trends, and guidance reaffirmation',
+      'Sequential personal loan 90-day delinquency and net charge-off data in Q1 2026',
+      'Financial Services segment YoY growth rate in Q1 — sustaining 60%+ is the re-rating catalyst',
+      'Fed rate path: 1-2 cuts would meaningfully boost student loan refi volume',
+      'Diluted share count trajectory — declining toward 5% growth or staying at 10%+',
+    ],
+    sourcesUsed: [
+      {
+        label: 'SoFi Q4 2025 Earnings Release (investors.sofi.com)',
+        url: 'https://investors.sofi.com/financials/quarterly-results/default.aspx',
+      },
+      {
+        label: 'Investing.com — SoFi Q4 2025 Earnings Call Transcript',
+        url: 'https://www.investing.com/news/transcripts/earnings-call-transcript-sofi-technologies-q4-2025-beats-expectations-93CH-4476383',
+      },
+      {
+        label: 'StockAnalysis.com — SOFI Financials',
+        url: 'https://stockanalysis.com/stocks/sofi/financials/',
+      },
+      {
+        label: 'StockAnalysis.com — SOFI Balance Sheet',
+        url: 'https://stockanalysis.com/stocks/sofi/financials/balance-sheet/',
+      },
+      {
+        label: 'Motley Fool — Muddy Waters Short Report Coverage (March 17, 2026)',
+        url: 'https://www.fool.com/coverage/stock-market-today/2026/03/17/stock-market-today-march-17-sofi-technologies-falls-after-short-seller-alleges-aggressive-financial-engineering/',
+      },
+      {
+        label: 'Yahoo Finance — SOFI Q4 2025 Scorecard',
+        url: 'https://finance.yahoo.com/news/scorecard-graded-sofi-technologies-sofi-171053937.html',
+      },
+    ],
+    history: [
+      '2026-03-18: Initial DeepValue Lab analysis at $17.37 (post-Muddy Waters short report). Verdict: fair with binary pending. Thesis: watch.',
+    ],
+  },
 ]
 
 export function getStockByTicker(ticker: string) {
