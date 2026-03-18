@@ -7,7 +7,7 @@ import (
 	"github.com/huangchihan/deepvalue-lab-be/config"
 )
 
-func NewLogger(cfg config.Config) (*zap.Logger, error) {
+func NewLogger(cfg *config.Config) (*zap.Logger, error) {
 	level := zapcore.InfoLevel
 	if err := level.Set(cfg.LogLevel); err != nil {
 		level = zapcore.InfoLevel
