@@ -1,0 +1,17 @@
+version: "2"
+sql:
+  - engine: "sqlite"
+    queries: "turso/query"
+    schema:
+      - "turso/schema.sql"
+
+    gen:
+      go:
+        package: "turso_models"
+        out: "lib/app/turso_models"
+        sql_package: "database/sql"
+        emit_json_tags: true
+        emit_prepared_queries: false
+        emit_interface: false
+        emit_exact_table_names: false
+        emit_empty_slices: false

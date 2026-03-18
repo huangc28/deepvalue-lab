@@ -13,6 +13,13 @@ type Config struct {
 	LogLevel string `mapstructure:"log_level"`
 	RedisURL string `mapstructure:"redis_url"`
 	PGURL    string `mapstructure:"pg_url"`
+
+	TursoSQLite struct {
+		DSN    string `mapstructure:"dsn"`
+		Token  string `mapstructure:"token"`
+		Path   string `mapstructure:"path"`
+		Driver string `mapstructure:"driver"`
+	} `mapstructure:"turso_sqlite"`
 }
 
 func NewViper() *viper.Viper {
@@ -26,6 +33,11 @@ func NewViper() *viper.Viper {
 	v.SetDefault("log_level", "info")
 	v.SetDefault("redis_url", "")
 	v.SetDefault("pg_url", "")
+	v.SetDefault("turso_sqlite.dsn", "")
+	v.SetDefault("turso_sqlite.token", "")
+	v.SetDefault("turso_sqlite.path", "")
+	v.SetDefault("turso_sqlite.driver", "libsql")
+
 	return v
 }
 

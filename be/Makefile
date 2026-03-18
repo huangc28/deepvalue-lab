@@ -40,3 +40,31 @@ deploy/containerapp:
 		--image "$(ACR_IMAGE)" \
 		--target-port $(APP_PORT) \
 		--ingress external
+
+## goose-create: create a Goose migration for Turso SQLite.
+.PHONY: goose-create
+goose-create:
+	@if [ -z "$(name)" ]; then \
+		echo "Error: Missing migration name."; \
+		echo "Usage: make goose-create name=add_documents_table"; \
+		exit 1; \
+	fi
+	@mkdir -p turso/migrations
+	goose -dir turso/migrations create "$(name)" sql
+
+## turso-schema-dump: dump live Turso SQLite schema into turso/schema.sql.
+.PHONY: turso-schema-dump
+turso-schema-dump:
+	@if [ -z "$(db)" ]; then \
+		echo "Error: Missing Turso DB name."; \
+		echo "Usage: make turso-schema-dump db=my-turso-db"; \
+		exit 1; \
+	fi
+	@mkdir -p turso
+	turso db shell "$(db)" ".schema" > turso/schema.sql
+	@echo "Schema written to turso/schema.sql"
+
+## gen/sqlc: generate Go code from sqlc.yaml.
+.PHONY: gen/sqlc
+gen/sqlc:
+	sqlc generate
