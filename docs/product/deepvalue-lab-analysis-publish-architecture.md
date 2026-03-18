@@ -267,31 +267,19 @@ Queries implemented:
 - [x] Implement `UploadMarkdown(ctx, key, content string) error`
 - [x] R2 key helper `ReportKey(ticker, date, reportID)` → `reports/{ticker}/{YYYYMMDD}/{id}.md`
 
-### Phase 3 — API Handlers
+### Phase 3 — API Handlers ✅
 
-Handler per endpoint, each registered via `router.AsRoute`:
+- [x] `be/lib/app/stocks/list_handler.go` — `GET /v1/stocks`
+- [x] `be/lib/app/stocks/detail_handler.go` — `GET /v1/stocks/{ticker}`
+- [x] `be/lib/app/stocks/reports_list_handler.go` — `GET /v1/stocks/{ticker}/reports`
+- [x] `be/lib/app/stocks/publish_handler.go` — `POST /v1/stocks/{ticker}/reports`
+- [x] `be/lib/app/subscriptions/create_handler.go` — `POST /v1/subscriptions`
+- [x] All handlers registered in `cmd/server/main.go`
 
-- [ ] `be/lib/app/stocks/list_handler.go` — `GET /v1/stocks`
-- [ ] `be/lib/app/stocks/detail_handler.go` — `GET /v1/stocks/:ticker`
-- [ ] `be/lib/app/stocks/reports_list_handler.go` — `GET /v1/stocks/:ticker/reports`
-- [ ] `be/lib/app/stocks/publish_handler.go` — `POST /v1/stocks/:ticker/reports`
-- [ ] `be/lib/app/subscriptions/create_handler.go` — `POST /v1/subscriptions`
+### Phase 4 — Fx Wiring ✅
 
-Publish handler logic:
-
-1. validate `stockDetail` shape (required top-level fields)
-2. generate `reportId` as `{TICKER}-{YYYYMMDD}-{shortUUID}`
-3. upload markdown to R2 at `reports/{ticker}/{YYYYMMDD}/{reportId}.md`
-4. insert row into `stock_reports`
-5. upsert row into `published_stock_details`
-6. upsert row into `subscriptions` (auto-subscribe, status `active`)
-7. return `201` with `reportId`, `r2Key`, `ticker`, `publishedAtMs`
-
-### Phase 4 — Fx Wiring
-
-- [ ] Register all new handlers in `be/lib/app/fx/core.go`
-- [ ] Provide R2 client in Fx module
-- [ ] Provide sqlc Queries scoped to stock domain (or reuse existing Turso client)
+- [x] sqlite client, turso_models Queries, R2 client provided in `lib/app/fx/core.go` (done in Phase 2)
+- [x] All handlers registered via `router.AsRoute` in `cmd/server/main.go`
 
 ### Phase 5 — Validation
 
