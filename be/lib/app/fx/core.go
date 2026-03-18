@@ -7,6 +7,7 @@ import (
 	"github.com/huangchihan/deepvalue-lab-be/config"
 	"github.com/huangchihan/deepvalue-lab-be/db"
 	"github.com/huangchihan/deepvalue-lab-be/lib/app/turso_models"
+	httpserver "github.com/huangchihan/deepvalue-lab-be/lib/http"
 	"github.com/huangchihan/deepvalue-lab-be/lib/logs"
 	"github.com/huangchihan/deepvalue-lab-be/lib/pkg/r2"
 	"github.com/huangchihan/deepvalue-lab-be/lib/pkg/sqlite"
@@ -23,6 +24,7 @@ var CoreAppOptions = fx.Options(
 		provideTursoQueries,
 	),
 	r2.Module,
+	httpserver.Module,
 )
 
 func provideTursoQueries(client *sqlite.Client) *turso_models.Queries {
