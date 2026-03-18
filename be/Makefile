@@ -41,6 +41,26 @@ deploy/containerapp:
 		--target-port $(APP_PORT) \
 		--ingress external
 
+## migrate/up: apply all pending migrations to Turso.
+.PHONY: migrate/up
+migrate/up:
+	go run ./cmd/migrate up
+
+## migrate/down: roll back the last migration.
+.PHONY: migrate/down
+migrate/down:
+	go run ./cmd/migrate down
+
+## migrate/status: show migration status.
+.PHONY: migrate/status
+migrate/status:
+	go run ./cmd/migrate status
+
+## migrate/reset: roll back all migrations.
+.PHONY: migrate/reset
+migrate/reset:
+	go run ./cmd/migrate reset
+
 ## goose-create: create a Goose migration for Turso SQLite.
 .PHONY: goose-create
 goose-create:
@@ -51,6 +71,24 @@ goose-create:
 	fi
 	@mkdir -p turso/migrations
 	goose -dir turso/migrations create "$(name)" sql
+
+## turso-migrate: apply a single goose migration file to the Turso DB.
+## Usage: make turso-migrate db=deepvalue-lab file=turso/migrations/20260318065637_stock_domain.sql
+.PHONY: turso-migrate
+turso-migrate:
+	@if [ -z "$(db)" ]; then \
+		echo "Error: Missing Turso DB name."; \
+		echo "Usage: make turso-migrate db=my-turso-db file=turso/migrations/xxx.sql"; \
+		exit 1; \
+	fi
+	@if [ -z "$(file)" ]; then \
+		echo "Error: Missing migration file."; \
+		echo "Usage: make turso-migrate db=my-turso-db file=turso/migrations/xxx.sql"; \
+		exit 1; \
+	fi
+	@awk '/-- \+goose Up/{p=1;next} /-- \+goose Down/{p=0} /-- \+goose Statement/{next} p' $(file) \
+		| turso db shell "$(db)"
+	@echo "Migration applied: $(file)"
 
 ## turso-schema-dump: dump live Turso SQLite schema into turso/schema.sql.
 .PHONY: turso-schema-dump

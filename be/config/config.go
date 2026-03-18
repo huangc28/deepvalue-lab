@@ -20,6 +20,14 @@ type Config struct {
 		Path   string `mapstructure:"path"`
 		Driver string `mapstructure:"driver"`
 	} `mapstructure:"turso_sqlite"`
+
+	R2 struct {
+		AccountID       string `mapstructure:"account_id"`
+		Bucket          string `mapstructure:"bucket"`
+		AccessKeyID     string `mapstructure:"access_key_id"`
+		SecretAccessKey string `mapstructure:"secret_access_key"`
+		PublicBaseURL   string `mapstructure:"public_base_url"`
+	} `mapstructure:"r2"`
 }
 
 func NewViper() *viper.Viper {
@@ -37,6 +45,12 @@ func NewViper() *viper.Viper {
 	v.SetDefault("turso_sqlite.token", "")
 	v.SetDefault("turso_sqlite.path", "")
 	v.SetDefault("turso_sqlite.driver", "libsql")
+
+	v.SetDefault("r2.account_id", "")
+	v.SetDefault("r2.bucket", "")
+	v.SetDefault("r2.access_key_id", "")
+	v.SetDefault("r2.secret_access_key", "")
+	v.SetDefault("r2.public_base_url", "")
 
 	return v
 }

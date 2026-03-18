@@ -24,3 +24,27 @@ type GooseDbVersion struct {
 	IsApplied int64        `json:"is_applied"`
 	Tstamp    sql.NullTime `json:"tstamp"`
 }
+
+type PublishedStockDetail struct {
+	Ticker        string `json:"ticker"`
+	ReportID      string `json:"report_id"`
+	StockDetail   string `json:"stock_detail"`
+	PublishedAtMs int64  `json:"published_at_ms"`
+	UpdatedAtMs   int64  `json:"updated_at_ms"`
+}
+
+type StockReport struct {
+	ID            string `json:"id"`
+	Ticker        string `json:"ticker"`
+	R2Key         string `json:"r2_key"`
+	Provenance    string `json:"provenance"`
+	PublishedAtMs int64  `json:"published_at_ms"`
+	CreatedAtMs   int64  `json:"created_at_ms"`
+}
+
+type Subscription struct {
+	Ticker      string `json:"ticker"`
+	Status      string `json:"status"`
+	CreatedAtMs int64  `json:"created_at_ms"`
+	UpdatedAtMs int64  `json:"updated_at_ms"`
+}

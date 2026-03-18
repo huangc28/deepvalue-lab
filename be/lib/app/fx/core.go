@@ -6,7 +6,10 @@ import (
 	"github.com/huangchihan/deepvalue-lab-be/cache"
 	"github.com/huangchihan/deepvalue-lab-be/config"
 	"github.com/huangchihan/deepvalue-lab-be/db"
+	"github.com/huangchihan/deepvalue-lab-be/lib/app/turso_models"
 	"github.com/huangchihan/deepvalue-lab-be/lib/logs"
+	"github.com/huangchihan/deepvalue-lab-be/lib/pkg/r2"
+	"github.com/huangchihan/deepvalue-lab-be/lib/pkg/sqlite"
 )
 
 var CoreAppOptions = fx.Options(
@@ -16,5 +19,12 @@ var CoreAppOptions = fx.Options(
 		logs.NewLogger,
 		db.NewSQLXPostgresDB,
 		cache.NewRedis,
+		sqlite.NewClient,
+		provideTursoQueries,
 	),
+	r2.Module,
 )
+
+func provideTursoQueries(client *sqlite.Client) *turso_models.Queries {
+	return turso_models.New(client.DB)
+}
