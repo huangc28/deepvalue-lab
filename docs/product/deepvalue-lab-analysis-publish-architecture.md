@@ -281,14 +281,14 @@ Queries implemented:
 - [x] sqlite client, turso_models Queries, R2 client provided in `lib/app/fx/core.go` (done in Phase 2)
 - [x] All handlers registered via `router.AsRoute` in `cmd/server/main.go`
 
-### Phase 5 — Validation
+### Phase 5 — Validation ✅
 
-- [ ] `go build ./...` passes
-- [ ] `GET /v1/stocks` returns empty array on fresh DB (not 500)
-- [ ] `POST /v1/subscriptions` creates subscription
-- [ ] `POST /v1/stocks/TSM/reports` with a real TSM payload uploads to R2 and populates DB
-- [ ] `GET /v1/stocks` returns TSM summary after publish
-- [ ] `GET /v1/stocks/TSM` returns full `StockDetail` after publish
-- [ ] `GET /v1/stocks/TSM/reports` returns one report metadata entry
-- [ ] Second publish to TSM creates a second `stock_reports` row and updates `published_stock_details`
-- [ ] `GET /v1/stocks/UNKNOWN` returns `404`
+- [x] `go build ./...` passes
+- [x] `GET /v1/stocks` returns empty array on fresh DB (not 500)
+- [x] `POST /v1/subscriptions` creates subscription → `{"ticker":"TSM","status":"active"}`
+- [x] `POST /v1/stocks/TSM/reports` uploads to R2 and populates DB → returns `reportId`, `r2Key`
+- [x] `GET /v1/stocks` returns TSM summary after publish (`stocks` length = 1)
+- [x] `GET /v1/stocks/TSM` returns full `StockDetail` after publish
+- [x] `GET /v1/stocks/TSM/reports` returns one report metadata entry
+- [x] Second publish to TSM creates a second `stock_reports` row (count = 2) and updates `published_stock_details` (currentPrice updated)
+- [x] `GET /v1/stocks/UNKNOWN` returns `404`

@@ -16,6 +16,7 @@ var CoreAppOptions = fx.Options(
 	fx.Provide(
 		config.NewViper,
 		config.NewConfig,
+		func(cfg config.Config) *config.Config { return &cfg },
 		logs.NewLogger,
 		db.NewSQLXPostgresDB,
 		cache.NewRedis,
