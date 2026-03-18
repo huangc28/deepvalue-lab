@@ -5,11 +5,6 @@ description: Analyze a public company using the DeepValue Lab methodology for st
 
 # DeepValue Stock Analysis
 
-Canonical repo skill source:
-- `/Users/huangchihan/develop/profound-stock/.agents/skills/deepvalue-stock-analysis/SKILL.md`
-
-Keep this Claude project-scope copy aligned with the canonical repo skill when the methodology changes.
-
 Use this skill to produce a DeepValue Lab quality stock analysis report.
 
 This skill is for analysis quality and execution consistency. It is not a generic stock-summary skill.
@@ -43,8 +38,9 @@ Follow this workflow in order:
 10. Determine technical entry status.
 11. Write the report using the required contract.
 12. Generate the structured `StockDetail` data object for the frontend.
-13. Perform a completion check before finishing.
-14. Perform a benchmark quality check before finishing.
+13. Save both artifacts to the research archive.
+14. Perform a completion check before finishing.
+15. Perform a benchmark quality check before finishing.
 
 ## NotebookLM Rule
 
@@ -231,13 +227,44 @@ These fields are calculated during transform, not pulled from report text:
 - `dashboardBucket`: derived from `actionState`
 - Upside/downside percentages: derived from `currentPrice` vs bull/bear fair values
 
-### Output Location
+### Save To Research Archive
 
-- Write the `StockDetail` object as a new entry or update in `web/src/data/mock-stocks.ts`
-- If the stock already exists in the array, replace its entry
-- If new, append to the `mockStocks` array
+After generating both artifacts, save them to the local research archive:
+
+1. Write the markdown report to `research/archive/YYYY/MM/DD/<TICKER>-analysis.md`.
+2. Write the `StockDetail` JSON to `research/archive/YYYY/MM/DD/<TICKER>-stock-detail.json`.
+
+Use the analysis date for the path. Create intermediate directories if they do not exist.
+
+This step is mandatory for every substantial analysis. The archive is the source of truth for historical reproducibility.
+
+### Output and Publish
+
+After generating the `StockDetail` JSON:
+
+1. Ask the user whether to publish to the backend.
+2. If the user confirms, publish via `POST http://localhost:9000/v1/stocks/{TICKER}/reports` with the request body:
+   ```json
+   {
+     "report": {
+       "markdown": "<full markdown report>",
+       "provenance": "<model id used for analysis>"
+     },
+     "stockDetail": { ...StockDetail JSON... }
+   }
+   ```
+3. Verify the response is `201` and includes `reportId`, `r2ReportKey`, `r2DetailKey`.
+4. If the user declines, skip publish. The report and structured data remain in the conversation only.
+
+The backend stores the full `StockDetail` JSON in R2 and a compact summary in Turso. The markdown report is also stored in R2.
+
+Do not publish automatically. Always ask first.
+
+Notes:
+
 - English-only content uses plain strings; bilingual stocks (like TSM) use `{ en, 'zh-TW' }` objects
 - Default to English-only unless the user requests bilingual content
+- The server port defaults to `9000` (from `.env` `APP_PORT`); adjust if the user's server runs on a different port
 
 ### Validation
 
@@ -246,7 +273,7 @@ After generating the structured data:
 - Verify the object satisfies the `StockDetail` interface (all required fields present)
 - Verify fair values in scenarios match the summary-level `bearFairValue` / `baseFairValue` / `bullFairValue`
 - Verify `discountToBase` is correctly computed
-- Run `cd web && pnpm lint && pnpm build` to confirm type safety
+- If published, verify the `201` response from the backend
 
 ## Guardrails
 
@@ -287,8 +314,10 @@ If any of these are missing, keep working.
 
 Also verify that:
 
-- the `StockDetail` object was generated and written to `mock-stocks.ts`
-- `pnpm lint` and `pnpm build` pass after the structured data update
+- the `StockDetail` object was generated
+- both artifacts were saved to `research/archive/YYYY/MM/DD/`
+- the user was asked whether to publish to the backend
+- if published, the backend returned `201` with valid `reportId` and R2 keys
 
 Then check whether the report meets the DeepValue Lab benchmark quality bar.
 

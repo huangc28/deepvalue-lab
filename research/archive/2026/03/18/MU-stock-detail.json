@@ -1,0 +1,177 @@
+{
+  "id": "MU",
+  "ticker": "MU",
+  "companyName": "Micron Technology, Inc.",
+  "businessType": "Cyclical / capital-intensive semiconductor memory (DRAM + NAND + HBM)",
+  "currentPrice": 462,
+  "valuationStatus": "fair",
+  "newsImpactStatus": "improving",
+  "thesisStatus": "intact",
+  "technicalEntryStatus": "stretched",
+  "actionState": "fairly valued",
+  "dashboardBucket": "needs-review",
+  "baseFairValue": 375,
+  "bearFairValue": 155,
+  "bullFairValue": 650,
+  "discountToBase": 23.2,
+  "summary": "MU is the primary Western beneficiary of the AI memory supercycle with HBM sold out through 2026, but at $462 the stock trades 23% above base-case fair value. Thesis intact, but entry timing is stretched — wait for a pullback into the $350-400 range.",
+  "lastUpdated": "2026-03-18",
+  "thesisStatement": "Micron is the primary Western beneficiary of an AI-driven memory supercycle. HBM demand structurally lifts earnings power above historical mid-cycle levels, while tight industry supply discipline sustains pricing longer than in previous memory cycles.",
+  "thesisBullets": [
+    "HBM sold out through calendar 2026 with binding agreements",
+    "Cloud Memory revenue doubled YoY to $5.3B in FQ1 (39% of revenue)",
+    "DRAM/NAND prices surged ~90% QoQ in early 2026",
+    "FQ2 guidance implies 68% gross margin — unprecedented for Micron",
+    "Capex rising to $20B in FY2026 to support HBM capacity"
+  ],
+  "variantPerception": "The market is pricing MU as though HBM has permanently cured memory cyclicality. It probably hasn't. At ~14x FY2026 consensus EPS of $33, MU looks optically cheap, but P/E looks cheapest at cyclical peaks. Conventional DRAM and NAND (still 60%+ of revenue) remain commodity markets that will normalize. A 68% gross margin is not sustainable — 45-50% is a more realistic mid-cycle with HBM structural uplift.",
+  "valuationLens": {
+    "primary": "Normalized EPS x mid-cycle P/E",
+    "crossCheck": "EV/EBIT on normalized operating income (~12.4x on FY26E peak)",
+    "rationale": "Standard cyclical framework. For memory, the key is estimating sustainable mid-cycle margins, not peak-quarter margins. FCF yield is a poor cross-check because $20B capex distorts near-term free cash flow."
+  },
+  "currentValuationSnapshot": {
+    "marketCap": "~$497B",
+    "enterpriseValue": "~$497B ($497B + $11.8B debt - $12B cash)",
+    "multiples": [
+      "Forward P/E (FY26): 13.8x on consensus $33.38 EPS",
+      "EV/EBIT (FY26E): ~12.4x on peak operating income",
+      "FQ1 gross margin: 56.8%, FQ2 guided: ~68%",
+      "Through-cycle average GM (2015-2023): ~30-35%"
+    ],
+    "balanceSheetNote": "Net debt approximately zero ($11.8B debt vs $12B cash). Balance sheet healthy, but $20B capex (~27% of FY26 revenue) reflects capital intensity."
+  },
+  "newsToModel": [
+    {
+      "event": "FQ2 guided revenue $18.7B (+37% QoQ) with 68% gross margin",
+      "modelVariableChanged": "Revenue, gross margin",
+      "impact": "Pushes FY26 EPS consensus above $33; validates near-term AI demand acceleration",
+      "affectedScenario": "Base and Bull — strengthens both"
+    },
+    {
+      "event": "HBM supply sold out through CY2026 with binding agreements",
+      "modelVariableChanged": "Revenue visibility, pricing",
+      "impact": "Reduces near-term downside risk; HBM revenue run-rate ~$8B annualized",
+      "affectedScenario": "Base — floor under HBM contribution"
+    },
+    {
+      "event": "DRAM/NAND prices jumped 90% QoQ in Q1 2026",
+      "modelVariableChanged": "Revenue, margin",
+      "impact": "Extraordinary price spike raises peak earnings but raises sustainability question",
+      "affectedScenario": "Bull short-term, Bear medium-term — extreme price moves often precede reversals"
+    },
+    {
+      "event": "Applied Materials partnership for next-gen DRAM/HBM/NAND co-development",
+      "modelVariableChanged": "Capex efficiency, technology competitiveness",
+      "impact": "Modest positive for maintaining technology edge; no near-term P&L impact",
+      "affectedScenario": "All scenarios — technology risk mitigation"
+    },
+    {
+      "event": "HBM market share: Micron ~11-21%, SK Hynix ~53-62%, Samsung recovering",
+      "modelVariableChanged": "Market share, competitive risk",
+      "impact": "Micron is smallest HBM player; share gains possible but Samsung catching up is a risk",
+      "affectedScenario": "Bear — Samsung recovery pressures pricing; Bull — Micron gains toward 25%"
+    },
+    {
+      "event": "FY26 capex raised to $20B from $18B",
+      "modelVariableChanged": "FCF, capital intensity",
+      "impact": "Higher capex depresses near-term FCF and increases cyclical risk if downturn arrives mid-build",
+      "affectedScenario": "Bear — stranded capacity risk"
+    }
+  ],
+  "scenarios": [
+    {
+      "label": "Bear",
+      "keyMetrics": {
+        "revenue": "$55B",
+        "eps": "$11.00",
+        "targetPE": "14x"
+      },
+      "operatingAssumption": "FY2027: Memory cycle peaks mid-FY26 and normalizes. Revenue $55B, gross margin 38% as conventional DRAM/NAND reprices down while HBM mix limits the trough.",
+      "valuationAssumption": "14x forward P/E — early recovery pricing for a cyclical at trough earnings.",
+      "fairValue": "$155",
+      "whatMustBeTrue": "DRAM/NAND supply catches up as all three makers spend heavily. Samsung HBM4 catches up and pressures HBM pricing. AI capex growth decelerates. 90% QoQ price increases prove to be the cycle peak."
+    },
+    {
+      "label": "Base",
+      "keyMetrics": {
+        "revenue": "$70B",
+        "eps": "$20.70",
+        "targetPE": "18x"
+      },
+      "operatingAssumption": "FY2027: HBM structurally lifts mid-cycle. Revenue $70B, gross margin 48% as HBM sustains premium pricing but conventional memory normalizes from peak.",
+      "valuationAssumption": "18x P/E — premium over historical memory multiples reflecting structural HBM growth layer.",
+      "fairValue": "$375",
+      "whatMustBeTrue": "AI capex continues at current or higher levels through 2027. HBM remains supply-constrained with 3 disciplined suppliers. Conventional DRAM/NAND reprices down 20-30% from peak but doesn't collapse."
+    },
+    {
+      "label": "Bull",
+      "keyMetrics": {
+        "revenue": "$90B",
+        "eps": "$32.50",
+        "targetPE": "20x"
+      },
+      "operatingAssumption": "FY2027: AI supercycle extends, HBM TAM toward $80-100B. Revenue $90B, gross margin 55% with HBM revenue reaching $20B+.",
+      "valuationAssumption": "20x P/E — reflects sustained structural growth and pricing power in AI memory.",
+      "fairValue": "$650",
+      "whatMustBeTrue": "HBM TAM grows to $80B+ by 2027. Micron gains share to 20-25%. AI capex accelerates. Memory supply discipline holds despite massive industry capex."
+    }
+  ],
+  "currentPriceImplies": "At $462, the market is pricing in a scenario between base and bull — that HBM has permanently elevated Micron's earnings power to ~$25-30 sustainable EPS and that a conventional memory downturn either won't happen or will be shallow. At 18x sustainable EPS, the stock implies ~$25.70 in ongoing earnings, well above the base case of $20.70. The market has fully priced out a normal cyclical downturn (198% premium to bear) and requires HBM to over-deliver to justify the current price (23% premium to base). The key risk: if gross margins normalize to 45% instead of 50-55%, EPS drops to $18-22 and the stock needs to re-rate significantly lower.",
+  "currentPriceImpliesBrief": "Market prices in sustained $25-30 EPS — between base and bull, fully pricing out a normal memory cycle downturn.",
+  "currentPriceImpliedFacts": [
+    { "label": "Implied Sustainable EPS (at 18x)", "value": "~$25.70 — midpoint between base and bull" },
+    { "label": "Implied Gross Margin", "value": "~50-55% on $70-75B revenue — above historical mid-cycle, below current 68%" },
+    { "label": "Premium to Base Case", "value": "+23% — stock needs HBM to over-deliver" },
+    { "label": "Premium to Bear Case", "value": "+198% — market has fully priced out cyclical downturn" },
+    { "label": "Discount to Bull Case", "value": "-29% — upside only if supercycle extends" }
+  ],
+  "provisionalConclusion": "Fair, but at the upper edge — closer to slightly rich for a cyclical. MU at $462 sits 23% above base-case fair value of $375 and requires a scenario between base and bull to justify. Paying 14x peak earnings for a cyclical memory company assumes a margin of safety that doesn't exist. For a new position: wait for a pullback into the $350-400 range. For existing holders: thesis intact, but adding at $462 carries meaningful cyclical risk.",
+  "technicalCommentary": "MU has rallied 21.6% in 2 weeks and +49% YTD, trading at all-time highs ahead of FQ2 earnings. The dominant pattern is a momentum chase into earnings — no technical washout or mean-reversion setup exists. Even if FQ2 beats, the stock may sell the news if guidance doesn't accelerate further.",
+  "technicalSignals": [
+    { "label": "2-Week Move", "value": "+21.6%" },
+    { "label": "YTD Performance", "value": "+49%" },
+    { "label": "RSI (14-day)", "value": "32-52 (mixed readings, post-rally)" },
+    { "label": "Support", "value": "$420 / $410" },
+    { "label": "52-Week Range", "value": "$61.54 - $455.50" }
+  ],
+  "risks": [
+    "Memory cycle peak: 68% GM and 90% QoQ price increases are historically unsustainable",
+    "Samsung HBM4 catch-up could erode Micron's HBM pricing power",
+    "AI capex deceleration by hyperscalers would reduce HBM demand outlook",
+    "$20B capex creates stranded capacity risk if downturn arrives mid-build",
+    "Micron is smallest HBM player (~11-21% share) — vulnerable to competitive share shifts",
+    "Conventional DRAM/NAND oversupply as all three makers expand capacity simultaneously"
+  ],
+  "catalysts": [
+    "FQ2 results tonight (March 18) — beat + strong FQ3 guide could push stock higher",
+    "HBM4 ramp in Q2 CY2026 with high yields — technology leadership confirmation",
+    "HBM TAM expansion from $35B to $100B by 2028 if AI capex accelerates",
+    "Market share gains in HBM toward 20-25% from current 11-21%",
+    "Applied Materials partnership improving next-gen technology cost structure"
+  ],
+  "monitorNext": [
+    "FQ2 2026 results (tonight): FQ3 guidance more important than FQ2 actuals — any deceleration signals peak",
+    "Gross margin trajectory: whether 68% is the high-water mark or sustained",
+    "DRAM/NAND spot pricing via TrendForce and DRAMeXchange — watch for stabilization or reversal",
+    "Samsung HBM4 qualification status with NVIDIA",
+    "Hyperscaler AI capex guidance in April-May earnings (MSFT, GOOG, AMZN, META)",
+    "Micron's HBM market share trend in FQ2",
+    "Industry capex discipline: oversupply signals in conventional DRAM/NAND by late 2026"
+  ],
+  "sourcesUsed": [
+    { "label": "Micron FQ1 2026 Earnings Release", "url": "https://investors.micron.com/news-releases/news-release-details/micron-technology-inc-reports-results-first-quarter-fiscal-2026" },
+    { "label": "Micron FQ1 2026 Earnings Call Prepared Remarks", "url": "https://investors.micron.com/static-files/088991c5-a249-4f66-a0a6-258d9b66f3f9" },
+    { "label": "Futurum: Micron Q1 FY 2026 Sets Records", "url": "https://futurumgroup.com/insights/micron-technology-q1-fy-2026-sets-records-strong-q2-outlook/" },
+    { "label": "Motley Fool: Micron Stock Will Soar Higher After March 18", "url": "https://www.fool.com/investing/2026/03/16/prediction-micron-technology-stock-will-soar-highe/" },
+    { "label": "Astute Group: HBM Market Share 2026", "url": "https://www.astutegroup.com/news/general/sk-hynix-holds-62-of-hbm-micron-overtakes-samsung-2026-battle-pivots-to-hbm4/" },
+    { "label": "TrendForce: Global DRAM Revenue Q3 2025", "url": "https://www.trendforce.com/presscenter/news/20251126-12802.html" },
+    "Simply Wall St: Micron AI-Focused DRAM and HBM Partnership (2026)",
+    "Meyka: MU pre-market March 18 2026",
+    "Yahoo Finance: MU price and market data (March 2026)",
+    "Counterpoint Research: DRAM/NAND pricing data (Q1 2026)"
+  ],
+  "history": [
+    "2026-03-18: Initial DeepValue Lab analysis. Fair but at upper edge for a cyclical — 23% premium to base case. Thesis intact, technical entry stretched. Wait for $350-400 pullback."
+  ]
+}
