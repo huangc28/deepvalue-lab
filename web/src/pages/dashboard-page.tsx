@@ -2,6 +2,8 @@ import { startTransition, useDeferredValue, useMemo, useState } from 'react'
 
 import { CompanyCard } from '../components/dashboard/company-card'
 import { WatchlistTable } from '../components/dashboard/watchlist-table'
+import { ErrorState } from '../components/ui/error-state'
+import { LoadingState } from '../components/ui/loading-state'
 import { MetricBlock } from '../components/ui/metric-block'
 import {
   Panel,
@@ -11,17 +13,20 @@ import {
 } from '../components/ui/panel'
 import { AccentBadge } from '../components/ui/status-badge'
 import { TerminalLabel } from '../components/ui/terminal-label'
-import { getDashboardCounts, mockStocks } from '../data/mock-stocks'
 import { useI18n } from '../i18n/context'
 import { flattenLocalizedText } from '../i18n/utils'
+import { computeDashboardCounts, useStocks } from '../lib/queries'
 import type { DashboardBucket, StockSummary } from '../types/stocks'
 
 type ViewMode = 'cards' | 'table'
 type SortMode = 'most-actionable' | 'largest-discount' | 'recently-updated'
 
+const EMPTY_STOCKS: StockSummary[] = []
+
 export function DashboardPage() {
   const { m } = useI18n()
-  const counts = getDashboardCounts()
+  const { data: stocks = EMPTY_STOCKS, isLoading, error } = useStocks()
+  const counts = useMemo(() => computeDashboardCounts(stocks), [stocks])
   const [viewMode, setViewMode] = useState<ViewMode>('cards')
   const [bucketFilter, setBucketFilter] = useState<DashboardBucket | 'all'>(
     'all',
@@ -47,7 +52,7 @@ export function DashboardPage() {
   const filteredStocks = useMemo(() => {
     const normalizedQuery = deferredQuery.trim().toLowerCase()
 
-    return mockStocks
+    return stocks
       .filter((stock) => {
         if (bucketFilter !== 'all' && stock.dashboardBucket !== bucketFilter) {
           return false
@@ -62,7 +67,10 @@ export function DashboardPage() {
         return haystack.includes(normalizedQuery)
       })
       .toSorted(sortStocks(sortMode))
-  }, [bucketFilter, deferredQuery, sortMode])
+  }, [stocks, bucketFilter, deferredQuery, sortMode])
+
+  if (isLoading) return <LoadingState label="deepvalue-lab://watchlist" />
+  if (error) return <ErrorState label="deepvalue-lab://watchlist" />
 
   return (
     <div className="flex flex-col gap-8">

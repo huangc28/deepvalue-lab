@@ -4,6 +4,8 @@ import { Link } from '@tanstack/react-router'
 
 import { ExpectationBridge } from '../components/detail/expectation-bridge'
 import { ScenarioCard } from '../components/detail/scenario-card'
+import { ErrorState } from '../components/ui/error-state'
+import { LoadingState } from '../components/ui/loading-state'
 import { MetricBlock } from '../components/ui/metric-block'
 import { Panel, PanelBody, PanelChrome } from '../components/ui/panel'
 import {
@@ -14,8 +16,9 @@ import {
   ValuationBadge,
 } from '../components/ui/status-badge'
 import { TerminalLabel } from '../components/ui/terminal-label'
-import { getStockByTicker } from '../data/mock-stocks'
 import { useI18n } from '../i18n/context'
+import { ApiError } from '../lib/api'
+import { useStock } from '../lib/queries'
 import type { FactItem } from '../types/stocks'
 
 interface StockDetailPageProps {
@@ -24,9 +27,11 @@ interface StockDetailPageProps {
 
 export function StockDetailPage({ ticker }: StockDetailPageProps) {
   const { m, text } = useI18n()
-  const stock = getStockByTicker(ticker)
+  const { data: stock, isLoading, error } = useStock(ticker)
 
-  if (!stock) {
+  if (isLoading) return <LoadingState label={`deepvalue-lab://stocks/${ticker}`} />
+
+  if (error instanceof ApiError && error.status === 404) {
     return (
       <section className="rounded-[1.75rem] border border-dashed border-[var(--line-strong)] bg-[var(--surface-panel)] p-10">
         <p className="font-mono text-sm font-semibold uppercase tracking-[0.2em] text-[var(--ink-muted)]">
@@ -44,6 +49,8 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
       </section>
     )
   }
+
+  if (error || !stock) return <ErrorState label={`deepvalue-lab://stocks/${ticker}`} />
 
   const nearestScenario = getNearestScenario(stock)
 
