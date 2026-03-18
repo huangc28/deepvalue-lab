@@ -10,7 +10,7 @@ import (
 )
 
 const getPublishedStockDetail = `-- name: GetPublishedStockDetail :one
-SELECT ticker, report_id, stock_detail, published_at_ms, updated_at_ms FROM published_stock_details
+SELECT ticker, report_id, r2_report_key, r2_detail_key, summary_json, published_at_ms, updated_at_ms FROM published_stock_details
 WHERE ticker = ?
 LIMIT 1
 `
@@ -21,7 +21,9 @@ func (q *Queries) GetPublishedStockDetail(ctx context.Context, ticker string) (P
 	err := row.Scan(
 		&i.Ticker,
 		&i.ReportID,
-		&i.StockDetail,
+		&i.R2ReportKey,
+		&i.R2DetailKey,
+		&i.SummaryJson,
 		&i.PublishedAtMs,
 		&i.UpdatedAtMs,
 	)
@@ -105,7 +107,7 @@ func (q *Queries) ListActiveSubscriptions(ctx context.Context) ([]Subscription, 
 }
 
 const listPublishedStockDetails = `-- name: ListPublishedStockDetails :many
-SELECT ticker, report_id, stock_detail, published_at_ms, updated_at_ms FROM published_stock_details
+SELECT ticker, report_id, r2_report_key, r2_detail_key, summary_json, published_at_ms, updated_at_ms FROM published_stock_details
 ORDER BY updated_at_ms DESC
 `
 
@@ -121,7 +123,9 @@ func (q *Queries) ListPublishedStockDetails(ctx context.Context) ([]PublishedSto
 		if err := rows.Scan(
 			&i.Ticker,
 			&i.ReportID,
-			&i.StockDetail,
+			&i.R2ReportKey,
+			&i.R2DetailKey,
+			&i.SummaryJson,
 			&i.PublishedAtMs,
 			&i.UpdatedAtMs,
 		); err != nil {
@@ -175,11 +179,13 @@ func (q *Queries) ListStockReportsByTicker(ctx context.Context, ticker string) (
 }
 
 const upsertPublishedStockDetail = `-- name: UpsertPublishedStockDetail :exec
-INSERT INTO published_stock_details (ticker, report_id, stock_detail, published_at_ms)
-VALUES (?, ?, ?, ?)
+INSERT INTO published_stock_details (ticker, report_id, r2_report_key, r2_detail_key, summary_json, published_at_ms)
+VALUES (?, ?, ?, ?, ?, ?)
 ON CONFLICT(ticker) DO UPDATE SET
   report_id       = excluded.report_id,
-  stock_detail    = excluded.stock_detail,
+  r2_report_key   = excluded.r2_report_key,
+  r2_detail_key   = excluded.r2_detail_key,
+  summary_json    = excluded.summary_json,
   published_at_ms = excluded.published_at_ms,
   updated_at_ms   = (unixepoch('now') * 1000)
 `
@@ -187,7 +193,9 @@ ON CONFLICT(ticker) DO UPDATE SET
 type UpsertPublishedStockDetailParams struct {
 	Ticker        string `json:"ticker"`
 	ReportID      string `json:"report_id"`
-	StockDetail   string `json:"stock_detail"`
+	R2ReportKey   string `json:"r2_report_key"`
+	R2DetailKey   string `json:"r2_detail_key"`
+	SummaryJson   string `json:"summary_json"`
 	PublishedAtMs int64  `json:"published_at_ms"`
 }
 
@@ -195,7 +203,9 @@ func (q *Queries) UpsertPublishedStockDetail(ctx context.Context, arg UpsertPubl
 	_, err := q.db.ExecContext(ctx, upsertPublishedStockDetail,
 		arg.Ticker,
 		arg.ReportID,
-		arg.StockDetail,
+		arg.R2ReportKey,
+		arg.R2DetailKey,
+		arg.SummaryJson,
 		arg.PublishedAtMs,
 	)
 	return err

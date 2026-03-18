@@ -28,7 +28,9 @@ type GooseDbVersion struct {
 type PublishedStockDetail struct {
 	Ticker        string `json:"ticker"`
 	ReportID      string `json:"report_id"`
-	StockDetail   string `json:"stock_detail"`
+	R2ReportKey   string `json:"r2_report_key"`
+	R2DetailKey   string `json:"r2_detail_key"`
+	SummaryJson   string `json:"summary_json"`
 	PublishedAtMs int64  `json:"published_at_ms"`
 	UpdatedAtMs   int64  `json:"updated_at_ms"`
 }

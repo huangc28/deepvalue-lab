@@ -62,7 +62,9 @@ CREATE INDEX idx_stock_reports_ticker_published
 CREATE TABLE published_stock_details (
   ticker          TEXT PRIMARY KEY,
   report_id       TEXT NOT NULL,
-  stock_detail    TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(stock_detail)),
+  r2_report_key   TEXT NOT NULL DEFAULT '',
+  r2_detail_key   TEXT NOT NULL DEFAULT '',
+  summary_json    TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(summary_json)),
   published_at_ms INTEGER NOT NULL DEFAULT (unixepoch('now') * 1000),
   updated_at_ms   INTEGER NOT NULL DEFAULT (unixepoch('now') * 1000)
 );

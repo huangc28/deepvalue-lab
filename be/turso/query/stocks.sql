@@ -25,11 +25,13 @@ WHERE ticker = ?
 ORDER BY published_at_ms DESC;
 
 -- name: UpsertPublishedStockDetail :exec
-INSERT INTO published_stock_details (ticker, report_id, stock_detail, published_at_ms)
-VALUES (?, ?, ?, ?)
+INSERT INTO published_stock_details (ticker, report_id, r2_report_key, r2_detail_key, summary_json, published_at_ms)
+VALUES (?, ?, ?, ?, ?, ?)
 ON CONFLICT(ticker) DO UPDATE SET
   report_id       = excluded.report_id,
-  stock_detail    = excluded.stock_detail,
+  r2_report_key   = excluded.r2_report_key,
+  r2_detail_key   = excluded.r2_detail_key,
+  summary_json    = excluded.summary_json,
   published_at_ms = excluded.published_at_ms,
   updated_at_ms   = (unixepoch('now') * 1000);
 

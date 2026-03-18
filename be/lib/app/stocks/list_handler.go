@@ -34,7 +34,7 @@ func (h *ListHandler) Handle(w http.ResponseWriter, r *http.Request) {
 
 	stocks := make([]json.RawMessage, 0, len(rows))
 	for _, row := range rows {
-		stocks = append(stocks, json.RawMessage(row.StockDetail))
+		stocks = append(stocks, json.RawMessage(row.SummaryJson))
 	}
 
 	render.ChiJSON(w, r, http.StatusOK, map[string]any{"stocks": stocks})

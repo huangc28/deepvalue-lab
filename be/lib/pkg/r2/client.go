@@ -1,8 +1,10 @@
 package r2
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -55,10 +57,40 @@ func (c *Client) UploadMarkdown(ctx context.Context, key, content string) error 
 	return err
 }
 
+// UploadJSON uploads raw JSON content to R2.
+func (c *Client) UploadJSON(ctx context.Context, key string, data []byte) error {
+	_, err := c.s3.PutObject(ctx, &s3.PutObjectInput{
+		Bucket:      aws.String(c.bucket),
+		Key:         aws.String(key),
+		Body:        bytes.NewReader(data),
+		ContentType: aws.String("application/json"),
+	})
+	return err
+}
+
+// Download fetches an object from R2 and returns its contents.
+func (c *Client) Download(ctx context.Context, key string) ([]byte, error) {
+	out, err := c.s3.GetObject(ctx, &s3.GetObjectInput{
+		Bucket: aws.String(c.bucket),
+		Key:    aws.String(key),
+	})
+	if err != nil {
+		return nil, err
+	}
+	defer out.Body.Close()
+	return io.ReadAll(out.Body)
+}
+
 // ReportKey returns the canonical R2 key for a report artifact.
 // Format: reports/{ticker}/{YYYYMMDD}/{reportID}.md
 func ReportKey(ticker, date, reportID string) string {
 	return fmt.Sprintf("reports/%s/%s/%s.md", ticker, date, reportID)
+}
+
+// DetailKey returns the canonical R2 key for a StockDetail JSON artifact.
+// Format: reports/{ticker}/{YYYYMMDD}/{reportID}.json
+func DetailKey(ticker, date, reportID string) string {
+	return fmt.Sprintf("reports/%s/%s/%s.json", ticker, date, reportID)
 }
 
 var Module = fx.Provide(NewClient)

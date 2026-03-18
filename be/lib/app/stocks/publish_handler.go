@@ -51,6 +51,28 @@ type minStockDetail struct {
 	BullFairValue float64 `json:"bullFairValue"`
 }
 
+// summaryFields mirrors StockSummary from the frontend type system.
+// LocalizedText fields use json.RawMessage to pass through without interpretation.
+type summaryFields struct {
+	ID                   string          `json:"id"`
+	Ticker               string          `json:"ticker"`
+	CompanyName          string          `json:"companyName"`
+	BusinessType         json.RawMessage `json:"businessType"`
+	CurrentPrice         float64         `json:"currentPrice"`
+	ValuationStatus      string          `json:"valuationStatus"`
+	NewsImpactStatus     string          `json:"newsImpactStatus"`
+	ThesisStatus         string          `json:"thesisStatus"`
+	TechnicalEntryStatus string          `json:"technicalEntryStatus"`
+	ActionState          string          `json:"actionState"`
+	DashboardBucket      string          `json:"dashboardBucket"`
+	BaseFairValue        float64         `json:"baseFairValue"`
+	BearFairValue        float64         `json:"bearFairValue"`
+	BullFairValue        float64         `json:"bullFairValue"`
+	DiscountToBase       float64         `json:"discountToBase"`
+	Summary              json.RawMessage `json:"summary"`
+	LastUpdated          string          `json:"lastUpdated"`
+}
+
 func (h *PublishHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	ticker := strings.ToUpper(chi.URLParam(r, "ticker"))
 
@@ -76,20 +98,44 @@ func (h *PublishHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	now := time.Now().UTC()
-	reportID := fmt.Sprintf("%s-%s-%s", ticker, now.Format("20060102"), shortID())
-	r2Key := r2.ReportKey(ticker, now.Format("20060102"), reportID)
+	dateStr := now.Format("20060102")
+	reportID := fmt.Sprintf("%s-%s-%s", ticker, dateStr, shortID())
+	r2ReportKey := r2.ReportKey(ticker, dateStr, reportID)
+	r2DetailKey := r2.DetailKey(ticker, dateStr, reportID)
 	publishedAtMs := now.UnixMilli()
 
-	if err := h.r2Client.UploadMarkdown(r.Context(), r2Key, req.Report.Markdown); err != nil {
-		h.logger.Error("upload markdown to r2", zap.String("key", r2Key), zap.Error(err))
+	// Upload markdown report to R2.
+	if err := h.r2Client.UploadMarkdown(r.Context(), r2ReportKey, req.Report.Markdown); err != nil {
+		h.logger.Error("upload markdown to r2", zap.String("key", r2ReportKey), zap.Error(err))
 		render.ChiErr(w, r, http.StatusInternalServerError, fmt.Errorf("failed to upload report artifact"))
+		return
+	}
+
+	// Upload full StockDetail JSON to R2.
+	if err := h.r2Client.UploadJSON(r.Context(), r2DetailKey, req.StockDetail); err != nil {
+		h.logger.Error("upload detail json to r2", zap.String("key", r2DetailKey), zap.Error(err))
+		render.ChiErr(w, r, http.StatusInternalServerError, fmt.Errorf("failed to upload detail artifact"))
+		return
+	}
+
+	// Extract summary fields for Turso.
+	var sf summaryFields
+	if err := json.Unmarshal(req.StockDetail, &sf); err != nil {
+		h.logger.Error("extract summary fields", zap.String("ticker", ticker), zap.Error(err))
+		render.ChiErr(w, r, http.StatusInternalServerError, fmt.Errorf("failed to extract summary"))
+		return
+	}
+	summaryJSON, err := json.Marshal(sf)
+	if err != nil {
+		h.logger.Error("marshal summary", zap.String("ticker", ticker), zap.Error(err))
+		render.ChiErr(w, r, http.StatusInternalServerError, fmt.Errorf("failed to marshal summary"))
 		return
 	}
 
 	if err := h.queries.InsertStockReport(r.Context(), turso_models.InsertStockReportParams{
 		ID:            reportID,
 		Ticker:        ticker,
-		R2Key:         r2Key,
+		R2Key:         r2ReportKey,
 		Provenance:    req.Report.Provenance,
 		PublishedAtMs: publishedAtMs,
 	}); err != nil {
@@ -101,7 +147,9 @@ func (h *PublishHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	if err := h.queries.UpsertPublishedStockDetail(r.Context(), turso_models.UpsertPublishedStockDetailParams{
 		Ticker:        ticker,
 		ReportID:      reportID,
-		StockDetail:   string(req.StockDetail),
+		R2ReportKey:   r2ReportKey,
+		R2DetailKey:   r2DetailKey,
+		SummaryJson:   string(summaryJSON),
 		PublishedAtMs: publishedAtMs,
 	}); err != nil {
 		h.logger.Error("upsert published stock detail", zap.String("ticker", ticker), zap.Error(err))
@@ -120,7 +168,8 @@ func (h *PublishHandler) Handle(w http.ResponseWriter, r *http.Request) {
 
 	render.ChiJSON(w, r, http.StatusCreated, map[string]any{
 		"reportId":      reportID,
-		"r2Key":         r2Key,
+		"r2ReportKey":   r2ReportKey,
+		"r2DetailKey":   r2DetailKey,
 		"ticker":        ticker,
 		"publishedAtMs": publishedAtMs,
 	})
