@@ -3,12 +3,13 @@ export
 
 APP_PORT ?= 8080
 IMAGE_NAME ?= be
-IMAGE_TAG ?= dev
-CONTAINER_APP_NAME ?= be
-AZURE_RESOURCE_GROUP ?=
-AZURE_LOCATION ?=
-AZURE_CONTAINERAPPS_ENV ?=
-ACR_IMAGE ?=
+IMAGE_TAG ?= latest
+CONTAINER_APP_NAME ?= value-deck-be
+AZURE_RESOURCE_GROUP ?= value-deck-rg
+AZURE_LOCATION ?= japaneast
+AZURE_CONTAINERAPPS_ENV ?= value-deck-env
+ACR_NAME ?= valuedeckacr
+ACR_IMAGE ?= $(ACR_NAME).azurecr.io/$(IMAGE_NAME):$(IMAGE_TAG)
 
 .PHONY: build test start docker/build docker/run deploy/containerapp
 
@@ -27,19 +28,56 @@ docker/build:
 docker/run:
 	docker run --rm -p $(APP_PORT):$(APP_PORT) -e APP_PORT=$(APP_PORT) $(IMAGE_NAME):$(IMAGE_TAG)
 
+## acr/login: log in to Azure Container Registry.
+.PHONY: acr/login
+acr/login:
+	az acr login --name $(ACR_NAME)
+
+## acr/push: build and push image to ACR.
+.PHONY: acr/push
+acr/push:
+	docker build --platform linux/amd64 -t $(ACR_IMAGE) .
+	docker push $(ACR_IMAGE)
+
+## deploy/containerapp: create or update the Container App with secrets from .env.
 deploy/containerapp:
-	test -n "$(ACR_IMAGE)" || (echo "ACR_IMAGE is required" >&2; exit 1)
-	test -n "$(AZURE_RESOURCE_GROUP)" || (echo "AZURE_RESOURCE_GROUP is required" >&2; exit 1)
-	test -n "$(AZURE_LOCATION)" || (echo "AZURE_LOCATION is required" >&2; exit 1)
-	test -n "$(AZURE_CONTAINERAPPS_ENV)" || (echo "AZURE_CONTAINERAPPS_ENV is required" >&2; exit 1)
-	az containerapp up \
+	az containerapp create \
 		--name "$(CONTAINER_APP_NAME)" \
 		--resource-group "$(AZURE_RESOURCE_GROUP)" \
-		--location "$(AZURE_LOCATION)" \
 		--environment "$(AZURE_CONTAINERAPPS_ENV)" \
 		--image "$(ACR_IMAGE)" \
-		--target-port $(APP_PORT) \
-		--ingress external
+		--registry-server "$(ACR_NAME).azurecr.io" \
+		--target-port 8080 \
+		--ingress external \
+		--min-replicas 0 \
+		--max-replicas 2 \
+		--secrets \
+			turso-dsn="$(TURSO_SQLITE_DSN)" \
+			turso-token="$(TURSO_SQLITE_TOKEN)" \
+			r2-account-id="$(R2_ACCOUNT_ID)" \
+			r2-bucket="$(R2_BUCKET)" \
+			r2-access-key-id="$(R2_ACCESS_KEY_ID)" \
+			r2-secret-access-key="$(R2_SECRET_ACCESS_KEY)" \
+		--env-vars \
+			APP_NAME=be \
+			APP_ENV=production \
+			APP_PORT=8080 \
+			LOG_LEVEL=info \
+			TURSO_SQLITE_DSN=secretref:turso-dsn \
+			TURSO_SQLITE_TOKEN=secretref:turso-token \
+			TURSO_SQLITE_DRIVER=libsql \
+			R2_ACCOUNT_ID=secretref:r2-account-id \
+			R2_BUCKET=secretref:r2-bucket \
+			R2_ACCESS_KEY_ID=secretref:r2-access-key-id \
+			R2_SECRET_ACCESS_KEY=secretref:r2-secret-access-key
+
+## deploy/update: push new image and update the running container app.
+.PHONY: deploy/update
+deploy/update: acr/push
+	az containerapp update \
+		--name "$(CONTAINER_APP_NAME)" \
+		--resource-group "$(AZURE_RESOURCE_GROUP)" \
+		--image "$(ACR_IMAGE)"
 
 ## migrate/up: apply all pending migrations to Turso.
 .PHONY: migrate/up
