@@ -1,0 +1,23 @@
+type: Microsoft.App/containerApps
+apiVersion: 2024-03-01
+name: web
+location: <location>
+properties:
+  managedEnvironmentId: /subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.App/managedEnvironments/<environment-name>
+  configuration:
+    ingress:
+      external: true
+      targetPort: 80
+    secrets: []
+  template:
+    containers:
+      - name: web
+        image: <registry>/<image>:<tag>
+        env:
+          - name: APP_NAME
+            value: web
+          - name: APP_ENV
+            value: production
+    scale:
+      minReplicas: 0
+      maxReplicas: 2
