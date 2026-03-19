@@ -198,6 +198,34 @@ Current i18n state:
 
 Keep internal enums stable in English and localize only at render time.
 
+## Backend Deployment
+
+The backend (`be/`) deploys to Azure Container Apps via Azure Container Registry (ACR).
+
+Infrastructure:
+- ACR: `valuedeckacr.azurecr.io`
+- Container App: `value-deck-be`
+- Resource group: `value-deck-rg`
+- Region: `japaneast`
+- Environment: `value-deck-env`
+
+Deploy flow:
+1. `cd be`
+2. `make acr/login` — authenticate to ACR
+3. `make deploy/update` — builds the Docker image for `linux/amd64`, pushes to ACR, and updates the running Container App
+
+First-time setup uses `make deploy/containerapp` instead of step 3. This creates the Container App with secrets and env vars wired from `be/.env`. After the initial create, use `deploy/update` for subsequent deploys.
+
+Health checks:
+- `GET /` — liveness probe, always returns `{"ok": true}`
+- `GET /health` — readiness probe, pings Turso SQLite and R2, returns per-service status (200 or 503)
+
+Database migrations:
+- `make migrate/up` — apply pending migrations
+- `make turso-migrate db=<name> file=<path>` — apply a single migration file via Turso CLI
+
+There is no CI/CD pipeline yet — deploys are manual from a local machine.
+
 ## Practical Notes
 
 Useful commands:
