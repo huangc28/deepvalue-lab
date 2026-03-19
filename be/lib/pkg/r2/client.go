@@ -81,6 +81,14 @@ func (c *Client) Download(ctx context.Context, key string) ([]byte, error) {
 	return io.ReadAll(out.Body)
 }
 
+// Ping validates R2 connectivity by issuing a HeadBucket request.
+func (c *Client) Ping(ctx context.Context) error {
+	_, err := c.s3.HeadBucket(ctx, &s3.HeadBucketInput{
+		Bucket: aws.String(c.bucket),
+	})
+	return err
+}
+
 // ReportKey returns the canonical R2 key for a report artifact.
 // Format: reports/{ticker}/{YYYYMMDD}/{reportID}.md
 func ReportKey(ticker, date, reportID string) string {
