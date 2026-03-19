@@ -77,7 +77,8 @@ deploy/update: acr/push
 	az containerapp update \
 		--name "$(CONTAINER_APP_NAME)" \
 		--resource-group "$(AZURE_RESOURCE_GROUP)" \
-		--image "$(ACR_IMAGE)"
+		--image "$(ACR_IMAGE)" \
+		--revision-suffix "$(shell date +%Y%m%d%H%M%S)"
 
 ## migrate/up: apply all pending migrations to Turso.
 .PHONY: migrate/up

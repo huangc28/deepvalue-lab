@@ -35,7 +35,7 @@ type MuxParams struct {
 func NewMux(params MuxParams) *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins: []string{"http://localhost:*", "http://127.0.0.1:*"},
+		AllowedOrigins: []string{"http://localhost:*", "http://127.0.0.1:*", "https://value-deck.com", "https://*.value-deck.com"},
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders: []string{"Content-Type"},
 		MaxAge:         300,
