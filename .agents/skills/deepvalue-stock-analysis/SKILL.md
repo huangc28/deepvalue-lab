@@ -162,6 +162,8 @@ After writing the markdown report, generate a `StockDetail` object that the fron
 
 The type definition lives at `web/src/types/stocks.ts`. The `LocalizedText` type is `string | Record<'en' | 'zh-TW', string>`.
 
+All user-facing `LocalizedText` fields in the `StockDetail` object must be populated as `{ en: '...', 'zh-TW': '...' }` bilingual objects. Do not use plain English strings for any `LocalizedText` field. The `en` value comes directly from the English report. The `zh-TW` value comes from the zh-TW report you produce in Step 12.
+
 ### Report-to-StockDetail Field Mapping
 
 **StockSummary fields (always required):**
@@ -206,7 +208,7 @@ The type definition lives at `web/src/types/stocks.ts`. The `LocalizedText` type
 | `risks` | from risk items in the report |
 | `catalysts` | from catalyst items in the report |
 | `monitorNext` | from What To Monitor Next section |
-| `sourcesUsed` | array of `string` or `{ label, url? }` from Sources Used |
+| `sourcesUsed` | array of `SourceReference` objects `{ label: { en, 'zh-TW' }, url? }` from Sources Used. Translate each source label to zh-TW (e.g., `"Q4 2025 Earnings Call"` → `{ en: "Q4 2025 Earnings Call", 'zh-TW': "2025年第四季財報電話會議" }`). URLs stay as plain strings — do not translate URLs. |
 | `history` | array with at least one entry for this analysis date |
 
 ### Scenario Key Metrics Extraction
@@ -218,6 +220,21 @@ Extract from Bear/Base/Bull tables in the report:
 | `keyMetrics.revenue` | FY revenue row — format as short token like `$46.5B` |
 | `keyMetrics.eps` | Non-GAAP EPS row — format like `$6.56` |
 | `keyMetrics.targetPE` | Target P/E row — format like `28x` |
+
+### Bilingual Field Production
+
+Produce all `LocalizedText` values using the outputs from Step 11 (English report) and Step 12 (zh-TW report). Do not translate inline during JSON generation — the translation step (Step 12) must be complete before generating the `StockDetail` object.
+
+Fields that stay as plain strings (language-neutral, not `LocalizedText`):
+- `ScenarioKeyMetrics.revenue`, `.eps`, `.targetPE` — numeric tokens like `$46.5B`, `$6.56`, `28x`
+- `SourceReference.url` — URLs are not translated
+- `id`, `ticker`, `companyName` — identifiers
+- `currentPrice`, `baseFairValue`, `bearFairValue`, `bullFairValue`, `discountToBase` — numbers
+- `lastUpdated` — date string
+- `label` on `Scenario` — `'Bear' | 'Base' | 'Bull'` status tokens
+- `valuationStatus`, `newsImpactStatus`, `thesisStatus`, `technicalEntryStatus`, `actionState`, `dashboardBucket` — status tokens
+
+All other user-facing fields listed in the mapping tables above are `LocalizedText` and must be `{ en, 'zh-TW' }` bilingual objects.
 
 ### Computed Fields
 
