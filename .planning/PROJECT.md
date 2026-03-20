@@ -18,12 +18,16 @@ Every stock analysis produces a zh-TW markdown report alongside the English one,
 
 ### Active
 
-- [ ] Analysis skill produces a separate zh-TW markdown report alongside the English report
-- [ ] zh-TW report uses lightly simplified language (clearer sentences, fewer unexplained acronyms) while keeping the same section structure
-- [ ] Unavoidable financial jargon remains in the zh-TW report (jargon education is a separate future feature)
-- [ ] StockDetail JSON uses `LocalizedText` (`{ en, 'zh-TW' }`) for all user-facing display fields (summary, thesis, scenarios, etc.)
-- [ ] Both EN and zh-TW reports are saved to the research archive
-- [ ] Publish endpoint accepts bilingual StockDetail and stores it correctly
+- (none — all requirements validated)
+
+### Validated in Phase 2
+
+- ✓ Analysis skill produces a separate zh-TW markdown report alongside the English report — Phase 2
+- ✓ zh-TW report uses lightly simplified language (clearer sentences, fewer unexplained acronyms) while keeping the same section structure — Phase 2
+- ✓ Unavoidable financial jargon remains in the zh-TW report (jargon education is a separate future feature) — Phase 2
+- ✓ StockDetail JSON uses `LocalizedText` (`{ en, 'zh-TW' }`) for all user-facing display fields (summary, thesis, scenarios, etc.) — Phase 2
+- ✓ Both EN and zh-TW reports are saved to the research archive — Phase 2
+- ✓ Publish endpoint accepts bilingual StockDetail and stores it correctly — Phase 2
 
 ### Out of Scope
 
@@ -59,4 +63,4 @@ Every stock analysis produces a zh-TW markdown report alongside the English one,
 | Skill output only, frontend is separate phase | Limits blast radius, frontend i18n is its own concern | — Pending |
 
 ---
-*Last updated: 2026-03-20 after Phase 1 completion*
+*Last updated: 2026-03-20 after Phase 2 completion — all milestone phases complete*
