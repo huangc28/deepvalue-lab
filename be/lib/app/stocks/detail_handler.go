@@ -1,6 +1,7 @@
 package stocks
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
@@ -17,13 +18,21 @@ import (
 )
 
 type DetailHandler struct {
-	queries  *turso_models.Queries
-	r2Client *r2.Client
+	queries  detailQueries
+	r2Client detailStorage
 	logger   *zap.Logger
 }
 
 func NewDetailHandler(queries *turso_models.Queries, r2Client *r2.Client, logger *zap.Logger) *DetailHandler {
 	return &DetailHandler{queries: queries, r2Client: r2Client, logger: logger}
+}
+
+type detailQueries interface {
+	GetPublishedStockDetail(ctx context.Context, ticker string) (turso_models.PublishedStockDetail, error)
+}
+
+type detailStorage interface {
+	Download(ctx context.Context, key string) ([]byte, error)
 }
 
 func (h *DetailHandler) RegisterRoute(r *chi.Mux) {
@@ -44,17 +53,32 @@ func (h *DetailHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Pre-migration rows have no R2 detail key — fall back to summary.
+	if isZhTWLocale(r) {
+		if row.R2DetailZhTwKey != "" {
+			h.respondWithR2Detail(w, r, ticker, row.R2DetailZhTwKey)
+			return
+		}
+
+		if hasNonEmptySummaryJSON(row.SummaryJsonZhTw) {
+			render.ChiJSON(w, r, http.StatusOK, json.RawMessage(row.SummaryJsonZhTw))
+			return
+		}
+	}
+
 	if row.R2DetailKey == "" {
 		render.ChiJSON(w, r, http.StatusOK, json.RawMessage(row.SummaryJson))
 		return
 	}
 
-	data, err := h.r2Client.Download(r.Context(), row.R2DetailKey)
+	h.respondWithR2Detail(w, r, ticker, row.R2DetailKey)
+}
+
+func (h *DetailHandler) respondWithR2Detail(w http.ResponseWriter, r *http.Request, ticker, key string) {
+	data, err := h.r2Client.Download(r.Context(), key)
 	if err != nil {
 		h.logger.Error("download detail from r2",
 			zap.String("ticker", ticker),
-			zap.String("key", row.R2DetailKey),
+			zap.String("key", key),
 			zap.Error(err),
 		)
 		render.ChiErr(w, r, http.StatusInternalServerError, fmt.Errorf("failed to fetch stock detail"))

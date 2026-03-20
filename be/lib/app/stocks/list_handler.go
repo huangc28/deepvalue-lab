@@ -1,6 +1,7 @@
 package stocks
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -12,12 +13,16 @@ import (
 )
 
 type ListHandler struct {
-	queries *turso_models.Queries
+	queries listQueries
 	logger  *zap.Logger
 }
 
 func NewListHandler(queries *turso_models.Queries, logger *zap.Logger) *ListHandler {
 	return &ListHandler{queries: queries, logger: logger}
+}
+
+type listQueries interface {
+	ListPublishedStockDetails(ctx context.Context) ([]turso_models.PublishedStockDetail, error)
 }
 
 func (h *ListHandler) RegisterRoute(r *chi.Mux) {
@@ -33,7 +38,13 @@ func (h *ListHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	stocks := make([]json.RawMessage, 0, len(rows))
+	useZhTW := isZhTWLocale(r)
 	for _, row := range rows {
+		if useZhTW && hasNonEmptySummaryJSON(row.SummaryJsonZhTw) {
+			stocks = append(stocks, json.RawMessage(row.SummaryJsonZhTw))
+			continue
+		}
+
 		stocks = append(stocks, json.RawMessage(row.SummaryJson))
 	}
 
