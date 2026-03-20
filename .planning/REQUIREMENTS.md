@@ -19,8 +19,8 @@
 
 ### Documentation
 
-- [ ] **DOC-01**: SKILL.md updated with zh-TW output requirements and archive naming convention
-- [ ] **DOC-02**: Report contract updated to specify zh-TW translation rules and simplification guidelines
+- [x] **DOC-01**: SKILL.md updated with zh-TW output requirements and archive naming convention
+- [x] **DOC-02**: Report contract updated to specify zh-TW translation rules and simplification guidelines
 - [x] **DOC-03**: Agent execution SOP updated with translation step in the workflow
 
 ## v2 Requirements
@@ -56,8 +56,8 @@
 | SKILL-04 | Phase 2 | Pending |
 | ARCH-01 | Phase 2 | Pending |
 | ARCH-02 | Phase 2 | Pending |
-| DOC-01 | Phase 1 | Pending |
-| DOC-02 | Phase 1 | Pending |
+| DOC-01 | Phase 1 | Complete |
+| DOC-02 | Phase 1 | Complete |
 | DOC-03 | Phase 1 | Complete |
 
 **Coverage:**
