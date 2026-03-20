@@ -1,8 +1,8 @@
 # DeepValue Lab Analysis Publish Architecture
 
 Date: 2026-03-17
-Updated: 2026-03-18
-Status: Implementation Ready
+Updated: 2026-03-20
+Status: Implementation Aligned
 
 ---
 
@@ -57,6 +57,11 @@ The existing generic `documents` table is not used for the stock domain. Stock t
 
 Returns all active subscriptions with their latest published summary.
 
+Locale behavior:
+
+- default behavior returns the published English summary
+- `?locale=zh-TW` returns the published zh-TW summary when available and otherwise falls back to the English summary
+
 Response `200`:
 ```json
 {
@@ -76,8 +81,8 @@ Response `200`:
       "bearFairValue": 160.0,
       "bullFairValue": 280.0,
       "discountToBase": -15.8,
-      "businessType": { "en": "Foundry", "zh-TW": "晶圓代工" },
-      "summary": { "en": "...", "zh-TW": "..." },
+      "businessType": "Foundry",
+      "summary": "...",
       "lastUpdated": "2026-03-18T10:00:00Z"
     }
   ]
@@ -86,7 +91,21 @@ Response `200`:
 
 ### `GET /v1/stocks/:ticker`
 
-Returns the full `StockDetail` payload for a single ticker. Shape mirrors `StockDetail` in `web/src/types/stocks.ts`. All `LocalizedText` fields carry both `en` and `zh-TW` keys.
+Returns the latest published `StockDetail` payload for a single ticker.
+
+Locale behavior:
+
+- default behavior returns the published English detail payload
+- `?locale=zh-TW` fallback order is:
+  1. published zh-TW detail artifact
+  2. published zh-TW summary JSON
+  3. published English detail artifact
+  4. published English summary JSON
+
+Important note:
+
+- the backend read path now supports separate locale-specific zh-TW detail storage
+- older docs that describe a single embedded bilingual payload are stale relative to current backend behavior
 
 Response `200`: full `StockDetail` JSON object
 Response `404`: `{ "error": "not found" }`
@@ -135,21 +154,33 @@ Request body:
   },
   "stockDetail": {
     ...StockDetail JSON (mirrors web/src/types/stocks.ts)...
+  },
+  "stockDetailZhTW": {
+    ...optional zh-TW StockDetail JSON...
   }
 }
 ```
+
+Publish behavior:
+
+- `report.markdown` is required
+- `stockDetail` is required
+- `stockDetailZhTW` is optional
+- when `stockDetailZhTW` is present, the backend uploads a separate zh-TW detail artifact and stores zh-TW summary metadata beside the English payload
 
 Response `201`:
 ```json
 {
   "reportId": "TSM-20260318-abc123",
-  "r2Key": "reports/TSM/20260318/TSM-20260318-abc123.md",
+  "r2ReportKey": "reports/TSM/20260318/TSM-20260318-abc123.md",
+  "r2DetailKey": "reports/TSM/20260318/TSM-20260318-abc123.json",
+  "r2DetailZhTWKey": "reports/TSM/20260318/TSM-20260318-abc123.zh-TW.json",
   "ticker": "TSM",
   "publishedAtMs": 1742300000000
 }
 ```
 
-Response `422` if `stockDetail` fails validation.
+Response `422` if `stockDetail` or `stockDetailZhTW` fails validation.
 
 ---
 
@@ -188,11 +219,15 @@ CREATE INDEX idx_stock_reports_ticker_published
 
 ```sql
 CREATE TABLE published_stock_details (
-  ticker          TEXT PRIMARY KEY,
-  report_id       TEXT NOT NULL,
-  stock_detail    TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(stock_detail)),
-  published_at_ms INTEGER NOT NULL DEFAULT (unixepoch('now') * 1000),
-  updated_at_ms   INTEGER NOT NULL DEFAULT (unixepoch('now') * 1000)
+  ticker               TEXT PRIMARY KEY,
+  report_id            TEXT NOT NULL,
+  r2_report_key        TEXT NOT NULL DEFAULT '',
+  r2_detail_key        TEXT NOT NULL DEFAULT '',
+  r2_detail_zh_tw_key  TEXT NOT NULL DEFAULT '',
+  summary_json         TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(summary_json)),
+  summary_json_zh_tw   TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(summary_json_zh_tw)),
+  published_at_ms      INTEGER NOT NULL DEFAULT (unixepoch('now') * 1000),
+  updated_at_ms        INTEGER NOT NULL DEFAULT (unixepoch('now') * 1000)
 );
 
 CREATE TRIGGER trg_published_stock_details_touch_updated_at
@@ -214,10 +249,11 @@ The local analysis workflow centers on `deepvalue-stock-analysis` skill.
 Publish behavior:
 
 1. skill generates the markdown report
-2. skill generates the `StockDetail` JSON payload (per Report-to-UI Transform Rules)
-3. skill asks whether to publish to the backend
-4. if yes, `POST /v1/stocks/:ticker/reports` with both payloads
-5. publish does **not** directly update `web/src/data/mock-stocks.ts`
+2. skill generates the English `StockDetail` JSON payload
+3. skill generates the zh-TW `StockDetail` JSON payload
+4. skill asks whether to publish to the backend
+5. if yes, `POST /v1/stocks/:ticker/reports` with `report`, `stockDetail`, and optional `stockDetailZhTW`
+6. publish does **not** directly update `web/src/data/mock-stocks.ts`
 
 ---
 
@@ -249,6 +285,7 @@ V1 defaults:
 ### Phase 1 — SQLite Schema ✅
 
 - [x] Add migration file `be/turso/migrations/20260318065637_stock_domain.sql` with the three tables
+- [x] Add follow-up migrations `20260318100726_stock_detail_to_r2.sql` and `20260320220959_published_stock_details_zh_tw_locale.sql` to align published detail storage with current R2-backed and zh-TW locale-aware behavior
 - [x] Run migration against Turso dev DB (`make migrate/up`, status confirmed Applied)
 - [x] Add sqlc queries under `be/turso/query/stocks.sql`
 - [x] Regenerate sqlc models (`make gen/sqlc` — `stocks.sql.go` generated, `go build` passes)

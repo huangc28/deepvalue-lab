@@ -11,11 +11,17 @@ Date:
 Status:
 - draft
 
+Scope note:
+- historical mockup-phase document
+- not the source of truth for the current backend publish/read API contract
+- use `docs/product/deepvalue-lab-analysis-publish-architecture.md` and backend implementation for current API behavior
+
 ## Summary
 
 Build the first frontend mockup pages for DeepValue Lab as a decision-support stock research web app.
 
 This phase is intentionally frontend-only.
+It documents the original mockup phase before backend implementation began.
 It should validate page structure, information hierarchy, navigation, interaction patterns, and visual direction before backend work begins.
 
 The first mockup should demonstrate:

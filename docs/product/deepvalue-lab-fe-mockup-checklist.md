@@ -7,6 +7,11 @@ Purpose:
 Date:
 - 2026-03-16
 
+Scope note:
+- historical mockup-phase checklist
+- useful for understanding original UI rollout order
+- not the source of truth for the current backend publish/read contract or current localization storage model
+
 ## Phase 0: Foundation Decisions
 
 - [x] Align on product direction for a decision-support stock research app

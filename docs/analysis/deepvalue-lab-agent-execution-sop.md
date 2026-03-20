@@ -1,5 +1,7 @@
 # DeepValue Lab Agent Execution SOP
 
+Updated: 2026-03-20
+
 ## 1. Purpose
 
 This document defines the operating procedure an AI agent must follow when asked to analyze a stock for DeepValue Lab.
@@ -160,28 +162,32 @@ The report must follow the DeepValue Lab report contract in the required order.
 Do not improvise section order.
 Do not omit required sections.
 
-### Step 12: Produce The zh-TW Report
+### Step 12: Generate Structured Data Artifacts
 
-After writing the English report, produce a Traditional Chinese (繁體中文) version of the report.
+After writing the English markdown report, generate two `StockDetail` JSON files:
 
-The zh-TW report is mandatory. An analysis that produces only an English report is incomplete.
+- one English `StockDetail` JSON
+- one Traditional Chinese (`zh-TW`) `StockDetail` JSON
 
-Requirements for the zh-TW report:
+Current workflow note:
 
-- Follow the same 15-section structure as the English report, in the same order
-- Open every section with a plain-language lead sentence before technical detail
-- Explain every acronym on first use (e.g., 每股盈利（EPS）/ 自由現金流（FCF）)
-- Retain unavoidable financial jargon — do not replace it with simplified terms
-- Keep all numerical data, fair values, multiples, and price targets identical to the English report
-- Apply light simplification: clearer sentences and shorter constructions where possible, but do not rewrite the analytical content
+- the English markdown report remains the canonical narrative report artifact
+- the current workflow does **not** require a separate zh-TW markdown report
+- zh-TW translation rules now apply to the zh-TW structured data fields instead
 
-For the full set of zh-TW translation rules, see the report contract:
-`docs/analysis/deepvalue-lab-report-contract.md` — Section 8.5 zh-TW Report Contract
+Requirements for the zh-TW JSON:
 
-Save the zh-TW report to:
-`research/archive/YYYY/MM/DD/<TICKER>-analysis-zh-TW.md`
+- translate prose fields into Traditional Chinese
+- keep all numerical data unchanged
+- explain acronyms on first use where the translated prose introduces them
+- retain unavoidable financial jargon
+- apply light simplification without changing the analysis itself
 
-This file exists alongside the English report (`<TICKER>-analysis.md`) in the same directory.
+Save the artifacts to:
+
+- `research/archive/YYYY/MM/DD/<TICKER>-analysis.md`
+- `research/archive/YYYY/MM/DD/<TICKER>-stock-detail.json`
+- `research/archive/YYYY/MM/DD/<TICKER>-stock-detail-zh-TW.json`
 
 ### Step 13: Perform A Completion Check
 
@@ -204,6 +210,12 @@ Before treating the task as finished, check that the report includes:
 - sources
 
 If any section is missing, the report is incomplete.
+
+Also verify that:
+
+- the English `StockDetail` JSON exists
+- the zh-TW `StockDetail` JSON exists
+- all required artifacts were saved to the research archive
 
 ### Step 14: Perform A Benchmark Quality Check
 
@@ -274,7 +286,7 @@ The agent failed the SOP if it:
 - omitted thesis status
 - omitted technical entry status
 - gave a conclusion that does not clearly relate to price versus value
-- produced only an English report without a zh-TW report
+- produced only English artifacts without the zh-TW `StockDetail` JSON
 
 ## 8. SOP Summary
 
@@ -285,7 +297,7 @@ DeepValue Lab agent workflow is:
 3. valuation and scenario reasoning
 4. technicals as timing support
 5. structured report (English)
-6. zh-TW report (same 15-section structure, light simplification)
+6. English plus zh-TW `StockDetail` JSON artifacts
 7. completion check
 8. benchmark quality check
 
