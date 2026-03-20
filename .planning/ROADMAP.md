@@ -41,7 +41,10 @@ Plans:
   3. zh-TW report uses plain-language leads before technical detail and explains acronyms on first use, while retaining financial jargon
   4. StockDetail JSON contains `LocalizedText` objects (`{ en, zh-TW }`) for all user-facing display fields (summary, thesis, scenarios)
   5. Archive JSON file contains bilingual LocalizedText fields matching the live StockDetail structure
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 02-01-PLAN.md — Update SKILL.md to mandate bilingual LocalizedText for all StockDetail fields, remove English-only default, and document bilingual publish payload (SKILL-01, SKILL-02, SKILL-03, SKILL-04, ARCH-01, ARCH-02)
 
 ## Progress
 
@@ -51,4 +54,4 @@ Phases execute in numeric order: 1 → 2
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Contracts | 2/2 | Complete   | 2026-03-20 |
-| 2. Skill Output | 0/TBD | Not started | - |
+| 2. Skill Output | 0/1 | Not started | - |
