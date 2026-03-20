@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Phase 2 context gathered
-last_updated: "2026-03-20T10:18:51.475Z"
+stopped_at: Phase 3 execution complete
+last_updated: "2026-03-20T14:17:13.000Z"
 progress:
-  total_phases: 2
-  completed_phases: 2
-  total_plans: 3
-  completed_plans: 3
+  total_phases: 3
+  completed_phases: 3
+  total_plans: 5
+  completed_plans: 5
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Every stock analysis produces a zh-TW report and bilingual StockDetail JSON so the platform can serve Traditional Chinese readers.
-**Current focus:** Phase 02 — skill-output
+**Current focus:** Phase 03 — backend zh-TW StockDetail API complete
 
 ## Current Position
 
-Phase: 02 (skill-output) — EXECUTING
-Plan: 1 of 1
+Phase: 03 (add-zh-tw-stockdetail-json-support-to-backend-api) — COMPLETE
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -65,17 +65,25 @@ Recent decisions affecting current work:
 - [Phase 01-contracts P01]: Report contract section 8.5 defines 6 translation rules: plain-language lead, acronyms on first use, jargon retained, light simplification, numbers unchanged, tone preserved
 - [Phase 01-contracts]: zh-TW report is mandatory, not optional — SOP failure conditions now explicitly include English-only output
 - [Phase 01-contracts]: SOP Step 12 references report contract for zh-TW rules rather than duplicating them inline
+- [Phase 03]: backend publish path accepts optional `stockDetailZhTW` and persists zh-TW summary/detail metadata beside the EN payload
+- [Phase 03]: zh-TW detail artifacts use `reports/{ticker}/{YYYYMMDD}/{reportID}.zh-TW.json` in R2
+- [Phase 03]: locale read path uses exact `locale=zh-TW` with fallback order zh-TW detail → zh-TW summary → EN
 
 ### Pending Todos
 
 None yet.
 
+### Roadmap Evolution
+
+- Phase 3 added: Add zh-TW StockDetail JSON support to backend API
+- Phase 3 executed: backend API now accepts, stores, and serves zh-TW StockDetail JSON
+
 ### Blockers/Concerns
 
-None yet.
+None currently.
 
 ## Session Continuity
 
-Last session: 2026-03-20T08:26:21.351Z
-Stopped at: Phase 2 context gathered
-Resume file: .planning/phases/02-skill-output/02-CONTEXT.md
+Last session: 2026-03-20T14:17:13.000Z
+Stopped at: Phase 3 execution complete
+Resume file: .planning/phases/03-add-zh-tw-stockdetail-json-support-to-backend-api/03-VERIFICATION.md
