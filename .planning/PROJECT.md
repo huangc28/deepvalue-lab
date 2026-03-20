@@ -12,7 +12,9 @@ Every stock analysis produces a zh-TW markdown report alongside the English one,
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ SKILL.md specifies zh-TW report as mandatory output with archive naming — Phase 1
+- ✓ Report contract defines zh-TW translation rules (plain-language leads, acronyms, jargon) — Phase 1
+- ✓ Agent execution SOP includes explicit zh-TW translation step — Phase 1
 
 ### Active
 
@@ -57,4 +59,4 @@ Every stock analysis produces a zh-TW markdown report alongside the English one,
 | Skill output only, frontend is separate phase | Limits blast radius, frontend i18n is its own concern | — Pending |
 
 ---
-*Last updated: 2026-03-20 after initialization*
+*Last updated: 2026-03-20 after Phase 1 completion*
