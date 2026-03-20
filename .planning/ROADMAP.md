@@ -12,7 +12,7 @@ Two phases deliver zh-TW analysis output for Traditional Chinese readers. Phase 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Contracts** - Define skill output contract, translation rules, and SOP update
+- [x] **Phase 1: Contracts** - Define skill output contract, translation rules, and SOP update (completed 2026-03-20)
 - [ ] **Phase 2: Skill Output** - Produce zh-TW reports and bilingual StockDetail JSON with archive persistence
 
 ## Phase Details
@@ -50,5 +50,5 @@ Phases execute in numeric order: 1 → 2
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Contracts | 0/2 | Not started | - |
+| 1. Contracts | 2/2 | Complete   | 2026-03-20 |
 | 2. Skill Output | 0/TBD | Not started | - |

@@ -1,3 +1,17 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: unknown
+stopped_at: Completed 01-contracts-02-PLAN.md
+last_updated: "2026-03-20T08:09:19.606Z"
+progress:
+  total_phases: 2
+  completed_phases: 1
+  total_plans: 2
+  completed_plans: 2
+---
+
 # Project State
 
 ## Project Reference
@@ -5,20 +19,17 @@
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Every stock analysis produces a zh-TW report and bilingual StockDetail JSON so the platform can serve Traditional Chinese readers.
-**Current focus:** Phase 1 — Contracts
+**Current focus:** Phase 01 — contracts
 
 ## Current Position
 
-Phase: 1 of 2 (Contracts)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-03-20 — Roadmap created
-
-Progress: [░░░░░░░░░░] 0%
+Phase: 01 (contracts) — EXECUTING
+Plan: 1 of 2
 
 ## Performance Metrics
 
 **Velocity:**
+
 - Total plans completed: 0
 - Average duration: —
 - Total execution time: —
@@ -30,10 +41,12 @@ Progress: [░░░░░░░░░░] 0%
 | - | - | - | - |
 
 **Recent Trend:**
+
 - Last 5 plans: —
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 01-contracts P02 | 1 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -46,6 +59,8 @@ Recent decisions affecting current work:
 - Bilingual LocalizedText in JSON (not zh-TW only): frontend can render either locale without re-fetching
 - Light simplification: audience includes finance-literate readers; jargon education is a separate future feature
 - Skill output only, frontend is separate phase: limits blast radius
+- [Phase 01-contracts]: zh-TW report is mandatory, not optional — SOP failure conditions now explicitly include English-only output
+- [Phase 01-contracts]: SOP Step 12 references report contract for zh-TW rules rather than duplicating them inline
 
 ### Pending Todos
 
@@ -57,6 +72,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20
-Stopped at: Roadmap created — ready to plan Phase 1
+Last session: 2026-03-20T08:09:19.604Z
+Stopped at: Completed 01-contracts-02-PLAN.md
 Resume file: None
