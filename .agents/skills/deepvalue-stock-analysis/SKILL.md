@@ -233,10 +233,23 @@ After generating both artifacts, save them to the local research archive:
 
 1. Write the markdown report to `research/archive/YYYY/MM/DD/<TICKER>-analysis.md`.
 2. Write the `StockDetail` JSON to `research/archive/YYYY/MM/DD/<TICKER>-stock-detail.json`.
+3. Write the zh-TW markdown report to `research/archive/YYYY/MM/DD/<TICKER>-analysis-zh-TW.md`.
 
 Use the analysis date for the path. Create intermediate directories if they do not exist.
 
 This step is mandatory for every substantial analysis. The archive is the source of truth for historical reproducibility.
+
+### zh-TW Report Output
+
+Every analysis run must produce a zh-TW markdown report alongside the English report.
+
+The zh-TW report:
+- follows the same 15-section structure defined in the report contract
+- is saved as `research/archive/YYYY/MM/DD/<TICKER>-analysis-zh-TW.md`
+- uses lightly simplified language (see report contract for zh-TW translation rules)
+- retains unavoidable financial jargon — jargon education is a separate future feature
+
+The zh-TW report is mandatory. An analysis run that produces an English report without a zh-TW report is incomplete.
 
 ### Output and Publish
 
@@ -316,6 +329,7 @@ Also verify that:
 
 - the `StockDetail` object was generated
 - both artifacts were saved to `research/archive/YYYY/MM/DD/`
+- the zh-TW markdown report was produced and saved to `research/archive/YYYY/MM/DD/<TICKER>-analysis-zh-TW.md`
 - the user was asked whether to publish to the backend
 - if published, the backend returned `201` with valid `reportId` and R2 keys
 
