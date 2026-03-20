@@ -160,7 +160,30 @@ The report must follow the DeepValue Lab report contract in the required order.
 Do not improvise section order.
 Do not omit required sections.
 
-### Step 12: Perform A Completion Check
+### Step 12: Produce The zh-TW Report
+
+After writing the English report, produce a Traditional Chinese (繁體中文) version of the report.
+
+The zh-TW report is mandatory. An analysis that produces only an English report is incomplete.
+
+Requirements for the zh-TW report:
+
+- Follow the same 15-section structure as the English report, in the same order
+- Open every section with a plain-language lead sentence before technical detail
+- Explain every acronym on first use (e.g., 每股盈利（EPS）/ 自由現金流（FCF）)
+- Retain unavoidable financial jargon — do not replace it with simplified terms
+- Keep all numerical data, fair values, multiples, and price targets identical to the English report
+- Apply light simplification: clearer sentences and shorter constructions where possible, but do not rewrite the analytical content
+
+For the full set of zh-TW translation rules, see the report contract:
+`docs/analysis/deepvalue-lab-report-contract.md` — Section 8.5 zh-TW Report Contract
+
+Save the zh-TW report to:
+`research/archive/YYYY/MM/DD/<TICKER>-analysis-zh-TW.md`
+
+This file exists alongside the English report (`<TICKER>-analysis.md`) in the same directory.
+
+### Step 13: Perform A Completion Check
 
 Before treating the task as finished, check that the report includes:
 
@@ -182,7 +205,7 @@ Before treating the task as finished, check that the report includes:
 
 If any section is missing, the report is incomplete.
 
-### Step 13: Perform A Benchmark Quality Check
+### Step 14: Perform A Benchmark Quality Check
 
 Before finishing, check whether the report clears the DeepValue Lab benchmark quality bar.
 
@@ -251,6 +274,7 @@ The agent failed the SOP if it:
 - omitted thesis status
 - omitted technical entry status
 - gave a conclusion that does not clearly relate to price versus value
+- produced only an English report without a zh-TW report
 
 ## 8. SOP Summary
 
@@ -260,8 +284,9 @@ DeepValue Lab agent workflow is:
 2. facts from current sources
 3. valuation and scenario reasoning
 4. technicals as timing support
-5. structured report
-6. completion check
-7. benchmark quality check
+5. structured report (English)
+6. zh-TW report (same 15-section structure, light simplification)
+7. completion check
+8. benchmark quality check
 
 This sequence is mandatory for consistent quality.
