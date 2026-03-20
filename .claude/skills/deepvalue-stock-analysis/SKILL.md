@@ -13,14 +13,14 @@ This skill is for analysis quality and execution consistency. It is not a generi
 
 Before doing substantive company analysis, read these repo documents:
 
-- `/Users/huangchihan/develop/profound-stock/docs/analysis/deepvalue-lab-stock-analysis-standard.md`
-- `/Users/huangchihan/develop/profound-stock/docs/analysis/deepvalue-lab-report-contract.md`
-- `/Users/huangchihan/develop/profound-stock/docs/analysis/deepvalue-lab-agent-execution-sop.md`
+- `docs/analysis/deepvalue-lab-stock-analysis-standard.md`
+- `docs/analysis/deepvalue-lab-report-contract.md`
+- `docs/analysis/deepvalue-lab-agent-execution-sop.md`
 
 Also read these if persistence or archive behavior is relevant:
 
-- `/Users/huangchihan/develop/profound-stock/docs/research/stock-analysis-persistence.md`
-- `/Users/huangchihan/develop/profound-stock/research/templates/stock-analysis-report-template.md`
+- `docs/research/stock-analysis-persistence.md`
+- `research/templates/stock-analysis-report-template.md`
 
 ## Required Workflow
 
