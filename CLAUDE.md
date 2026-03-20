@@ -42,9 +42,9 @@ When a stock analysis is substantial:
 
 ## Skills
 
-Skill files live under `.agents/skills/`. When a task matches a skill, read the relevant `SKILL.md` first.
+Claude skill files live under `.claude/skills/`. Codex skill files live under `.agents/skills/`. Keep the Claude and Codex versions aligned when a workflow is shared.
 
-- **Stock analysis:** `.agents/skills/deepvalue-stock-analysis/SKILL.md`
+- **Stock analysis:** `.claude/skills/deepvalue-stock-analysis/SKILL.md`
 - **NotebookLM workflow:** `.agents/skills/nlm-skill/SKILL.md`
 
 Rules:

@@ -4,4 +4,8 @@
 !.agents/skills/deepvalue-stock-analysis/
 .agents/skills/deepvalue-stock-analysis/*
 !.agents/skills/deepvalue-stock-analysis/SKILL.md
+!.agents/skills/deepvalue-stock-analysis/references/
+!.agents/skills/deepvalue-stock-analysis/references/**
+__pycache__/
+*.pyc
 research/archive/2026/03/16/amzn-analysis.md

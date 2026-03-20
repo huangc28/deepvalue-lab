@@ -280,25 +280,27 @@ This step is mandatory for every substantial analysis. The archive is the source
 After generating both `StockDetail` JSONs:
 
 1. Ask the user whether to publish to the backend.
-2. If the user confirms, publish via `POST http://localhost:9000/v1/stocks/{TICKER}/reports` with the request body:
-   ```json
-   {
-     "report": {
-       "markdown": "<full English markdown report>",
-       "provenance": "<model id used for analysis>"
-     },
-     "stockDetail": { ...EN StockDetail JSON... },
-     "stockDetailZhTW": { ...zh-TW StockDetail JSON... }
-   }
+2. If the user confirms, use the helper at `references/publish_stock_analysis.py` instead of hand-building the request body.
+3. Call it with absolute artifact paths. Example:
+   ```bash
+   python3 .claude/skills/deepvalue-stock-analysis/references/publish_stock_analysis.py \
+     --ticker VST \
+     --report /abs/path/research/archive/YYYY/MM/DD/VST-analysis.md \
+     --detail /abs/path/research/archive/YYYY/MM/DD/VST-stock-detail.json \
+     --detail-zh /abs/path/research/archive/YYYY/MM/DD/VST-stock-detail-zh-TW.json \
+     --base-url http://localhost:9000 \
+     --provenance codex-gpt-5
    ```
-3. Verify the response is `201` and includes `reportId`, `r2ReportKey`, `r2DetailKey`.
+4. Use `--payload` first if you need to inspect the JSON request before sending it.
+5. Verify the response is `201` and includes `reportId`, `r2ReportKey`, `r2DetailKey`, and, when zh-TW JSON is sent, `r2DetailZhTWKey`.
 4. If the user declines, skip publish. The report and structured data remain in the conversation only.
 
 Do not publish automatically. Always ask first.
 
 Notes:
 
-- The server port defaults to `9000` (from `.env` `APP_PORT`); adjust if the user's server runs on a different port.
+- The helper defaults to `http://localhost:9000`.
+- Override `--base-url` only if the user's backend runs somewhere else.
 
 ### Validation
 
