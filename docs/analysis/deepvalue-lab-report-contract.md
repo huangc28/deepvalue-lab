@@ -331,6 +331,72 @@ Point-in-time price:
 ## 15. Sources Used
 ```
 
+## 8.5 zh-TW Report Contract
+
+### Purpose
+
+Every analysis run produces a Traditional Chinese (繁體中文) report alongside the English report. This section defines the translation and simplification rules for the zh-TW report.
+
+### Structure Rule
+
+The zh-TW report must follow the same 15-section structure as the English report, in the same order. No sections may be added, removed, or reordered.
+
+Use the same section skeleton as Section 8, with all headings translated to Traditional Chinese. Example heading translations:
+
+| English | zh-TW |
+|---------|-------|
+| Business Classification | 業務分類 |
+| Thesis | 投資論點 |
+| Variant Perception | 差異認知 |
+| Valuation Lens | 估值方法 |
+| Current Valuation Snapshot | 當前估值快照 |
+| Recent News And News-To-Model Translation | 近期新聞與模型影響 |
+| Bear Case | 悲觀情景 |
+| Base Case | 基準情景 |
+| Bull Case | 樂觀情景 |
+| What The Current Price Implies | 當前股價隱含的預期 |
+| Provisional Conclusion | 初步結論 |
+| Thesis Status | 論點狀態 |
+| Technical Entry Status | 技術入場狀態 |
+| What To Monitor Next | 後續監察重點 |
+| Sources Used | 資料來源 |
+
+### Translation Rules
+
+Apply these rules when writing the zh-TW report:
+
+1. **Plain-language lead**: Every section opens with one or two plain-language sentences that state the key point in clear, accessible terms before any technical detail. This lead should be readable by a finance-literate reader who is not a specialist.
+
+2. **Acronyms explained on first use**: When an acronym (e.g., EPS, FCF, EBITDA, RSI, EMA, P/E) appears for the first time in the zh-TW report, spell it out in full in Traditional Chinese followed by the acronym in parentheses. Subsequent uses may use the acronym alone.
+   - Example: 每股盈利（EPS）/ 自由現金流（FCF）/ 息稅折舊攤銷前利潤（EBITDA）
+
+3. **Financial jargon retained**: Unavoidable financial jargon (valuation multiples, accounting terms, technical analysis terms) is retained in the zh-TW report. Do not replace jargon with simplified terms. Jargon education is a separate future feature.
+
+4. **Simplification level**: Light. Write clearer sentences and use shorter constructions where possible. Do not fundamentally rewrite the analytical content. The zh-TW report is a translation with light simplification, not a summary or a different analysis.
+
+5. **Numbers and data**: Retain all numerical data, fair values, multiples, and price targets unchanged from the English report. Do not round, adjust, or omit quantitative data.
+
+6. **Judgment and tone**: Preserve the buy-side memo tone. Judgments, thesis status labels (intact / watch / broken), and technical entry labels (favorable / neutral / stretched) carry the same meaning in the zh-TW report.
+
+### Archive Naming
+
+The zh-TW report is saved as:
+
+```
+research/archive/YYYY/MM/DD/<TICKER>-analysis-zh-TW.md
+```
+
+This file exists alongside the English report (`<TICKER>-analysis.md`) in the same directory.
+
+### Completion Rule
+
+A zh-TW report is incomplete if:
+
+- any of the 15 required sections is missing
+- any section is present in English only (all body content must be in Traditional Chinese)
+- any numerical data from the English report is omitted
+- acronyms are not explained on first use
+
 ## 9. Archive And Writeback Rule
 
 Default behavior:
