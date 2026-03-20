@@ -1,0 +1,184 @@
+{
+  "id": "sndk",
+  "ticker": "SNDK",
+  "companyName": "Sandisk Corporation",
+  "businessType": "Cyclical NAND flash pure-play — capital-light, AI-driven supercycle",
+  "currentPrice": 728.50,
+  "valuationStatus": "fair",
+  "newsImpactStatus": "improving",
+  "thesisStatus": "intact",
+  "technicalEntryStatus": "stretched",
+  "actionState": "watch for confirmation",
+  "dashboardBucket": "needs-review",
+  "baseFairValue": 680,
+  "bearFairValue": 320,
+  "bullFairValue": 1080,
+  "discountToBase": 7.13,
+  "summary": "SanDisk trades at ~10.7x FY2027 base-case EPS after a 159% YTD rally. Fair to slightly rich — the AI NAND supercycle is real but fully priced at $728. Deeply overbought technical setup (RSI 85.5) argues strongly against new entry here.",
+  "lastUpdated": "2026-03-19",
+  "thesisStatement": "SanDisk is the purest publicly traded exposure to the AI NAND supercycle, combining capital-light manufacturing (Kioxia JV), explosive enterprise SSD demand, and multi-year hyperscaler supply agreements — but at $728 the stock has already repriced from spinoff orphan to AI darling.",
+  "thesisBullets": [
+    "Enterprise SSD demand is structural — AI training clusters and inference workloads require massive storage, with SanDisk locking multi-year supply agreements with hyperscalers",
+    "Capital-light Kioxia JV model converts revenue surges directly into FCF ($980M FCF on $39M capex in Q2) without capex-overcapacity risk",
+    "NAND pricing has doubled QoQ for enterprise SSDs with supply constraints persisting beyond CY2026",
+    "Freshly spun-off pure-play was initially under-covered and under-owned — the re-rating from discovery phase is now largely complete"
+  ],
+  "variantPerception": "The market has shifted from 'cyclical NAND discount' to 'AI storage pure-play premium' — SNDK is up 159% YTD and 550% since spinoff. The remaining question is whether $728 already fully reflects the supercycle. On FY2027 base-case EPS of ~$68, the stock trades at 10.7x — fair for a cyclical name. The capital-light model and multi-year agreements deserve a modest premium, but the easy money from the discovery phase is done. The variant risk is that any NAND pricing wobble, even temporary, could trigger a sharp correction from deeply overbought levels.",
+  "valuationLens": {
+    "primary": "Forward P/E on FY2027 non-GAAP EPS",
+    "crossCheck": "FCF yield (unusually useful here because Kioxia JV means minimal capex distortion — FCF closely tracks operating earnings)",
+    "rationale": "FY2026 EPS understates earnings power due to steep acceleration. FY2027 is the first full fiscal year reflecting the mature supercycle run-rate. FCF yield is a valid cross-check because SanDisk's capital-light model eliminates the capex distortion that makes FCF unreliable for capital-heavy memory peers."
+  },
+  "currentValuationSnapshot": {
+    "marketCap": "~$114B",
+    "enterpriseValue": "~$113B (net cash ~$940M)",
+    "multiples": [
+      "Forward P/E (FY2026E ~$37): ~19.7x",
+      "Forward P/E (FY2027E base $68): ~10.7x",
+      "P/E on annualized Q3 run-rate ($52): ~14.0x",
+      "Annualized Q2 FCF yield: ~3.4%",
+      "Debt/Equity: 5.9%"
+    ],
+    "balanceSheetNote": "Aggressively delevered since spinoff — long-term debt reduced from $1.83B to $583M. Net cash of ~$940M. Kioxia JV payments (~$1.165B through 2029) are predictable manufacturing costs, not discretionary capex."
+  },
+  "newsToModel": [
+    {
+      "event": "Q2 FY2026 earnings blowout: Revenue $3.025B (+61% YoY), non-GAAP EPS $6.20 (beat consensus $3.62 by 71%), GM 51.1%",
+      "modelVariableChanged": "Revenue, margin, scenario probability",
+      "impact": "Massive upward revision. All three segments grew. Datacenter +64% QoQ. GM expansion from ~30% to 51% in one year demonstrates operating leverage and pricing power.",
+      "affectedScenario": "Bull case shifted from unlikely to plausible"
+    },
+    {
+      "event": "Q3 FY2026 guidance: Revenue $4.4-4.8B, GM 65-67%, non-GAAP EPS $12-14",
+      "modelVariableChanged": "Revenue, margin, multiple",
+      "impact": "FY2026 tracking toward $15-16B (2x FY2025). 65-67% GM approaches DRAM-like margins — unprecedented for NAND. FY2027 estimates need major revision.",
+      "affectedScenario": "Base and bull — could support higher target P/E if market views this as structural"
+    },
+    {
+      "event": "Enterprise SSD pricing doubled QoQ in Q1 CY2026",
+      "modelVariableChanged": "Revenue, margin, bear case risk",
+      "impact": "Primary driver of GM expansion to 65-67%. However, 100%+ QoQ price increases are a catch-up event, not a new normal. When pricing growth moderates, market may misread stabilization as downturn.",
+      "affectedScenario": "Bear case — rate of pricing increase will moderate, creating sentiment risk"
+    },
+    {
+      "event": "Multi-year supply agreements with hyperscalers including prepayment components",
+      "modelVariableChanged": "Revenue visibility, thesis quality",
+      "impact": "Creates forward visibility that commodity NAND never had. Reduces risk of sudden pricing collapse. Supports 'less cyclical' narrative.",
+      "affectedScenario": "Base and bull — multi-year agreements create earnings floor"
+    },
+    {
+      "event": "S&P 500 inclusion and 159% YTD rally",
+      "modelVariableChanged": "Multiple, technical risk",
+      "impact": "Index inclusion creates incremental share demand supporting the multiple. But also means more exposure to broad market risk and forced selling in downturns. Deeply stretched technicals increase correction risk.",
+      "affectedScenario": "All scenarios — amplifies both upside momentum and potential downside volatility"
+    },
+    {
+      "event": "Kioxia JV extension: $1.165B manufacturing payments through 2029",
+      "modelVariableChanged": "Capex/FCF, supply risk",
+      "impact": "Keeps capital-light model intact with predictable costs. But Kioxia dependence means SanDisk doesn't fully control manufacturing. Any Kioxia disruption is a tail risk.",
+      "affectedScenario": "Bear case amplifier if Kioxia disruption occurs"
+    }
+  ],
+  "scenarios": [
+    {
+      "label": "Bear",
+      "keyMetrics": {
+        "revenue": "$20B",
+        "eps": "$40",
+        "targetPE": "8x"
+      },
+      "operatingAssumption": "NAND pricing peaks by late CY2026 as capacity additions outpace demand. Enterprise SSD demand growth moderates. Consumer/edge face Chinese competition. FY2027 revenue ~$20B, non-GAAP GM compresses to ~45%.",
+      "valuationAssumption": "FY2027 non-GAAP EPS ~$40 at 8x P/E (full cyclical discount as NAND pricing weakens).",
+      "fairValue": "~$320",
+      "whatMustBeTrue": "NAND supply additions outpace demand. AI storage growth decelerates. Enterprise SSD pricing normalizes from the 100%+ QoQ spike. Consumer NAND faces deflationary pressure. Multi-year agreements prove less sticky than hoped."
+    },
+    {
+      "label": "Base",
+      "keyMetrics": {
+        "revenue": "$26B",
+        "eps": "$68",
+        "targetPE": "10x"
+      },
+      "operatingAssumption": "AI NAND supercycle sustains through CY2027 with gradually normalizing pricing. Enterprise SSD becomes largest NAND segment. Edge and consumer grow moderately. FY2027 revenue ~$26B, non-GAAP GM ~57%.",
+      "valuationAssumption": "FY2027 non-GAAP EPS ~$68 at 10x P/E (modest premium to historical NAND P/Es reflecting capital-light model and supply agreements).",
+      "fairValue": "~$680",
+      "whatMustBeTrue": "AI data center buildout continues with storage demand growing 30%+ annually. NAND supply remains tight. Multi-year agreements hold. Kioxia JV delivers next-gen capacity on schedule. Margins normalize gradually."
+    },
+    {
+      "label": "Bull",
+      "keyMetrics": {
+        "revenue": "$32B",
+        "eps": "$90",
+        "targetPE": "12x"
+      },
+      "operatingAssumption": "NAND supercycle extends into CY2028. SanDisk gains enterprise SSD share through BiCS8 leadership. Multi-year agreements expand. FY2027 revenue ~$32B, non-GAAP GM ~62%.",
+      "valuationAssumption": "FY2027 non-GAAP EPS ~$90 at 12x P/E (market re-rates SanDisk as capital-light AI storage platform, not commodity NAND).",
+      "fairValue": "~$1,080",
+      "whatMustBeTrue": "AI capex accelerates through CY2027-2028. SanDisk transitions from cyclical NAND to 'AI storage infrastructure' positioning. Multi-year agreements become the norm. Industry supply discipline holds."
+    }
+  ],
+  "currentPriceImplies": "At $728.50, the market prices SanDisk at approximately 10.7x FY2027 base-case EPS of $68 — essentially at fair value for the base scenario. Unlike Micron which trades at a clear discount to base, SanDisk has already been fully repriced to reflect the supercycle. The current price gives you base-case earnings at a base-case multiple, with limited margin of safety. The upside from $728 requires the bull case ($90 EPS at 12x = $1,080), which demands the supercycle to extend well into CY2028 and the market to re-rate above historical NAND multiples. The downside to $320 is a 56% drawdown if the cycle turns. Risk-reward at $728 is roughly symmetric around base, which is not attractive for a cyclical business at peak margins.",
+  "currentPriceImpliesBrief": "Market prices base-case EPS at base-case multiple — fully valued for the supercycle with no margin of safety.",
+  "currentPriceImpliedFacts": [
+    { "label": "Implied FY2027 EPS (at 10x)", "value": "~$73" },
+    { "label": "Implied FY2027 EPS (at 12x)", "value": "~$61" },
+    { "label": "Implied FY2027 gross margin", "value": "~55-60%" },
+    { "label": "Implied FY2027 revenue", "value": "~$25-28B" },
+    { "label": "Premium to base fair value", "value": "7.1%" },
+    { "label": "Upside to bull fair value", "value": "48%" },
+    { "label": "Downside to bear fair value", "value": "56%" }
+  ],
+  "provisionalConclusion": "Fair to slightly rich. The AI NAND supercycle is real but fully priced at $728. SanDisk trades at ~10.7x FY2027 base-case EPS — roughly fair value with no margin of safety. The 159% YTD rally and 550% post-spinoff gain mean the discovery trade is done. Risk-reward favors waiting for pullbacks to $550-600 rather than chasing at overbought all-time highs. SanDisk offers worse risk-reward than Micron at current levels.",
+  "technicalCommentary": "One of the most technically stretched setups in the market. RSI at 85.5 is deeply overbought. Price is 212% above the 50-day EMA and 454% above the 200-day EMA. Up 159% YTD with a 36.6% rally since March 6 pivot. Even if fundamentals are strong, buying at these levels means extreme mean-reversion risk. Wait for RSI to normalize below 60 and price to pull back toward $500-600.",
+  "technicalSignals": [
+    { "label": "RSI (14-day)", "value": "~85.5 (deeply overbought)" },
+    { "label": "50-day EMA", "value": "~$233.7 (212% below current price)" },
+    { "label": "200-day EMA", "value": "~$131.6 (454% below current price)" },
+    { "label": "52-week high", "value": "~$761.50 (near high)" },
+    { "label": "Support level", "value": "~$610-652" },
+    { "label": "YTD performance", "value": "+159%" },
+    { "label": "Recent rally (from Mar 6 pivot)", "value": "+36.6%" }
+  ],
+  "risks": [
+    "NAND pricing normalization: 100%+ QoQ enterprise SSD price increases are a catch-up event and will moderate — when they do, sentiment could turn negative even if absolute prices remain elevated",
+    "Cyclical memory history: NAND has a brutal track record of boom-bust cycles; 51-67% gross margins may represent peak, not new normal",
+    "Kioxia JV dependency: SanDisk does not control its manufacturing — any Kioxia disruption, yield issue, or renegotiation directly impacts capacity and margins",
+    "Concentration risk: Enterprise SSD demand is concentrated among a few hyperscalers — any single customer pullback has outsized impact",
+    "Chinese NAND competition: YMTC and other Chinese players continue to ramp, potentially disrupting consumer and edge segments",
+    "Post-spinoff execution risk: SanDisk has limited track record as an independent public company — standalone operations may face unforeseen challenges"
+  ],
+  "catalysts": [
+    "Q3 FY2026 results (April/May 2026): Validation of the $4.4-4.8B/$12-14 guide would confirm the supercycle trajectory",
+    "Additional multi-year supply agreements: More contracts would validate the 'less cyclical' narrative and support re-rating",
+    "BiCS8 3D NAND technology leadership: Next-gen NAND capacity and performance could drive market share gains",
+    "First dividend announcement: If cash flow trends continue, a dividend could attract income-focused investors (speculated for Q4 2026)",
+    "FY2027 guidance initiation: Formal guidance anchoring $60-90 EPS expectations would be a major catalyst"
+  ],
+  "monitorNext": [
+    "Q3 FY2026 actual results (April/May 2026) — does the $4.4-4.8B/$12-14 guide hold?",
+    "Enterprise SSD pricing trends in Q2 CY2026 — stabilization vs. further increases vs. decline",
+    "NAND supply additions from Samsung, Kioxia, and Chinese manufacturers",
+    "Hyperscaler AI storage capex commentary in Q1/Q2 CY2026 earnings",
+    "Multi-year agreement announcements — expansion validates the less-cyclical thesis",
+    "Kioxia JV operational health and next-gen capacity delivery",
+    "Consumer and edge NAND pricing trends — weakness here would signal cycle bifurcation",
+    "FY2027 guidance initiation — management's first formal view on next year's earnings power"
+  ],
+  "sourcesUsed": [
+    { "label": "SanDisk Q2 FY2026 Earnings Press Release", "url": "https://investor.sandisk.com/news-releases/news-release-details/sandisk-reports-fiscal-second-quarter-2026-financial-results" },
+    { "label": "SanDisk Q2 FY2026 Earnings Call Transcript — Motley Fool", "url": "https://www.fool.com/earnings/call-transcripts/2026/01/29/sandisk-sndk-q2-2026-earnings-call-transcript/" },
+    { "label": "Yahoo Finance: SNDK Quote & Analysis", "url": "https://finance.yahoo.com/quote/SNDK/" },
+    { "label": "StockAnalysis.com: SNDK Market Cap & Forecast", "url": "https://stockanalysis.com/stocks/sndk/forecast/" },
+    { "label": "Investing.com: SNDK Technical Analysis", "url": "https://www.investing.com/equities/sandisk-corp-technical" },
+    { "label": "TIKR: SanDisk Stock Pops as AI Chip Demand Drives Q2 Beat", "url": "https://www.tikr.com/blog/sandisk-nasdaq-sndk-stock-pops-as-ai-chip-demand-drives-massive-q2-earnings-beat" },
+    { "label": "Tom's Hardware: SanDisk to Double Price of Enterprise SSDs", "url": "https://www.tomshardware.com/pc-components/ssds/sandisk-to-double-price-of-3d-nand-for-enterprise-ssds-in-q1-2026-hyperscalers-to-pay-top-dollar-for-storage-as-ai-continues-to-roll" },
+    { "label": "Financial Content: SanDisk Pure-Play Spinoff Deep Dive", "url": "https://markets.financialcontent.com/stocks/article/finterra-2026-3-16-the-return-of-a-storage-legend-a-deep-dive-into-the-sandisk-sndk-pure-play-spinoff" },
+    { "label": "Blockonomi: SanDisk Surges 166% on AI Data Center Demand", "url": "https://blockonomi.com/sandisk-sndk-stock-surges-166-on-ai-data-center-demand-for-flash-storage/" },
+    { "label": "Yahoo Finance: SanDisk Locks Multi-Year AI Data Center Supply Deals", "url": "https://finance.yahoo.com/news/sandisk-sndk-19-5-locking-042447310.html" },
+    { "label": "TipRanks: SNDK Technical Analysis", "url": "https://www.tipranks.com/stocks/sndk/technical-analysis" },
+    { "label": "SanDisk Investor Relations: Nasdaq Listing Announcement", "url": "https://www.sandisk.com/company/newsroom/press-releases/2025/sandisk-celebrates-nasdaq-listing-after-completing-separation" }
+  ],
+  "history": [
+    "2026-03-19: Initial DeepValue Lab analysis — post Q2 FY2026 earnings beat, 159% YTD rally. Fair to slightly rich at $728. Deeply stretched technical entry."
+  ]
+}

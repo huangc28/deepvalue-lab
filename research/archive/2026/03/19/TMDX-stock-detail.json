@@ -1,0 +1,177 @@
+{
+  "id": "tmdx",
+  "ticker": "TMDX",
+  "companyName": "TransMedics Group, Inc.",
+  "businessType": "High-growth medical platform with vertically integrated logistics moat",
+  "currentPrice": 120.00,
+  "valuationStatus": "fair",
+  "newsImpactStatus": "improving",
+  "thesisStatus": "intact",
+  "technicalEntryStatus": "neutral",
+  "actionState": "watch for confirmation",
+  "dashboardBucket": "needs-review",
+  "baseFairValue": 136,
+  "bearFairValue": 66,
+  "bullFairValue": 209,
+  "discountToBase": -11.76,
+  "summary": "TransMedics is fairly valued at $120 with a modest tilt toward attractive — the monopoly medtech platform is validated by 37% FY2025 revenue growth, but the market already prices in continued 20%+ growth while giving little credit for the transformative kidney opportunity.",
+  "lastUpdated": "2026-03-19",
+  "thesisStatement": "TransMedics is the dominant provider of ex-vivo organ perfusion and transplant logistics with a clinically validated monopoly platform, rapidly expanding addressable market across four organ types plus international geographies, and a clear path from 18% to 30% operating margins.",
+  "thesisBullets": [
+    "Penetration runway: Liver at 36% of U.S. volume (up from 26%), heart at 18%, lung at only 2% — substantial room to grow across all organs",
+    "Operating leverage: 60% gross margins with a guided path to 30% operating margins by 2028, roughly double current investment-year levels",
+    "Moat durability: 50+ patents, owned aviation fleet of 22 aircraft, established NOP relationships, and years of clinical evidence create multi-layered barriers to entry",
+    "Kidney optionality: ~27,000 U.S. kidney transplants annually would more than double the serviceable case volume if OCS Kidney gains FDA approval"
+  ],
+  "variantPerception": "The market may underappreciate the kidney opportunity — representing ~2.5x the combined volume of currently addressed organs and not yet priced into the stock. Conversely, the market may be too confident in the margin expansion timeline, with 2026 being an investment year that delays near-term profitability improvement.",
+  "valuationLens": {
+    "primary": "Forward P/E on estimated FY2027 non-GAAP EPS",
+    "crossCheck": "EV/Revenue (because operating margins are still volatile during the investment-to-scale transition)",
+    "rationale": "The company is now consistently profitable, making earnings-based valuation meaningful. Forward P/E captures both revenue growth and the critical margin expansion thesis. EV/Revenue provides a stable secondary lens while margins evolve from 18% toward the 30% target."
+  },
+  "currentValuationSnapshot": {
+    "marketCap": "~$4.1B",
+    "enterpriseValue": "~$5.0B",
+    "multiples": [
+      "Forward P/E (FY2026E): ~46x on ~$2.60 consensus EPS",
+      "EV/FY2026E Revenue: ~6.7x",
+      "Trailing P/E (non-GAAP): ~60x on FY2025 EPS ~$2.00"
+    ],
+    "balanceSheetNote": "Roughly net-neutral: $488M cash vs. $507M total debt ($452M convertible notes due 2028 + $55M bank debt). FCF breakeven expected late 2026 / early 2027."
+  },
+  "newsToModel": [
+    {
+      "event": "Q4 2025 revenue $160.8M (+32% YoY); FY2025 revenue $605.5M (+37% YoY)",
+      "modelVariableChanged": "Revenue trajectory, scenario probability",
+      "impact": "Validates high-growth trajectory. Sequential acceleration from Q3 ($143.8M) to Q4 ($160.8M) shows NOP momentum is building.",
+      "affectedScenario": "Increases base and bull probability"
+    },
+    {
+      "event": "FY2026 guidance $727-$757M (20-25% growth)",
+      "modelVariableChanged": "Revenue, growth rate",
+      "impact": "Growth decelerating from 37% to 20-25% as expected at scale. Midpoint $742M is solid but not a blowout.",
+      "affectedScenario": "Anchors base case revenue"
+    },
+    {
+      "event": "Operating margin guided 250bps below FY2025",
+      "modelVariableChanged": "Margin, EPS",
+      "impact": "Investment-year margin compression to ~15.5% delays near-term EPS expansion. Trade-off for European buildout, kidney R&D, fleet growth.",
+      "affectedScenario": "Lowers near-term EPS; neutral long-term if investments pay off"
+    },
+    {
+      "event": "FDA IDE approval for ENHANCE Heart trial",
+      "modelVariableChanged": "Multiple, thesis quality",
+      "impact": "De-risks next-gen heart platform. Could expand addressable heart donor pool and increase heart case volume.",
+      "affectedScenario": "Improves bull case probability"
+    },
+    {
+      "event": "OCS Liver now 36% of U.S. liver volume (up from 26% in 2024)",
+      "modelVariableChanged": "Revenue, penetration ceiling",
+      "impact": "10pp share gain in one year is remarkable but as liver approaches 40-50%, growth engine must rotate to heart, lung, kidney.",
+      "affectedScenario": "Validates base case; highlights growth rotation risk"
+    },
+    {
+      "event": "Italy NOP launching H1 2026 — first international program",
+      "modelVariableChanged": "Revenue (2027+), operating margin (2026)",
+      "impact": "New growth vector but margin-dilutive in 2026 as infrastructure precedes case volume.",
+      "affectedScenario": "Neutral short-term; positive for bull case long-term"
+    }
+  ],
+  "scenarios": [
+    {
+      "label": "Bear",
+      "keyMetrics": {
+        "revenue": "$820M",
+        "eps": "$3.00",
+        "targetPE": "22x"
+      },
+      "operatingAssumption": "Revenue growth decelerates to low end of guidance in FY2026 (~$727M), then slows to 13% in FY2027 (~$820M) as liver plateaus and heart/lung adoption is slower than hoped. Operating margin improves only to 17% as European costs and R&D weigh on profitability.",
+      "valuationAssumption": "FY2027 non-GAAP EPS ~$3.00. Market assigns 22x forward P/E for a medtech company with decelerating growth and margin uncertainty.",
+      "fairValue": "~$66",
+      "whatMustBeTrue": "Liver penetration plateaus near 40%, heart/lung adoption slower than liver trajectory, European NOP generates losses longer than expected, kidney trial delayed or mixed data, competitor enters or regulatory changes disrupt NOP."
+    },
+    {
+      "label": "Base",
+      "keyMetrics": {
+        "revenue": "$890M",
+        "eps": "$4.25",
+        "targetPE": "32x"
+      },
+      "operatingAssumption": "Revenue hits guidance midpoint $742M in FY2026, grows 20% to ~$890M in FY2027 as heart expands toward 25% share, lung begins to accelerate, and Italy contributes early volume. Operating margin expands to 22% as NOP scale economics materialize.",
+      "valuationAssumption": "FY2027 non-GAAP EPS ~$4.25. Market assigns 32x forward P/E for a high-growth medtech platform with proven execution and expanding margins.",
+      "fairValue": "~$136",
+      "whatMustBeTrue": "Heart and liver adoption continues, lung begins to inflect, European expansion on schedule, margins expand toward 30% target, no credible competitor emerges."
+    },
+    {
+      "label": "Bull",
+      "keyMetrics": {
+        "revenue": "$965M",
+        "eps": "$5.50",
+        "targetPE": "38x"
+      },
+      "operatingAssumption": "Revenue exceeds FY2026 guidance at ~$770M, grows 25%+ to ~$965M in FY2027 driven by accelerating heart/lung, strong Italian ramp, and positive kidney trial data. Operating margin reaches 26% ahead of schedule.",
+      "valuationAssumption": "FY2027 non-GAAP EPS ~$5.50. Market assigns 38x forward P/E for a dominant, expanding medtech platform with multiple new growth vectors.",
+      "fairValue": "~$209",
+      "whatMustBeTrue": "Heart penetration reaches 25%+, lung follows liver curve with 2-year lag, European NOP scales fast, kidney trial data strong, operating leverage at least matches management targets."
+    }
+  ],
+  "currentPriceImplies": "At $120, the market is pricing TransMedics for solid continued execution but with meaningful skepticism about the pace of margin expansion. Working backward: at a 32x P/E, $120 implies FY2027 EPS of ~$3.75, requiring approximately $860M in revenue at a 20% operating margin — slightly below the base case. The market is giving credit for 20%+ revenue growth but discounting the margin expansion timeline. Critically, the current price appears to assign near-zero value to the kidney opportunity, which represents the company's largest potential TAM expansion.",
+  "currentPriceImpliesBrief": "Market prices in 20%+ growth but discounts margin expansion and assigns zero value to kidney.",
+  "currentPriceImpliedFacts": [
+    { "label": "Implied FY2027 Revenue", "value": "~$860-890M (18-20% CAGR from FY2025)" },
+    { "label": "Implied FY2027 Operating Margin", "value": "~19-21% (below 30% target)" },
+    { "label": "Implied FY2027 EPS (at 32x)", "value": "~$3.75" },
+    { "label": "Implied Growth Duration", "value": "2-3 more years of 20%+ revenue growth" },
+    { "label": "Implied Kidney Value", "value": "Near zero — largest TAM catalyst not priced in" }
+  ],
+  "provisionalConclusion": "Fair, with a modest tilt toward attractive if the base case holds. At $120, the stock trades at ~46x forward FY2026E earnings — optically expensive but reasonable for a monopoly medtech platform growing 20-25% with a path to 30% operating margins. The key risk is margin timeline; the key hidden support is kidney. An investor who believes in both should find this entry acceptable though not a screaming bargain — a pullback to $100-110 would offer better risk-reward.",
+  "technicalCommentary": "The stock is in a consolidation zone near the 200-day MA (~$120) after rallying from mid-$60s in 2025. RSI(14) is in the 40-55 neutral range. The 50-day MA (~$107) provides near-term support, while resistance sits at $127 and $134. Not offering a clear 'buy the dip' setup — consider a starter position with plans to add on pullbacks to the $100-110 support zone.",
+  "technicalSignals": [
+    { "label": "RSI(14)", "value": "~40-55 (neutral)" },
+    { "label": "50-day MA", "value": "~$107" },
+    { "label": "200-day MA", "value": "~$120 (at current price)" },
+    { "label": "52-week range", "value": "$62.23 – $156.00" },
+    { "label": "Support", "value": "$107 (50-day MA), $100 (psychological)" },
+    { "label": "Resistance", "value": "$127, $134" }
+  ],
+  "risks": [
+    "Margin expansion delayed: If the path from 16% to 30% operating margins takes longer than 2028, the growth-premium multiple could compress significantly",
+    "Liver penetration plateau: At 36% of U.S. volume, liver is approaching a level where incremental share gains slow — the growth engine must rotate to heart, lung, and kidney",
+    "European execution risk: Italy NOP is the first international program — operational complexity, regulatory differences, and reimbursement uncertainty could delay returns",
+    "Convertible note overhang: $452M due 2028 could add ~4.3M shares of dilution (~12%) if converted, or require refinancing if the stock is below conversion price",
+    "Single-product platform risk: The entire business depends on the OCS platform — a clinical safety issue or regulatory change could impact all organ programs simultaneously",
+    "Competitive entry: While no FDA-approved competitor exists today, the high margins and proven market could attract well-funded entrants"
+  ],
+  "catalysts": [
+    "OCS Kidney clinical trial data — positive results could re-rate the stock by unlocking the largest TAM expansion in company history",
+    "Lung adoption inflection — at only 2% penetration, any evidence of acceleration would be a significant positive surprise",
+    "Italy NOP case volume ramp — proof-of-concept for European expansion could unlock a major new growth vector",
+    "ENHANCE Heart trial enrollment/data — could expand the addressable heart donor pool",
+    "Faster-than-expected margin expansion — if investment-year costs normalize sooner than 2028, EPS estimates would reset higher",
+    "Q1 2026 earnings beat — if revenue tracks above guidance midpoint, it would validate the growth trajectory"
+  ],
+  "monitorNext": [
+    "Q1 2026 earnings (expected May 2026): sequential revenue growth, U.S. case volume trends for heart and lung, and commentary on margin trajectory",
+    "OCS Kidney clinical trial enrollment and data updates — any readout directly impacts the largest TAM expansion thesis",
+    "Italy NOP launch metrics — early case volumes and operational data as proof-of-concept for European scaling",
+    "Operating margin trajectory through FY2026 — watch for whether investment spending stays within the guided 250bps compression or surprises in either direction",
+    "OCS Lung adoption trend — inflection evidence would be a major positive catalyst given current 2% penetration",
+    "Competitive landscape — monitor for FDA filings or clinical trials from potential warm perfusion competitors",
+    "Convertible note dynamics as 2028 maturity approaches — refinancing risk if stock is below conversion price"
+  ],
+  "sourcesUsed": [
+    { "label": "TransMedics Q4/FY2025 Earnings Press Release (Feb 24, 2026)", "url": "https://www.stocktitan.net/news/TMDX/trans-medics-reports-fourth-quarter-and-full-year-2025-financial-xd4k8mvp5tvo.html" },
+    { "label": "TransMedics Q4 2025 Earnings Call Highlights", "url": "https://finance.yahoo.com/news/transmedics-group-q4-earnings-call-060748373.html" },
+    { "label": "TransMedics FDA IDE Approval for ENHANCE Heart Trial", "url": "https://investors.transmedics.com/news-releases/news-release-details/transmedics-receives-fda-ide-approval-initiate-next-generation/" },
+    { "label": "TransMedics 10-K Annual Report (Feb 2026)", "url": "https://last10k.com/sec-filings/tmdx/0001193125-26-067032.htm" },
+    { "label": "Yahoo Finance - TMDX Key Statistics", "url": "https://finance.yahoo.com/quote/TMDX/key-statistics/" },
+    { "label": "StockAnalysis - TMDX Financials", "url": "https://stockanalysis.com/stocks/tmdx/financials/" },
+    { "label": "Simply Wall St - TMDX Kidney Expansion Analysis", "url": "https://simplywall.st/stocks/us/healthcare/nasdaq-tmdx/transmedics-group/news/kidney-expansion-and-strong-outlook-might-change-the-case-fo" },
+    { "label": "Motley Fool - TMDX Stock Analysis (Mar 2026)", "url": "https://www.fool.com/investing/2026/03/08/transmedics-stock-is-up-104-over-the-last-year-is/" },
+    { "label": "Investing.com - TMDX Technical Analysis", "url": "https://www.investing.com/equities/transmedics-group-inc-technical" },
+    { "label": "Seeking Alpha - TMDX 2026 Growth Outlook", "url": "https://seekingalpha.com/news/4556428-transmedics-outlines-20-25-percent-2026-revenue-growth-target-while-advancing-ocs-programs" }
+  ],
+  "history": [
+    "2026-03-19: Initial DeepValue Lab analysis. Fair valuation at $120 with base case $136, bear $66, bull $209. Thesis intact. Kidney opportunity identified as key unpriced catalyst."
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "id": "mu",
+  "ticker": "MU",
+  "companyName": "Micron Technology, Inc.",
+  "businessType": "Cyclical memory semiconductor with AI/HBM structural upgrade",
+  "currentPrice": 444.27,
+  "valuationStatus": "fair",
+  "newsImpactStatus": "improving",
+  "thesisStatus": "intact",
+  "technicalEntryStatus": "neutral",
+  "actionState": "watch for confirmation",
+  "dashboardBucket": "needs-review",
+  "baseFairValue": 480,
+  "bearFairValue": 256,
+  "bullFairValue": 690,
+  "discountToBase": -7.44,
+  "summary": "Micron's business evidence remains strong after the fiscal Q2 reset and exceptional Q3 guide, but at $444.27 the stock looks fair rather than outright cheap. The thesis is intact, news impact is improving, and the better setup is to accumulate on weakness or after another confirming quarter.",
+  "lastUpdated": "2026-03-20",
+  "thesisStatement": "Micron is no longer just a commodity memory call for the next several quarters: HBM, strategic customer commitments, and tight industry supply have lifted earnings visibility and likely raised the normalized earnings floor, but the stock already reflects much of that improvement.",
+  "thesisBullets": [
+    "HBM and data-center demand have made Micron's earnings stream more visible than in prior cycles.",
+    "Strategic customer agreements and full CY2026 HBM commitments reduce near-term revenue and margin downside.",
+    "Tight DRAM and NAND supply beyond calendar 2026 supports a higher earnings floor than traditional memory bears assume.",
+    "The main underwriting risk is future competitor supply and elevated capex recreating the classic memory overbuild."
+  ],
+  "variantPerception": "The market still discounts Micron using the old memory-cycle template more than is justified by HBM4 shipments, multi-year customer agreements, and supply tightness beyond 2026. The variant is now moderate rather than extreme because the stock has already rerated sharply.",
+  "valuationLens": {
+    "primary": "FY2027 normalized non-GAAP EPS x target P/E",
+    "crossCheck": "Run-rate EV/sales (sanity check only)",
+    "rationale": "Normalized forward EPS is the most decision-useful anchor for a cyclical memory business whose spot-quarter results are unusually strong. I use EV/sales only as a sanity check and do not rely on FCF yield because capex above $25B and likely higher FY2027 R&D distort near-term cash-flow optics."
+  },
+  "currentValuationSnapshot": {
+    "marketCap": "~$510B",
+    "enterpriseValue": "~$504B",
+    "multiples": [
+      "P/E on annualized Q3 non-GAAP EPS run-rate: ~5.8x",
+      "EV/sales on annualized Q3 revenue run-rate: ~3.8x",
+      "Current price vs base-case fair value: ~0.93x",
+      "Q2 FY2026 non-GAAP gross margin: 74.9%",
+      "Q3 FY2026 non-GAAP gross margin guide: ~81%"
+    ],
+    "balanceSheetNote": "Micron ended fiscal Q2 with about $16.7B of cash and investments against about $10.1B of debt, leaving roughly $6.5B of net cash. Balance-sheet risk is low; cycle normalization is the real issue."
+  },
+  "newsToModel": [
+    {
+      "event": "Fiscal Q2 2026 results: $23.86B revenue, 74.9% non-GAAP gross margin, and $12.20 non-GAAP EPS.",
+      "modelVariableChanged": "Revenue, margin, scenario probability",
+      "impact": "Micron's earnings base reset materially higher, reducing the odds that the current setup is only a one-quarter spike.",
+      "affectedScenario": "Base and Bull"
+    },
+    {
+      "event": "Fiscal Q3 2026 guide: $33.5B revenue, ~81% gross margin, and $19.15 non-GAAP EPS.",
+      "modelVariableChanged": "Revenue, margin, valuation multiple",
+      "impact": "The fiscal Q3 exit-rate forces investors to assume a much higher normalized earnings floor than old Micron cycles, even after applying normalization.",
+      "affectedScenario": "Base and Bull"
+    },
+    {
+      "event": "HBM4 volume shipments began for NVIDIA Vera Rubin, and Micron signed its first five-year strategic customer agreement.",
+      "modelVariableChanged": "Revenue visibility, thesis quality, margin floor",
+      "impact": "The AI memory story now has better contract and product visibility, lowering near-term downside and supporting a higher near-cycle earnings floor.",
+      "affectedScenario": "Reduces near-term Bear probability"
+    },
+    {
+      "event": "Management expects DRAM and NAND conditions to remain tight beyond calendar 2026, while fiscal 2026 capex will exceed $25B and FY2027 R&D will rise meaningfully.",
+      "modelVariableChanged": "Scenario probability, capex burden, multiple support",
+      "impact": "Tight supply supports the base case, but elevated investment is the main reason the market may continue to cap Micron's multiple.",
+      "affectedScenario": "Supports Base; preserves Bear-case path later in the cycle"
+    }
+  ],
+  "scenarios": [
+    {
+      "label": "Bear",
+      "keyMetrics": {
+        "revenue": "$90B",
+        "eps": "$32",
+        "targetPE": "8x"
+      },
+      "operatingAssumption": "HBM remains meaningful but loses pricing edge faster than bulls expect, while conventional DRAM/NAND pricing weakens as supply catches up. FY2027 revenue falls back to about $90B and non-GAAP EPS to about $32.",
+      "valuationAssumption": "8x P/E on FY2027 normalized EPS, reflecting a renewed full-cycle memory discount.",
+      "fairValue": "$256",
+      "whatMustBeTrue": "Competitor HBM ramps narrow Micron's advantage, AI demand cools enough to ease tightness, and Micron's elevated capex collides with a less favorable pricing backdrop."
+    },
+    {
+      "label": "Base",
+      "keyMetrics": {
+        "revenue": "$110B",
+        "eps": "$48",
+        "targetPE": "10x"
+      },
+      "operatingAssumption": "HBM demand remains strong through FY2027, conventional memory stays healthier than in prior post-peak periods, and Micron normalizes from the fiscal Q3 exit-rate rather than collapsing. FY2027 revenue is about $110B and EPS about $48.",
+      "valuationAssumption": "10x P/E, implying a partial but not full structural re-rating versus old memory cycles.",
+      "fairValue": "$480",
+      "whatMustBeTrue": "Industry supply discipline holds, Micron keeps meaningful HBM participation, and normalization is gradual rather than abrupt."
+    },
+    {
+      "label": "Bull",
+      "keyMetrics": {
+        "revenue": "$125B",
+        "eps": "$60",
+        "targetPE": "11.5x"
+      },
+      "operatingAssumption": "HBM4/HBM4E plus strategic customer agreements keep Micron's AI mix elevated, supply remains tighter for longer, and conventional memory also participates. FY2027 revenue reaches about $125B and EPS about $60.",
+      "valuationAssumption": "11.5x P/E, reflecting a partial structural re-rating if the market believes Micron deserves more than a traditional memory multiple.",
+      "fairValue": "$690",
+      "whatMustBeTrue": "AI memory demand stays supply-constrained, Micron executes well on next-generation HBM, and the market believes the higher earnings floor is durable."
+    }
+  ],
+  "currentPriceImplies": "At $444.27, the stock no longer prices Micron as if the HBM story is fake, but it still prices a meaningful normalization from the extraordinary fiscal Q3 exit-rate. At 10x earnings, today's price implies roughly $44.4 of forward EPS; at 9x, it implies roughly $49.4. In other words, the market expects strong earnings durability but still assigns a discount for future capex, competitor supply, and the possibility that memory cyclicality reasserts itself.",
+  "currentPriceImpliesBrief": "Market assumes strong but normalized FY2027 earnings, not an immediate collapse and not a full structural re-rating.",
+  "currentPriceImpliedFacts": [
+    { "label": "Implied FY2027 EPS at 10x", "value": "$44.4" },
+    { "label": "Implied FY2027 EPS at 9x", "value": "$49.4" },
+    { "label": "Discount to base fair value", "value": "7.4%" },
+    { "label": "Upside to bull fair value", "value": "55.3%" },
+    { "label": "Downside to bear fair value", "value": "42.4%" },
+    { "label": "Q3 annualized P/E run-rate", "value": "~5.8x" }
+  ],
+  "provisionalConclusion": "Fair to slightly attractive fundamentally, but not enough margin of safety to call cheap. The business evidence is excellent and the thesis is intact, yet the stock has already rerated hard enough that patience still matters more than urgency.",
+  "technicalCommentary": "RSI (22) at 58.5 sits just above its 12-period EMA, so momentum is still constructive, but the stock remains about 14.4% above its 50-day EMA and 68.1% above its 200-day EMA. That is better than the immediate post-earnings blowoff condition, but still not a washed-out setup. I classify the entry as neutral rather than favorable.",
+  "technicalSignals": [
+    { "label": "RSI (22)", "value": "58.5" },
+    { "label": "RSI EMA (12)", "value": "58.0" },
+    { "label": "50-day EMA", "value": "$388.25" },
+    { "label": "200-day EMA", "value": "$264.35" },
+    { "label": "20-day low", "value": "$370.30" },
+    { "label": "20-day high", "value": "$461.73" },
+    { "label": "Price vs 50-day EMA", "value": "+14.4%" }
+  ],
+  "risks": [
+    "HBM competition eventually narrows Micron's pricing and mix advantage.",
+    "Micron's elevated capex and rising FY2027 R&D spend collide with a softer pricing backdrop.",
+    "AI demand growth slows enough to ease supply tightness faster than bulls expect.",
+    "Conventional DRAM/NAND weakens more sharply than HBM strength can offset.",
+    "The market keeps treating Micron as a classic peak-memory stock and caps the multiple."
+  ],
+  "catalysts": [
+    "Another clean quarter that validates the exceptional fiscal Q3 guide.",
+    "More concrete CY2027 HBM customer commitments or strategic customer agreements.",
+    "Evidence that supply-demand tightness really persists beyond calendar 2026.",
+    "Sustained execution on HBM4/HBM4E that improves Micron's perceived structural role in AI memory."
+  ],
+  "monitorNext": [
+    "Fiscal Q3 2026 actual revenue, margin, and EPS versus the current guide.",
+    "CY2027 HBM visibility and customer commitment depth.",
+    "Samsung and SK hynix progress on HBM4 / HBM4E ramp and qualification.",
+    "FY2027 capex and R&D spending trajectory.",
+    "Conventional DRAM and NAND pricing trends.",
+    "Hyperscaler AI capex commentary and any signs of demand fatigue.",
+    "Trade and geopolitical developments affecting semiconductor supply chains."
+  ],
+  "sourcesUsed": [
+    { "label": "Micron Q2 FY2026 Press Release", "url": "https://investors.micron.com/news-releases/news-release-details/micron-technology-inc-reports-results-second-quarter-fiscal-2026" },
+    { "label": "Micron Q2 FY2026 Prepared Remarks (PDF)", "url": "https://investors.micron.com/static-files/e089f8c0-065d-47b8-9d02-bfa863cdb357" },
+    { "label": "Micron Q2 FY2026 Earnings Deck (PDF)", "url": "https://investors.micron.com/static-files/9c0becf5-df56-4eec-bd67-453dda68b273" },
+    { "label": "Micron Q2 FY2026 Form 10-Q (HTML)", "url": "https://investors.micron.com/node/50266/html" },
+    { "label": "Micron Quarterly Results Page", "url": "https://investors.micron.com/quarterly-results" },
+    { "label": "Stooq MU Daily Historical Prices", "url": "https://stooq.com/q/d/l/?s=mu.us&i=d" }
+  ],
+  "history": [
+    "2026-03-20: Updated after the first post-Q2 earnings trading session. Thesis intact, valuation fair, technical entry neutral."
+  ]
+}

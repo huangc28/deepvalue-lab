@@ -1,0 +1,183 @@
+{
+  "id": "mu",
+  "ticker": "MU",
+  "companyName": "Micron Technology, Inc.",
+  "businessType": "Cyclical memory semiconductor — AI-driven supercycle",
+  "currentPrice": 461.73,
+  "valuationStatus": "fair",
+  "newsImpactStatus": "improving",
+  "thesisStatus": "intact",
+  "technicalEntryStatus": "stretched",
+  "actionState": "watch for confirmation",
+  "dashboardBucket": "needs-review",
+  "baseFairValue": 540,
+  "bearFairValue": 304,
+  "bullFairValue": 840,
+  "discountToBase": -14.49,
+  "summary": "Micron trades at ~8.5x FY2027 base-case EPS after a record Q2 beat and massive Q3 guide-up. Fair with asymmetric upside if HBM supercycle proves more durable than the market's memory-cycle discount implies, but stretched technical entry at 52-week highs argues for accumulation on pullbacks.",
+  "lastUpdated": "2026-03-19",
+  "thesisStatement": "Micron is the primary Western beneficiary of the AI memory supercycle, with HBM transforming it from commodity memory supplier to capacity-constrained strategic AI input provider, trading at a cyclical discount that may underestimate the structural durability of HBM-driven pricing power.",
+  "thesisBullets": [
+    "HBM creates durable pricing power structurally different from conventional DRAM commodity cycles — entire CY2026 supply locked at agreed pricing",
+    "Supply discipline across the industry extends the tight market beyond CY2026, with customers receiving only 50-67% of demand",
+    "Capex investments ($25B+ FY2026) position Micron to capture share in a $100B HBM TAM by CY2028",
+    "At ~8-10x forward earnings, the market prices significant cycle normalization — creating upside if the supercycle proves more durable"
+  ],
+  "variantPerception": "The market applies a traditional memory-cycle discount (~8-10x forward P/E) implying margins will compress sharply from current 75-81% levels. The variant view is that HBM contract structure (locked pricing, multi-year validation cycles, NVIDIA platform specificity) creates pricing stickiness that conventional DRAM never had. If this structural shift is real, Micron is significantly undervalued at current multiples. The key risk is Samsung and SK Hynix flooding HBM supply.",
+  "valuationLens": {
+    "primary": "Forward P/E on FY2027 non-GAAP EPS",
+    "crossCheck": "EV/EBITDA (capital-structure neutral, captures net cash position)",
+    "rationale": "Forward P/E is the most decision-useful metric given Micron's earnings visibility from locked HBM contracts and guided Q3. EV/EBITDA cross-checks but can understate capex burden during heavy investment cycles. FCF yield is too distorted by $25B+ annual capex to be primary."
+  },
+  "currentValuationSnapshot": {
+    "marketCap": "~$527B",
+    "enterpriseValue": "~$519B (net cash ~$3.8B)",
+    "multiples": [
+      "Forward P/E (FY2027 base $54): ~8.6x",
+      "Forward P/E (FY2027 consensus $45): ~10.3x",
+      "P/E on annualized Q3 run-rate ($76.6): ~6.0x",
+      "Debt/Equity: 0.21x",
+      "ROE: 22.6%"
+    ],
+    "balanceSheetNote": "Record net cash of ~$3.8B ($13.9B cash vs $10.1B debt). Balance sheet risk is minimal — Micron generates cash faster than it can spend on capex."
+  },
+  "newsToModel": [
+    {
+      "event": "Q2 FY2026 record earnings: Revenue $23.86B (+196% YoY), non-GAAP EPS $12.20 (beat by 39%), GM 74.9%",
+      "modelVariableChanged": "Revenue, margin, scenario probability",
+      "impact": "Massive upward revision to revenue trajectory. H1 FY2026 already $37.5B. Shifts probability toward base and bull cases.",
+      "affectedScenario": "All scenarios — bear case requires sharper reversal from higher starting point"
+    },
+    {
+      "event": "Q3 FY2026 guidance: Revenue $33.5B, GM ~81%, non-GAAP EPS $19.15",
+      "modelVariableChanged": "Revenue, margin, multiple",
+      "impact": "81% GM is unprecedented in memory history. FY2026 tracking well above $100B. FY2027 estimates need major upward revision.",
+      "affectedScenario": "Base and bull — could support higher target P/E if market sees structural shift"
+    },
+    {
+      "event": "HBM4 volume shipments begun; entire CY2026 HBM supply contracted at locked pricing",
+      "modelVariableChanged": "Revenue visibility, margin floor, thesis quality",
+      "impact": "Near-term downside risk reduced. Contracted pricing provides margin floor for 9+ months. Strengthens thesis that HBM is not a commodity.",
+      "affectedScenario": "Reduces bear probability in near term"
+    },
+    {
+      "event": "Capex raised to $25B+ for FY2026; FY2027 to step up meaningfully",
+      "modelVariableChanged": "Capex, FCF, bear case risk",
+      "impact": "Higher capex reduces near-term FCF despite record earnings. If cycle turns during elevated capex, classic memory overcapacity trap. If demand sustains, builds capacity for $100B HBM TAM.",
+      "affectedScenario": "Bear case amplifier (overcapacity risk) and bull case enabler (capacity for TAM capture)"
+    },
+    {
+      "event": "Tariff impacts explicitly excluded from guidance",
+      "modelVariableChanged": "Scenario probability, tail risk",
+      "impact": "Adds unquantified tail risk to all scenarios. Micron has shown ability to pass through costs, but escalation could compress margins.",
+      "affectedScenario": "Bear case amplifier"
+    },
+    {
+      "event": "Supply constraints: key customers receiving only 50-67% of demand",
+      "modelVariableChanged": "Revenue (supply-constrained), multiple",
+      "impact": "Demand significantly exceeds supply. Revenue is supply-constrained, not demand-constrained. Supports higher-for-longer margin thesis.",
+      "affectedScenario": "Base and bull — demand backlog provides buffer against cycle turn"
+    }
+  ],
+  "scenarios": [
+    {
+      "label": "Bear",
+      "keyMetrics": {
+        "revenue": "$100B",
+        "eps": "$38",
+        "targetPE": "8x"
+      },
+      "operatingAssumption": "Memory cycle peaks by late CY2026. HBM pricing softens as Samsung/SK Hynix ramp competitive HBM4. Conventional DRAM/NAND enters downcycle. FY2027 revenue ~$100B, non-GAAP GM compresses to ~50%.",
+      "valuationAssumption": "FY2027 non-GAAP EPS ~$38 at 8x P/E (full cyclical discount as margins visibly compress).",
+      "fairValue": "~$304",
+      "whatMustBeTrue": "Samsung and SK Hynix ramp HBM4 faster than expected, breaking pricing power. AI capex growth decelerates. Conventional memory pricing turns negative. Micron's elevated capex creates overcapacity at the worst time."
+    },
+    {
+      "label": "Base",
+      "keyMetrics": {
+        "revenue": "$125B",
+        "eps": "$54",
+        "targetPE": "10x"
+      },
+      "operatingAssumption": "HBM supercycle sustains through CY2027 with gradually increasing competition. Conventional memory stays healthy. FY2027 revenue ~$125B, non-GAAP GM ~60% (normalization from peak but HBM floor prevents collapse).",
+      "valuationAssumption": "FY2027 non-GAAP EPS ~$54 at 10x P/E (modest premium to historical memory-cycle P/Es reflecting partial structural re-rating).",
+      "fairValue": "~$540",
+      "whatMustBeTrue": "HBM demand stays tight through CY2027. Memory industry maintains supply discipline. Micron's HBM share reaches ~25%. Margins normalize gradually rather than cliff-diving."
+    },
+    {
+      "label": "Bull",
+      "keyMetrics": {
+        "revenue": "$150B",
+        "eps": "$70",
+        "targetPE": "12x"
+      },
+      "operatingAssumption": "HBM TAM accelerates faster than $100B by CY2028 forecast. Micron gains share above 25% through HBM4/HBM4E technology lead. AI-adjacent demand lifts conventional memory. FY2027 revenue ~$150B, non-GAAP GM ~65%.",
+      "valuationAssumption": "FY2027 non-GAAP EPS ~$70 at 12x P/E (market re-rates Micron as less cyclical due to HBM contract structure and structural AI demand).",
+      "fairValue": "~$840",
+      "whatMustBeTrue": "AI capex continues accelerating. HBM4E extends Micron's technology lead. Oligopoly pricing discipline holds. Market accepts structural re-rating above historical memory multiples."
+    }
+  ],
+  "currentPriceImplies": "At $461.73, the market prices Micron at approximately 8.5x realistic FY2027 base-case EPS of ~$54, embedding a ~40-50% probability that the memory cycle normalizes within 12-18 months. The market is essentially applying the old memory-cycle framework: low P/E at peak earnings. The current price gives you base-case earnings at a cyclical discount — you are not paying for the bull case. Implied expectations: FY2027 EPS of ~$46-54, gross margins compressing to ~55-60%, revenue of ~$110-125B. The risk-reward is asymmetric to the upside if HBM proves more durable than the market's memory-cycle template assumes, but the downside to $304 is real if this turns out to be another classic memory peak.",
+  "currentPriceImpliesBrief": "Market prices ~8.5x base EPS, embedding significant cycle-normalization probability — upside asymmetric if HBM durability beats the old memory playbook.",
+  "currentPriceImpliedFacts": [
+    { "label": "Implied FY2027 EPS (at 10x)", "value": "~$46" },
+    { "label": "Implied FY2027 EPS (at 8x)", "value": "~$58" },
+    { "label": "Implied FY2027 gross margin", "value": "~55-60%" },
+    { "label": "Implied FY2027 revenue", "value": "~$110-125B" },
+    { "label": "Discount to base fair value", "value": "14.5%" },
+    { "label": "Upside to bull fair value", "value": "82%" },
+    { "label": "Downside to bear fair value", "value": "34%" }
+  ],
+  "provisionalConclusion": "Fair, with asymmetric upside if the HBM thesis holds. At $462, Micron trades at ~8.5x realistic FY2027 base-case EPS, representing roughly 15% discount to $540 base fair value. Not cheap enough for high-conviction accumulation — the stock has rallied 21.6% in two weeks to its 52-week high. But not expensive either, given the extraordinary earnings trajectory. The HBM structural shift is real but not fully proven. Risk-reward favors accumulation on pullbacks toward $380-420 rather than chasing at $462 post a massive earnings gap-up.",
+  "technicalCommentary": "Stock is at its 52-week high after a 21.6% two-week rally and 4.5% earnings-day gap-up. RSI at ~64.5 is neutral but the price is 37% above the 50-day EMA ($337.5) and 114% above the 200-day EMA ($216), representing extreme extension by mean-reversion standards. This is not a favorable entry zone — wait for a pullback toward the $380-420 range for better risk-reward.",
+  "technicalSignals": [
+    { "label": "RSI (14-day)", "value": "~64.5 (neutral)" },
+    { "label": "50-day EMA", "value": "~$337.5 (37% below current price)" },
+    { "label": "200-day EMA", "value": "~$216 (114% below current price)" },
+    { "label": "52-week high", "value": "$462.73 (at high)" },
+    { "label": "52-week low", "value": "$61.54" },
+    { "label": "Support level", "value": "~$415-421" },
+    { "label": "2-week momentum", "value": "+21.6%" }
+  ],
+  "risks": [
+    "Memory cycle normalization: Historical pattern of peak margins followed by sharp compression — 75-81% GM is unprecedented and may not sustain",
+    "HBM competition: Samsung and SK Hynix ramping HBM4 capacity could break Micron's pricing power",
+    "AI capex fatigue: Hyperscaler spending slowdown would directly impact HBM demand",
+    "Capex overcapacity trap: $25B+ FY2026 capex rising into FY2027 could create supply glut if demand weakens",
+    "Tariff and geopolitical risk: Excluded from guidance, but could compress margins or disrupt supply chains",
+    "Conventional memory downcycle: Non-HBM DRAM and NAND pricing could weaken independently of AI demand"
+  ],
+  "catalysts": [
+    "Q3 FY2026 results (June 2026): Validation of $33.5B/$19.15 guide could drive further re-rating",
+    "CY2027 HBM contract announcements: Would extend earnings visibility and support multiple expansion",
+    "HBM4E technology advantage: If Micron leads in next-gen HBM, market share gains accelerate",
+    "Memory industry structural re-rating: If the market begins pricing Micron above historical memory multiples, significant upside",
+    "Hyperscaler AI capex acceleration: Stronger-than-expected AI spending raises all memory demand"
+  ],
+  "monitorNext": [
+    "Q3 FY2026 actual results (June 2026) — does the $33.5B/$19.15 guide hold or beat?",
+    "CY2027 HBM contract visibility — has Micron begun locking next year's supply?",
+    "Samsung and SK Hynix HBM4 ramp progress and yield improvements",
+    "Hyperscaler AI capex commentary in Q1/Q2 CY2026 earnings — any signs of spending slowdown",
+    "Conventional DRAM/NAND pricing trends — commodity weakness would pressure non-HBM revenue",
+    "Tariff developments and geopolitical actions affecting semiconductor trade",
+    "FY2027 capex guidance — rising capex into a weakening cycle is the classic memory trap"
+  ],
+  "sourcesUsed": [
+    { "label": "Micron Q2 FY2026 Earnings Press Release", "url": "https://www.globenewswire.com/news-release/2026/03/18/3258579/14450/en/Micron-Technology-Inc-Reports-Results-for-the-Second-Quarter-of-Fiscal-2026.html" },
+    { "label": "Micron Q2 FY2026 Earnings Call Transcript — Motley Fool", "url": "https://www.fool.com/earnings/call-transcripts/2026/03/18/micron-mu-q2-2026-earnings-call-transcript/" },
+    { "label": "CNBC: Micron Q2 Earnings Report 2026", "url": "https://www.cnbc.com/2026/03/18/micron-mu-q2-earnings-report-2026.html" },
+    { "label": "Investing.com: Micron Q2 2026 Earnings Call Transcript", "url": "https://www.investing.com/news/transcripts/earnings-call-transcript-micron-technology-q2-2026-beats-forecasts-with-strong-growth-93CH-4569498" },
+    { "label": "StockTitan: Micron Q2 Revenue Hits $23.86B", "url": "https://www.stocktitan.net/news/MU/micron-technology-inc-reports-results-for-the-second-quarter-of-5oyd4rwdgqrb.html" },
+    { "label": "Yahoo Finance: MU Quote & Statistics", "url": "https://finance.yahoo.com/quote/MU/" },
+    { "label": "StockAnalysis.com: MU Statistics & Forecast", "url": "https://stockanalysis.com/stocks/mu/forecast/" },
+    { "label": "Investing.com: MU Technical Analysis", "url": "https://www.investing.com/equities/micron-tech-technical" },
+    { "label": "Seeking Alpha: Micron's Quiet Pricing Power", "url": "https://seekingalpha.com/article/4856851-microns-quiet-pricing-power-is-reshaping-the-ai-boom" },
+    { "label": "TrendForce: Micron Hikes CapEx with 2026 HBM Supply Fully Booked", "url": "https://www.trendforce.com/news/2025/12/18/news-micron-hikes-capex-to-20b-with-2026-hbm-supply-fully-booked-hbm4-ramps-2q26/" },
+    { "label": "Micron Investor Relations: Q1 FY2026 Financial Results", "url": "https://investors.micron.com/static-files/530bd7ed-a8c8-4687-af4a-8c129f740e09" },
+    { "label": "CompaniesMarketCap.com: Micron Market Cap", "url": "https://companiesmarketcap.com/micron-technology/marketcap/" }
+  ],
+  "history": [
+    "2026-03-19: Initial DeepValue Lab analysis — post Q2 FY2026 record earnings. Fair valuation with asymmetric upside. Stretched technical entry."
+  ]
+}
