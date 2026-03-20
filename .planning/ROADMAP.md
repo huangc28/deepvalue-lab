@@ -44,7 +44,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 02-01-PLAN.md — Update SKILL.md to mandate bilingual LocalizedText for all StockDetail fields, remove English-only default, and document bilingual publish payload (SKILL-01, SKILL-02, SKILL-03, SKILL-04, ARCH-01, ARCH-02)
+- [x] 02-01-PLAN.md — Update SKILL.md to mandate bilingual LocalizedText for all StockDetail fields, remove English-only default, and document bilingual publish payload (SKILL-01, SKILL-02, SKILL-03, SKILL-04, ARCH-01, ARCH-02)
 
 ## Progress
 
@@ -54,4 +54,4 @@ Phases execute in numeric order: 1 → 2
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Contracts | 2/2 | Complete   | 2026-03-20 |
-| 2. Skill Output | 0/1 | Not started | - |
+| 2. Skill Output | 1/1 | Complete | 2026-03-20 |
