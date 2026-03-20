@@ -25,15 +25,26 @@ WHERE ticker = ?
 ORDER BY published_at_ms DESC;
 
 -- name: UpsertPublishedStockDetail :exec
-INSERT INTO published_stock_details (ticker, report_id, r2_report_key, r2_detail_key, summary_json, published_at_ms)
-VALUES (?, ?, ?, ?, ?, ?)
+INSERT INTO published_stock_details (
+  ticker,
+  report_id,
+  r2_report_key,
+  r2_detail_key,
+  r2_detail_zh_tw_key,
+  summary_json,
+  summary_json_zh_tw,
+  published_at_ms
+)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 ON CONFLICT(ticker) DO UPDATE SET
-  report_id       = excluded.report_id,
-  r2_report_key   = excluded.r2_report_key,
-  r2_detail_key   = excluded.r2_detail_key,
-  summary_json    = excluded.summary_json,
-  published_at_ms = excluded.published_at_ms,
-  updated_at_ms   = (unixepoch('now') * 1000);
+  report_id          = excluded.report_id,
+  r2_report_key      = excluded.r2_report_key,
+  r2_detail_key      = excluded.r2_detail_key,
+  r2_detail_zh_tw_key = excluded.r2_detail_zh_tw_key,
+  summary_json       = excluded.summary_json,
+  summary_json_zh_tw = excluded.summary_json_zh_tw,
+  published_at_ms    = excluded.published_at_ms,
+  updated_at_ms      = (unixepoch('now') * 1000);
 
 -- name: GetPublishedStockDetail :one
 SELECT * FROM published_stock_details

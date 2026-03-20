@@ -101,4 +101,10 @@ func DetailKey(ticker, date, reportID string) string {
 	return fmt.Sprintf("reports/%s/%s/%s.json", ticker, date, reportID)
 }
 
+// DetailKeyZhTW returns the canonical R2 key for a zh-TW StockDetail JSON artifact.
+// Format: reports/{ticker}/{YYYYMMDD}/{reportID}.zh-TW.json
+func DetailKeyZhTW(ticker, date, reportID string) string {
+	return fmt.Sprintf("reports/%s/%s/%s.zh-TW.json", ticker, date, reportID)
+}
+
 var Module = fx.Provide(NewClient)

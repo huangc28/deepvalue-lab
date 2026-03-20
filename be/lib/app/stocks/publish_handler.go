@@ -1,6 +1,7 @@
 package stocks
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
@@ -18,8 +19,8 @@ import (
 )
 
 type PublishHandler struct {
-	queries  *turso_models.Queries
-	r2Client *r2.Client
+	queries  publishQueries
+	r2Client publishStorage
 	logger   *zap.Logger
 }
 
@@ -32,8 +33,9 @@ func (h *PublishHandler) RegisterRoute(r *chi.Mux) {
 }
 
 type publishRequest struct {
-	Report      reportInput     `json:"report"`
-	StockDetail json.RawMessage `json:"stockDetail"`
+	Report          reportInput     `json:"report"`
+	StockDetail     json.RawMessage `json:"stockDetail"`
+	StockDetailZhTW json.RawMessage `json:"stockDetailZhTW"`
 }
 
 type reportInput struct {
@@ -43,9 +45,9 @@ type reportInput struct {
 
 // minStockDetail contains only the fields we validate are present.
 type minStockDetail struct {
-	Ticker       string  `json:"ticker"`
-	CompanyName  string  `json:"companyName"`
-	CurrentPrice float64 `json:"currentPrice"`
+	Ticker        string  `json:"ticker"`
+	CompanyName   string  `json:"companyName"`
+	CurrentPrice  float64 `json:"currentPrice"`
 	BaseFairValue float64 `json:"baseFairValue"`
 	BearFairValue float64 `json:"bearFairValue"`
 	BullFairValue float64 `json:"bullFairValue"`
@@ -73,6 +75,17 @@ type summaryFields struct {
 	LastUpdated          string          `json:"lastUpdated"`
 }
 
+type publishQueries interface {
+	InsertStockReport(ctx context.Context, arg turso_models.InsertStockReportParams) error
+	UpsertPublishedStockDetail(ctx context.Context, arg turso_models.UpsertPublishedStockDetailParams) error
+	UpsertSubscription(ctx context.Context, arg turso_models.UpsertSubscriptionParams) error
+}
+
+type publishStorage interface {
+	UploadMarkdown(ctx context.Context, key, content string) error
+	UploadJSON(ctx context.Context, key string, data []byte) error
+}
+
 func (h *PublishHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	ticker := strings.ToUpper(chi.URLParam(r, "ticker"))
 
@@ -87,13 +100,23 @@ func (h *PublishHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var detail minStockDetail
-	if err := json.Unmarshal(req.StockDetail, &detail); err != nil {
-		render.ChiErr(w, r, http.StatusUnprocessableEntity, fmt.Errorf("stockDetail is invalid JSON: %w", err))
+	if err := validateStockDetailPayload(req.StockDetail, "stockDetail"); err != nil {
+		render.ChiErr(w, r, http.StatusUnprocessableEntity, err)
 		return
 	}
-	if detail.Ticker == "" || detail.CompanyName == "" || detail.CurrentPrice == 0 {
-		render.ChiErr(w, r, http.StatusUnprocessableEntity, fmt.Errorf("stockDetail missing required fields: ticker, companyName, currentPrice"))
+
+	hasZhTWDetail := hasJSONPayload(req.StockDetailZhTW)
+	if hasZhTWDetail {
+		if err := validateStockDetailPayload(req.StockDetailZhTW, "stockDetailZhTW"); err != nil {
+			render.ChiErr(w, r, http.StatusUnprocessableEntity, err)
+			return
+		}
+	}
+
+	summaryJSON, err := extractSummaryJSON(req.StockDetail)
+	if err != nil {
+		h.logger.Error("extract summary fields", zap.String("ticker", ticker), zap.Error(err))
+		render.ChiErr(w, r, http.StatusInternalServerError, fmt.Errorf("failed to extract summary"))
 		return
 	}
 
@@ -102,6 +125,7 @@ func (h *PublishHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	reportID := fmt.Sprintf("%s-%s-%s", ticker, dateStr, shortID())
 	r2ReportKey := r2.ReportKey(ticker, dateStr, reportID)
 	r2DetailKey := r2.DetailKey(ticker, dateStr, reportID)
+	r2DetailZhTWKey := ""
 	publishedAtMs := now.UnixMilli()
 
 	// Upload markdown report to R2.
@@ -118,18 +142,21 @@ func (h *PublishHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Extract summary fields for Turso.
-	var sf summaryFields
-	if err := json.Unmarshal(req.StockDetail, &sf); err != nil {
-		h.logger.Error("extract summary fields", zap.String("ticker", ticker), zap.Error(err))
-		render.ChiErr(w, r, http.StatusInternalServerError, fmt.Errorf("failed to extract summary"))
-		return
-	}
-	summaryJSON, err := json.Marshal(sf)
-	if err != nil {
-		h.logger.Error("marshal summary", zap.String("ticker", ticker), zap.Error(err))
-		render.ChiErr(w, r, http.StatusInternalServerError, fmt.Errorf("failed to marshal summary"))
-		return
+	summaryJSONZhTW := "{}"
+	if hasZhTWDetail {
+		r2DetailZhTWKey = r2.DetailKeyZhTW(ticker, dateStr, reportID)
+		if err := h.r2Client.UploadJSON(r.Context(), r2DetailZhTWKey, req.StockDetailZhTW); err != nil {
+			h.logger.Error("upload zh-TW detail json to r2", zap.String("key", r2DetailZhTWKey), zap.Error(err))
+			render.ChiErr(w, r, http.StatusInternalServerError, fmt.Errorf("failed to upload zh-TW detail artifact"))
+			return
+		}
+
+		summaryJSONZhTW, err = extractSummaryJSON(req.StockDetailZhTW)
+		if err != nil {
+			h.logger.Error("extract zh-TW summary fields", zap.String("ticker", ticker), zap.Error(err))
+			render.ChiErr(w, r, http.StatusInternalServerError, fmt.Errorf("failed to extract zh-TW summary"))
+			return
+		}
 	}
 
 	if err := h.queries.InsertStockReport(r.Context(), turso_models.InsertStockReportParams{
@@ -145,12 +172,14 @@ func (h *PublishHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.queries.UpsertPublishedStockDetail(r.Context(), turso_models.UpsertPublishedStockDetailParams{
-		Ticker:        ticker,
-		ReportID:      reportID,
-		R2ReportKey:   r2ReportKey,
-		R2DetailKey:   r2DetailKey,
-		SummaryJson:   string(summaryJSON),
-		PublishedAtMs: publishedAtMs,
+		Ticker:          ticker,
+		ReportID:        reportID,
+		R2ReportKey:     r2ReportKey,
+		R2DetailKey:     r2DetailKey,
+		R2DetailZhTwKey: r2DetailZhTWKey,
+		SummaryJson:     summaryJSON,
+		SummaryJsonZhTw: summaryJSONZhTW,
+		PublishedAtMs:   publishedAtMs,
 	}); err != nil {
 		h.logger.Error("upsert published stock detail", zap.String("ticker", ticker), zap.Error(err))
 		render.ChiErr(w, r, http.StatusInternalServerError, err)
@@ -167,12 +196,41 @@ func (h *PublishHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	render.ChiJSON(w, r, http.StatusCreated, map[string]any{
-		"reportId":      reportID,
-		"r2ReportKey":   r2ReportKey,
-		"r2DetailKey":   r2DetailKey,
-		"ticker":        ticker,
-		"publishedAtMs": publishedAtMs,
+		"reportId":        reportID,
+		"r2ReportKey":     r2ReportKey,
+		"r2DetailKey":     r2DetailKey,
+		"r2DetailZhTWKey": r2DetailZhTWKey,
+		"ticker":          ticker,
+		"publishedAtMs":   publishedAtMs,
 	})
+}
+
+func hasJSONPayload(raw json.RawMessage) bool {
+	trimmed := strings.TrimSpace(string(raw))
+	return trimmed != "" && trimmed != "null"
+}
+
+func validateStockDetailPayload(raw json.RawMessage, field string) error {
+	var detail minStockDetail
+	if err := json.Unmarshal(raw, &detail); err != nil {
+		return fmt.Errorf("%s is invalid JSON: %w", field, err)
+	}
+	if detail.Ticker == "" || detail.CompanyName == "" || detail.CurrentPrice == 0 {
+		return fmt.Errorf("%s missing required fields: ticker, companyName, currentPrice", field)
+	}
+	return nil
+}
+
+func extractSummaryJSON(raw json.RawMessage) (string, error) {
+	var sf summaryFields
+	if err := json.Unmarshal(raw, &sf); err != nil {
+		return "", err
+	}
+	summaryJSON, err := json.Marshal(sf)
+	if err != nil {
+		return "", err
+	}
+	return string(summaryJSON), nil
 }
 
 func shortID() string {

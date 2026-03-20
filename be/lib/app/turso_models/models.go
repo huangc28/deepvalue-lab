@@ -26,13 +26,15 @@ type GooseDbVersion struct {
 }
 
 type PublishedStockDetail struct {
-	Ticker        string `json:"ticker"`
-	ReportID      string `json:"report_id"`
-	R2ReportKey   string `json:"r2_report_key"`
-	R2DetailKey   string `json:"r2_detail_key"`
-	SummaryJson   string `json:"summary_json"`
-	PublishedAtMs int64  `json:"published_at_ms"`
-	UpdatedAtMs   int64  `json:"updated_at_ms"`
+	Ticker          string `json:"ticker"`
+	ReportID        string `json:"report_id"`
+	R2ReportKey     string `json:"r2_report_key"`
+	R2DetailKey     string `json:"r2_detail_key"`
+	R2DetailZhTwKey string `json:"r2_detail_zh_tw_key"`
+	SummaryJson     string `json:"summary_json"`
+	SummaryJsonZhTw string `json:"summary_json_zh_tw"`
+	PublishedAtMs   int64  `json:"published_at_ms"`
+	UpdatedAtMs     int64  `json:"updated_at_ms"`
 }
 
 type StockReport struct {

@@ -60,13 +60,15 @@ CREATE INDEX idx_stock_reports_ticker_published
   ON stock_reports(ticker, published_at_ms DESC);
 
 CREATE TABLE published_stock_details (
-  ticker          TEXT PRIMARY KEY,
-  report_id       TEXT NOT NULL,
-  r2_report_key   TEXT NOT NULL DEFAULT '',
-  r2_detail_key   TEXT NOT NULL DEFAULT '',
-  summary_json    TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(summary_json)),
-  published_at_ms INTEGER NOT NULL DEFAULT (unixepoch('now') * 1000),
-  updated_at_ms   INTEGER NOT NULL DEFAULT (unixepoch('now') * 1000)
+  ticker               TEXT PRIMARY KEY,
+  report_id            TEXT NOT NULL,
+  r2_report_key        TEXT NOT NULL DEFAULT '',
+  r2_detail_key        TEXT NOT NULL DEFAULT '',
+  r2_detail_zh_tw_key  TEXT NOT NULL DEFAULT '',
+  summary_json         TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(summary_json)),
+  summary_json_zh_tw   TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(summary_json_zh_tw)),
+  published_at_ms      INTEGER NOT NULL DEFAULT (unixepoch('now') * 1000),
+  updated_at_ms        INTEGER NOT NULL DEFAULT (unixepoch('now') * 1000)
 );
 
 CREATE TRIGGER trg_published_stock_details_touch_updated_at
