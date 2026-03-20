@@ -252,6 +252,8 @@ After generating both artifacts, save them to the local research archive:
 2. Write the `StockDetail` JSON to `research/archive/YYYY/MM/DD/<TICKER>-stock-detail.json`.
 3. Write the zh-TW markdown report to `research/archive/YYYY/MM/DD/<TICKER>-analysis-zh-TW.md`.
 
+The `StockDetail` JSON (step 2) contains bilingual `LocalizedText` fields. This is the archive source of truth for historical reproducibility of both the English and zh-TW structured data.
+
 Use the analysis date for the path. Create intermediate directories if they do not exist.
 
 This step is mandatory for every substantial analysis. The archive is the source of truth for historical reproducibility.
@@ -292,9 +294,9 @@ Do not publish automatically. Always ask first.
 
 Notes:
 
-- English-only content uses plain strings; bilingual stocks (like TSM) use `{ en, 'zh-TW' }` objects
-- Default to English-only unless the user requests bilingual content
-- The server port defaults to `9000` (from `.env` `APP_PORT`); adjust if the user's server runs on a different port
+- Always produce bilingual content: all `LocalizedText` fields in the `StockDetail` payload must be `{ en, 'zh-TW' }` objects. There is no English-only mode.
+- The publish payload sends the bilingual `StockDetail` JSON and the English markdown report only. The zh-TW markdown report is saved to the archive but is not sent in the publish payload — backend zh-TW report handling is a separate future phase (API-02).
+- The server port defaults to `9000` (from `.env` `APP_PORT`); adjust if the user's server runs on a different port.
 
 ### Validation
 
