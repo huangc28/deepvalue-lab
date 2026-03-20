@@ -37,10 +37,11 @@ Follow this workflow in order:
 9. Determine thesis status.
 10. Determine technical entry status.
 11. Write the report using the required contract.
-12. Generate the structured `StockDetail` data object for the frontend.
-13. Save both artifacts to the research archive.
-14. Perform a completion check before finishing.
-15. Perform a benchmark quality check before finishing.
+12. Generate the EN `StockDetail` JSON from the report.
+13. Generate the zh-TW `StockDetail` JSON by translating prose fields from the EN JSON.
+14. Save all three artifacts to the research archive.
+15. Perform a completion check before finishing.
+16. Perform a benchmark quality check before finishing.
 
 ## NotebookLM Rule
 
@@ -158,11 +159,9 @@ Technical entry status must be one of:
 
 ## Structured Data Generation
 
-After writing the markdown report, generate a `StockDetail` object that the frontend can consume directly.
+After writing the markdown report, generate two `StockDetail` JSON files — one in English, one in Traditional Chinese.
 
-The type definition lives at `web/src/types/stocks.ts`. The `LocalizedText` type is `string | Record<'en' | 'zh-TW', string>`.
-
-All user-facing `LocalizedText` fields in the `StockDetail` object must be populated as `{ en: '...', 'zh-TW': '...' }` bilingual objects. Do not use plain English strings for any `LocalizedText` field. The `en` value comes directly from the English report. The `zh-TW` value comes from the zh-TW report you produce in Step 12.
+The type definition lives at `web/src/types/stocks.ts`. All `LocalizedText` fields are plain `string` in each JSON file. The EN JSON contains English strings; the zh-TW JSON contains Traditional Chinese strings. Do not use `{ en, 'zh-TW' }` bilingual objects.
 
 ### Report-to-StockDetail Field Mapping
 
@@ -208,7 +207,7 @@ All user-facing `LocalizedText` fields in the `StockDetail` object must be popul
 | `risks` | from risk items in the report |
 | `catalysts` | from catalyst items in the report |
 | `monitorNext` | from What To Monitor Next section |
-| `sourcesUsed` | array of `SourceReference` objects `{ label: { en, 'zh-TW' }, url? }` from Sources Used. Translate each source label to zh-TW (e.g., `"Q4 2025 Earnings Call"` → `{ en: "Q4 2025 Earnings Call", 'zh-TW': "2025年第四季財報電話會議" }`). URLs stay as plain strings — do not translate URLs. |
+| `sourcesUsed` | array of `{ label, url? }` from Sources Used |
 | `history` | array with at least one entry for this analysis date |
 
 ### Scenario Key Metrics Extraction
@@ -221,20 +220,40 @@ Extract from Bear/Base/Bull tables in the report:
 | `keyMetrics.eps` | Non-GAAP EPS row — format like `$6.56` |
 | `keyMetrics.targetPE` | Target P/E row — format like `28x` |
 
-### Bilingual Field Production
+### zh-TW JSON Production
 
-Produce all `LocalizedText` values using the outputs from Step 11 (English report) and Step 12 (zh-TW report). Do not translate inline during JSON generation — the translation step (Step 12) must be complete before generating the `StockDetail` object.
+Generate the zh-TW `StockDetail` JSON by translating prose fields from the EN JSON. Do not write a separate zh-TW markdown report.
 
-Fields that stay as plain strings (language-neutral, not `LocalizedText`):
-- `ScenarioKeyMetrics.revenue`, `.eps`, `.targetPE` — numeric tokens like `$46.5B`, `$6.56`, `28x`
-- `SourceReference.url` — URLs are not translated
-- `id`, `ticker`, `companyName` — identifiers
-- `currentPrice`, `baseFairValue`, `bearFairValue`, `bullFairValue`, `discountToBase` — numbers
-- `lastUpdated` — date string
-- `label` on `Scenario` — `'Bear' | 'Base' | 'Bull'` status tokens
-- `valuationStatus`, `newsImpactStatus`, `thesisStatus`, `technicalEntryStatus`, `actionState`, `dashboardBucket` — status tokens
+**Translate** (different in each JSON):
+- `businessType`, `summary`
+- `thesisStatement`, `thesisBullets[]`
+- `variantPerception`
+- `valuationLens.primary`, `.crossCheck`, `.rationale`
+- `currentValuationSnapshot.marketCap`, `.enterpriseValue`, `.multiples[]`, `.balanceSheetNote`
+- `newsToModel[].event`, `.modelVariableChanged`, `.impact`, `.affectedScenario`
+- `scenario[].operatingAssumption`, `.valuationAssumption`, `.fairValue`, `.whatMustBeTrue`
+- `currentPriceImplies`, `currentPriceImpliesBrief`
+- `currentPriceImpliedFacts[].label`, `.value`
+- `provisionalConclusion`
+- `technicalCommentary`
+- `technicalSignals[].label`, `.value`
+- `risks[]`, `catalysts[]`, `monitorNext[]`
+- `sourcesUsed[].label`
+- `history[]`
 
-All other user-facing fields listed in the mapping tables above are `LocalizedText` and must be `{ en, 'zh-TW' }` bilingual objects.
+**Copy as-is** (identical in both JSONs):
+- `id`, `ticker`, `companyName`, `lastUpdated`
+- `currentPrice`, `baseFairValue`, `bearFairValue`, `bullFairValue`, `discountToBase`
+- `valuationStatus`, `newsImpactStatus`, `thesisStatus`, `technicalEntryStatus`, `actionState`, `dashboardBucket`
+- `scenario[].label`, `scenario[].keyMetrics.*`
+- `sourcesUsed[].url`
+
+**zh-TW translation rules** (from report contract Section 8.5):
+- Open each prose field with a plain-language lead before technical detail
+- Explain acronyms on first use (e.g., 每股盈利（EPS）)
+- Retain financial jargon — do not replace with simplified terms
+- Apply light simplification: clearer sentences, shorter constructions
+- Retain all numerical data unchanged
 
 ### Computed Fields
 
@@ -246,56 +265,39 @@ These fields are calculated during transform, not pulled from report text:
 
 ### Save To Research Archive
 
-After generating both artifacts, save them to the local research archive:
+After generating all three artifacts, save them to the local research archive:
 
-1. Write the markdown report to `research/archive/YYYY/MM/DD/<TICKER>-analysis.md`.
-2. Write the `StockDetail` JSON to `research/archive/YYYY/MM/DD/<TICKER>-stock-detail.json`.
-3. Write the zh-TW markdown report to `research/archive/YYYY/MM/DD/<TICKER>-analysis-zh-TW.md`.
-
-The `StockDetail` JSON (step 2) contains bilingual `LocalizedText` fields. This is the archive source of truth for historical reproducibility of both the English and zh-TW structured data.
+1. Write the English markdown report to `research/archive/YYYY/MM/DD/<TICKER>.analysis.md`.
+2. Write the EN `StockDetail` JSON to `research/archive/YYYY/MM/DD/<TICKER>.stock-detail.json`.
+3. Write the zh-TW `StockDetail` JSON to `research/archive/YYYY/MM/DD/<TICKER>.stock-detail-zh-TW.json`.
 
 Use the analysis date for the path. Create intermediate directories if they do not exist.
 
 This step is mandatory for every substantial analysis. The archive is the source of truth for historical reproducibility.
 
-### zh-TW Report Output
-
-Every analysis run must produce a zh-TW markdown report alongside the English report.
-
-The zh-TW report:
-- follows the same 15-section structure defined in the report contract
-- is saved as `research/archive/YYYY/MM/DD/<TICKER>-analysis-zh-TW.md`
-- uses lightly simplified language (see report contract for zh-TW translation rules)
-- retains unavoidable financial jargon — jargon education is a separate future feature
-
-The zh-TW report is mandatory. An analysis run that produces an English report without a zh-TW report is incomplete.
-
 ### Output and Publish
 
-After generating the `StockDetail` JSON:
+After generating both `StockDetail` JSONs:
 
 1. Ask the user whether to publish to the backend.
 2. If the user confirms, publish via `POST http://localhost:9000/v1/stocks/{TICKER}/reports` with the request body:
    ```json
    {
      "report": {
-       "markdown": "<full markdown report>",
+       "markdown": "<full English markdown report>",
        "provenance": "<model id used for analysis>"
      },
-     "stockDetail": { ...StockDetail JSON... }
+     "stockDetail": { ...EN StockDetail JSON... },
+     "stockDetailZhTW": { ...zh-TW StockDetail JSON... }
    }
    ```
 3. Verify the response is `201` and includes `reportId`, `r2ReportKey`, `r2DetailKey`.
 4. If the user declines, skip publish. The report and structured data remain in the conversation only.
 
-The backend stores the full `StockDetail` JSON in R2 and a compact summary in Turso. The markdown report is also stored in R2.
-
 Do not publish automatically. Always ask first.
 
 Notes:
 
-- Always produce bilingual content: all `LocalizedText` fields in the `StockDetail` payload must be `{ en, 'zh-TW' }` objects. There is no English-only mode.
-- The publish payload sends the bilingual `StockDetail` JSON and the English markdown report only. The zh-TW markdown report is saved to the archive but is not sent in the publish payload — backend zh-TW report handling is a separate future phase (API-02).
 - The server port defaults to `9000` (from `.env` `APP_PORT`); adjust if the user's server runs on a different port.
 
 ### Validation
@@ -346,9 +348,9 @@ If any of these are missing, keep working.
 
 Also verify that:
 
-- the `StockDetail` object was generated
-- both artifacts were saved to `research/archive/YYYY/MM/DD/`
-- the zh-TW markdown report was produced and saved to `research/archive/YYYY/MM/DD/<TICKER>-analysis-zh-TW.md`
+- the EN `StockDetail` JSON was generated
+- the zh-TW `StockDetail` JSON was generated
+- all three artifacts were saved to `research/archive/YYYY/MM/DD/`
 - the user was asked whether to publish to the backend
 - if published, the backend returned `201` with valid `reportId` and R2 keys
 

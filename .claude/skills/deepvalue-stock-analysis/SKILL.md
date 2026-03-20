@@ -37,10 +37,11 @@ Follow this workflow in order:
 9. Determine thesis status.
 10. Determine technical entry status.
 11. Write the report using the required contract.
-12. Generate the structured `StockDetail` data object for the frontend.
-13. Save both artifacts to the research archive.
-14. Perform a completion check before finishing.
-15. Perform a benchmark quality check before finishing.
+12. Generate the EN `StockDetail` JSON from the report.
+13. Generate the zh-TW `StockDetail` JSON by translating prose fields from the EN JSON.
+14. Save all three artifacts to the research archive.
+15. Perform a completion check before finishing.
+16. Perform a benchmark quality check before finishing.
 
 ## NotebookLM Rule
 
@@ -158,9 +159,9 @@ Technical entry status must be one of:
 
 ## Structured Data Generation
 
-After writing the markdown report, generate a `StockDetail` object that the frontend can consume directly.
+After writing the markdown report, generate two `StockDetail` JSON files — one in English, one in Traditional Chinese.
 
-The type definition lives at `web/src/types/stocks.ts`. The `LocalizedText` type is `string | Record<'en' | 'zh-TW', string>`.
+The type definition lives at `web/src/types/stocks.ts`. All `LocalizedText` fields are plain `string` in each JSON file. The EN JSON contains English strings; the zh-TW JSON contains Traditional Chinese strings. Do not use `{ en, 'zh-TW' }` bilingual objects.
 
 ### Report-to-StockDetail Field Mapping
 
@@ -206,7 +207,7 @@ The type definition lives at `web/src/types/stocks.ts`. The `LocalizedText` type
 | `risks` | from risk items in the report |
 | `catalysts` | from catalyst items in the report |
 | `monitorNext` | from What To Monitor Next section |
-| `sourcesUsed` | array of `string` or `{ label, url? }` from Sources Used |
+| `sourcesUsed` | array of `{ label, url? }` from Sources Used |
 | `history` | array with at least one entry for this analysis date |
 
 ### Scenario Key Metrics Extraction
@@ -219,6 +220,41 @@ Extract from Bear/Base/Bull tables in the report:
 | `keyMetrics.eps` | Non-GAAP EPS row — format like `$6.56` |
 | `keyMetrics.targetPE` | Target P/E row — format like `28x` |
 
+### zh-TW JSON Production
+
+Generate the zh-TW `StockDetail` JSON by translating prose fields from the EN JSON. Do not write a separate zh-TW markdown report.
+
+**Translate** (different in each JSON):
+- `businessType`, `summary`
+- `thesisStatement`, `thesisBullets[]`
+- `variantPerception`
+- `valuationLens.primary`, `.crossCheck`, `.rationale`
+- `currentValuationSnapshot.marketCap`, `.enterpriseValue`, `.multiples[]`, `.balanceSheetNote`
+- `newsToModel[].event`, `.modelVariableChanged`, `.impact`, `.affectedScenario`
+- `scenario[].operatingAssumption`, `.valuationAssumption`, `.fairValue`, `.whatMustBeTrue`
+- `currentPriceImplies`, `currentPriceImpliesBrief`
+- `currentPriceImpliedFacts[].label`, `.value`
+- `provisionalConclusion`
+- `technicalCommentary`
+- `technicalSignals[].label`, `.value`
+- `risks[]`, `catalysts[]`, `monitorNext[]`
+- `sourcesUsed[].label`
+- `history[]`
+
+**Copy as-is** (identical in both JSONs):
+- `id`, `ticker`, `companyName`, `lastUpdated`
+- `currentPrice`, `baseFairValue`, `bearFairValue`, `bullFairValue`, `discountToBase`
+- `valuationStatus`, `newsImpactStatus`, `thesisStatus`, `technicalEntryStatus`, `actionState`, `dashboardBucket`
+- `scenario[].label`, `scenario[].keyMetrics.*`
+- `sourcesUsed[].url`
+
+**zh-TW translation rules** (from report contract Section 8.5):
+- Open each prose field with a plain-language lead before technical detail
+- Explain acronyms on first use (e.g., 每股盈利（EPS）)
+- Retain financial jargon — do not replace with simplified terms
+- Apply light simplification: clearer sentences, shorter constructions
+- Retain all numerical data unchanged
+
 ### Computed Fields
 
 These fields are calculated during transform, not pulled from report text:
@@ -229,10 +265,11 @@ These fields are calculated during transform, not pulled from report text:
 
 ### Save To Research Archive
 
-After generating both artifacts, save them to the local research archive:
+After generating all three artifacts, save them to the local research archive:
 
-1. Write the markdown report to `research/archive/YYYY/MM/DD/<TICKER>-analysis.md`.
-2. Write the `StockDetail` JSON to `research/archive/YYYY/MM/DD/<TICKER>-stock-detail.json`.
+1. Write the English markdown report to `research/archive/YYYY/MM/DD/<TICKER>.analysis.md`.
+2. Write the EN `StockDetail` JSON to `research/archive/YYYY/MM/DD/<TICKER>.stock-detail.json`.
+3. Write the zh-TW `StockDetail` JSON to `research/archive/YYYY/MM/DD/<TICKER>.stock-detail-zh-TW.json`.
 
 Use the analysis date for the path. Create intermediate directories if they do not exist.
 
@@ -240,31 +277,28 @@ This step is mandatory for every substantial analysis. The archive is the source
 
 ### Output and Publish
 
-After generating the `StockDetail` JSON:
+After generating both `StockDetail` JSONs:
 
 1. Ask the user whether to publish to the backend.
 2. If the user confirms, publish via `POST http://localhost:9000/v1/stocks/{TICKER}/reports` with the request body:
    ```json
    {
      "report": {
-       "markdown": "<full markdown report>",
+       "markdown": "<full English markdown report>",
        "provenance": "<model id used for analysis>"
      },
-     "stockDetail": { ...StockDetail JSON... }
+     "stockDetail": { ...EN StockDetail JSON... },
+     "stockDetailZhTW": { ...zh-TW StockDetail JSON... }
    }
    ```
 3. Verify the response is `201` and includes `reportId`, `r2ReportKey`, `r2DetailKey`.
 4. If the user declines, skip publish. The report and structured data remain in the conversation only.
 
-The backend stores the full `StockDetail` JSON in R2 and a compact summary in Turso. The markdown report is also stored in R2.
-
 Do not publish automatically. Always ask first.
 
 Notes:
 
-- English-only content uses plain strings; bilingual stocks (like TSM) use `{ en, 'zh-TW' }` objects
-- Default to English-only unless the user requests bilingual content
-- The server port defaults to `9000` (from `.env` `APP_PORT`); adjust if the user's server runs on a different port
+- The server port defaults to `9000` (from `.env` `APP_PORT`); adjust if the user's server runs on a different port.
 
 ### Validation
 
@@ -314,8 +348,9 @@ If any of these are missing, keep working.
 
 Also verify that:
 
-- the `StockDetail` object was generated
-- both artifacts were saved to `research/archive/YYYY/MM/DD/`
+- the EN `StockDetail` JSON was generated
+- the zh-TW `StockDetail` JSON was generated
+- all three artifacts were saved to `research/archive/YYYY/MM/DD/`
 - the user was asked whether to publish to the backend
 - if published, the backend returned `201` with valid `reportId` and R2 keys
 
