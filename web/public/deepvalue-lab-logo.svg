@@ -1,0 +1,40 @@
+<svg width="760" height="220" viewBox="0 0 760 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="logoAccent" x1="0" y1="0" x2="760" y2="220" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7AA2F7"/>
+      <stop offset="1" stop-color="#6AD39A"/>
+    </linearGradient>
+    <filter id="logoShadow" x="0" y="0" width="760" height="220" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#02060D" flood-opacity="0.38"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#logoShadow)">
+    <rect x="24" y="36" width="148" height="148" rx="34" fill="#0D1117"/>
+    <rect x="24.75" y="36.75" width="146.5" height="146.5" rx="33.25" stroke="#263244" stroke-width="1.5"/>
+    <path d="M45 68H151" stroke="#1B2432" stroke-width="1.5" stroke-linecap="round"/>
+    <circle cx="55" cy="68" r="3" fill="#314052"/>
+    <circle cx="67" cy="68" r="3" fill="#314052"/>
+    <circle cx="79" cy="68" r="3" fill="#314052"/>
+
+    <path d="M54 84L99 156L144 84" stroke="#334155" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M71 84L102 136L131 94" stroke="#7AA2F7" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M87 91L103 120L119 94" stroke="#6AD39A" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <circle cx="102" cy="136" r="12" fill="#0D1117" stroke="#D8A14A" stroke-width="2.5"/>
+    <circle cx="102" cy="136" r="5.5" fill="#D8A14A"/>
+
+  </g>
+
+  <g transform="translate(214 62)">
+    <text x="0" y="52" fill="#E6EDF3" font-family="SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="52" font-weight="700" letter-spacing="2.5">DEEPVALUE</text>
+
+    <g transform="translate(0 76)">
+      <rect x="0" y="0" width="112" height="44" rx="14" fill="#111821" stroke="#7AA2F7" stroke-width="1.5"/>
+      <text x="56" y="29" text-anchor="middle" fill="#7AA2F7" font-family="SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="24" font-weight="700" letter-spacing="2">LAB</text>
+      <text x="138" y="29" fill="#8AA0B8" font-family="SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="18" font-weight="600" letter-spacing="1.8">VALUATION FIRST / TIMING SECOND</text>
+    </g>
+
+    <text x="0" y="156" fill="#5F728A" font-family="SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="16" font-weight="500" letter-spacing="1.6">RESEARCH COCKPIT FOR PRICE, THESIS, AND ENTRY DISCIPLINE</text>
+  </g>
+</svg>
