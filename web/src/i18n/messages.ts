@@ -10,7 +10,7 @@ export const messages = {
       localeTraditionalChinese: '繁中',
     },
     badge: {
-      cardsDefault: 'cards default · table secondary',
+      cardsDefault: 'cards · table',
     },
     status: {
       valuation: 'valuation',
@@ -47,22 +47,14 @@ export const messages = {
       },
     },
     dashboard: {
-      heroStatus: 'decision-support research cockpit',
+      heroStatus: 'research board',
       heroTitle: 'DeepValue Research Board',
       heroDescription:
-        'Track cheap versus fair value, thesis integrity, news-to-model changes, and entry timing in one calm dark workspace tuned for long research reading.',
+        'Track valuation, thesis status, news impact, and entry timing across your watchlist.',
       heroLabel: 'Dashboard',
-      summaryStatus: 'live buckets',
-      summaryLabel: 'Decision Buckets',
-      summaryDetail: 'Tracked companies in this decision bucket.',
-      operatorStatus: 'use the board',
-      operatorPanelLabel: 'How To Use',
-      operatorLabel: 'what the user should know first',
-      operatorBullets: [
-        'Judgment appears before raw data.',
-        'Cards help decide what deserves a click now.',
-        'Table mode supports dense comparison without replacing the board.',
-      ],
+      summaryStatus: 'summary',
+      summaryLabel: 'Summary',
+      summaryDetail: 'Companies in this bucket.',
       buckets: {
         'now-actionable': 'Now Actionable',
         'needs-review': 'Needs Review',
@@ -77,7 +69,7 @@ export const messages = {
       boardVisible: 'visible names',
       boardLabel: 'Watchlist',
       browseLabel: 'Browse Watchlist',
-      browseTitle: 'Browse the watchlist like a live research file.',
+      browseTitle: 'All tracked companies.',
       searchLabel: '$ find',
       searchPlaceholder: 'TSM, semicap, compounder',
       sortLabel: 'sort',
@@ -232,7 +224,7 @@ export const messages = {
       localeTraditionalChinese: '繁中',
     },
     badge: {
-      cardsDefault: '卡片預設 · 表格次要',
+      cardsDefault: '卡片 · 表格',
     },
     status: {
       valuation: '估值',
@@ -269,22 +261,14 @@ export const messages = {
       },
     },
     dashboard: {
-      heroStatus: '決策支援研究工作台',
+      heroStatus: '研究面板',
       heroTitle: 'DeepValue 研究面板',
       heroDescription:
-        '在同一個冷靜、易讀的深色研究工作區中，同時追蹤便宜與合理價值、thesis 完整度、news-to-model 變化，以及進場時機。',
+        '追蹤估值、論點狀態、新聞影響與進場時機。',
       heroLabel: '儀表板',
-      summaryStatus: '決策分桶',
-      summaryLabel: '決策分桶',
-      summaryDetail: '落在此決策分桶中的追蹤公司數量。',
-      operatorStatus: '使用方式',
-      operatorPanelLabel: '如何使用',
-      operatorLabel: '使用者應先知道什麼',
-      operatorBullets: [
-        '先看判斷，再看原始資料。',
-        '卡片模式用來決定哪些股票值得先點進去。',
-        '表格模式用來密集比較，而不是取代決策面板。',
-      ],
+      summaryStatus: '總覽',
+      summaryLabel: '總覽',
+      summaryDetail: '此分類中的公司數量。',
       buckets: {
         'now-actionable': '現在可行動',
         'needs-review': '需要重看',
@@ -299,7 +283,7 @@ export const messages = {
       boardVisible: '可見標的',
       boardLabel: '觀察清單',
       browseLabel: '瀏覽清單',
-      browseTitle: '用即時研究檔案的方式瀏覽 watchlist。',
+      browseTitle: '所有追蹤中的公司。',
       searchLabel: '$ 搜尋',
       searchPlaceholder: 'TSM、半導體設備、compounder',
       sortLabel: '排序',

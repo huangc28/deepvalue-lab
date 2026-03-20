@@ -89,45 +89,28 @@ export function DashboardPage() {
             aside={<AccentBadge label={m.badge.cardsDefault} />}
           />
 
-          <div className="grid gap-5 lg:grid-cols-[1.3fr_0.9fr]">
-            <Panel className="overflow-hidden bg-[var(--surface-panel-alt)]">
-              <PanelChrome
-                label={m.dashboard.summaryLabel}
-                status={m.dashboard.summaryStatus}
-              />
-              <PanelBody>
-                <div className="grid gap-4 md:grid-cols-3">
-                  {(
-                    Object.entries(m.dashboard.buckets) as Array<
-                      [DashboardBucket, string]
-                    >
-                  ).map(([bucket, label]) => (
-                    <MetricBlock
-                      key={bucket}
-                      label={label}
-                      value={String(counts[bucket as keyof typeof counts])}
-                      detail={m.dashboard.summaryDetail}
-                    />
-                  ))}
-                </div>
-              </PanelBody>
-            </Panel>
-
-            <Panel className="overflow-hidden bg-[var(--surface-panel-alt)]">
-              <PanelChrome
-                label={m.dashboard.operatorPanelLabel}
-                status={m.dashboard.operatorStatus}
-              />
-              <PanelBody className="space-y-4">
-                <TerminalLabel>{m.dashboard.operatorLabel}</TerminalLabel>
-                <ul className="space-y-3 text-sm leading-7 text-[var(--ink-secondary)]">
-                  {m.dashboard.operatorBullets.map((bullet) => (
-                    <li key={bullet}>{bullet}</li>
-                  ))}
-                </ul>
-              </PanelBody>
-            </Panel>
-          </div>
+          <Panel className="overflow-hidden bg-[var(--surface-panel-alt)]">
+            <PanelChrome
+              label={m.dashboard.summaryLabel}
+              status={m.dashboard.summaryStatus}
+            />
+            <PanelBody>
+              <div className="grid gap-4 md:grid-cols-3">
+                {(
+                  Object.entries(m.dashboard.buckets) as Array<
+                    [DashboardBucket, string]
+                  >
+                ).map(([bucket, label]) => (
+                  <MetricBlock
+                    key={bucket}
+                    label={label}
+                    value={String(counts[bucket as keyof typeof counts])}
+                    detail={m.dashboard.summaryDetail}
+                  />
+                ))}
+              </div>
+            </PanelBody>
+          </Panel>
         </PanelBody>
       </Panel>
 
