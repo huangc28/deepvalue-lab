@@ -29,7 +29,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
   const { m, text } = useI18n()
   const { data: stock, isLoading, error } = useStock(ticker)
 
-  if (isLoading) return <LoadingState label={`deepvalue-lab://stocks/${ticker}`} />
+  if (isLoading) return <LoadingState label={`value-deck://stocks/${ticker}`} />
 
   if (error instanceof ApiError && error.status === 404) {
     return (
@@ -50,7 +50,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
     )
   }
 
-  if (error || !stock) return <ErrorState label={`deepvalue-lab://stocks/${ticker}`} />
+  if (error || !stock) return <ErrorState label={`value-deck://stocks/${ticker}`} />
 
   const nearestScenario = getNearestScenario(stock)
 

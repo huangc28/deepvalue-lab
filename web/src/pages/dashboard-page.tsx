@@ -69,8 +69,8 @@ export function DashboardPage() {
       .toSorted(sortStocks(sortMode))
   }, [stocks, bucketFilter, deferredQuery, sortMode])
 
-  if (isLoading) return <LoadingState label="deepvalue-lab://watchlist" />
-  if (error) return <ErrorState label="deepvalue-lab://watchlist" />
+  if (isLoading) return <LoadingState label="value-deck://watchlist" />
+  if (error) return <ErrorState label="value-deck://watchlist" />
 
   return (
     <div className="flex flex-col gap-8">
@@ -78,7 +78,7 @@ export function DashboardPage() {
         <PanelChrome label={m.dashboard.heroLabel} status={m.dashboard.heroStatus} />
         <PanelBody className="space-y-8 p-8">
           <PanelLead
-            label="deepvalue-lab://watchlist"
+            label="value-deck://watchlist"
             title={
               <>
                 <span className="text-[var(--accent-copper)]">&gt;</span>{' '}

@@ -12,17 +12,12 @@ export function AppShell() {
           <Link to="/" className="flex items-center gap-3 sm:gap-4">
             <img
               src="/deepvalue-lab-mark.svg"
-              alt="DeepValue Lab"
+              alt="Value Deck"
               className="h-9 w-9 sm:h-10 sm:w-10"
             />
-            <div>
-              <p className="hidden font-mono text-[0.72rem] uppercase tracking-[0.22em] text-[var(--ink-muted)] sm:block">
-                ~/ deepvalue-lab
-              </p>
-              <h1 className="font-serif text-[1.1rem] tracking-[-0.03em] sm:text-[1.35rem]">
-                research.app
-              </h1>
-            </div>
+            <h1 className="font-serif text-[1.1rem] tracking-[-0.03em] sm:text-[1.35rem]">
+              Value Deck
+            </h1>
           </Link>
 
           <nav className="flex items-center gap-2 text-sm font-medium text-[var(--ink-secondary)] sm:gap-3">

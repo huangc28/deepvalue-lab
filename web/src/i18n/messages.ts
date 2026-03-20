@@ -48,7 +48,7 @@ export const messages = {
     },
     dashboard: {
       heroStatus: 'research board',
-      heroTitle: 'DeepValue Research Board',
+      heroTitle: 'Research Board',
       heroDescription:
         'Track valuation, thesis status, news impact, and entry timing across your watchlist.',
       heroLabel: 'Dashboard',
@@ -262,7 +262,7 @@ export const messages = {
     },
     dashboard: {
       heroStatus: '研究面板',
-      heroTitle: 'DeepValue 研究面板',
+      heroTitle: '研究面板',
       heroDescription:
         '追蹤估值、論點狀態、新聞影響與進場時機。',
       heroLabel: '儀表板',
