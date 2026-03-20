@@ -25,7 +25,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. SKILL.md states that every analysis run must produce a zh-TW markdown report alongside the English one, with archive naming convention `-zh-TW.md`
   2. Report contract specifies zh-TW translation rules: plain-language leads, acronyms explained on first use, financial jargon retained
   3. Agent execution SOP contains an explicit translation step that appears in the workflow sequence
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Update SKILL.md with zh-TW output requirements and archive naming convention (DOC-01), and add zh-TW translation rules section to report contract (DOC-02)
+- [ ] 01-02-PLAN.md — Insert zh-TW translation step into agent execution SOP workflow sequence (DOC-03)
 
 ### Phase 2: Skill Output
 **Goal**: Running the analysis skill on any ticker produces a zh-TW markdown report and a bilingual StockDetail JSON, both saved correctly to the research archive
@@ -46,5 +50,5 @@ Phases execute in numeric order: 1 → 2
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Contracts | 0/TBD | Not started | - |
+| 1. Contracts | 0/2 | Not started | - |
 | 2. Skill Output | 0/TBD | Not started | - |
