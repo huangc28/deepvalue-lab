@@ -5,6 +5,7 @@ import { WatchlistTable } from '../components/dashboard/watchlist-table'
 import { ErrorState } from '../components/ui/error-state'
 import { LoadingState } from '../components/ui/loading-state'
 import { MetricBlock } from '../components/ui/metric-block'
+import { ProjectConfessionCard } from '../components/ui/project-confession-card'
 import {
   Panel,
   PanelBody,
@@ -233,6 +234,8 @@ export function DashboardPage() {
           </PanelBody>
         </Panel>
       </div>
+
+      <ProjectConfessionCard />
     </div>
   )
 }
