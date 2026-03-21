@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 
+import type { Locale } from '../i18n/types'
 import type { DashboardBucket, StockSummary } from '../types/stocks'
 import { fetchStock, fetchStocks } from './api'
 
-export function useStocks() {
+export function useStocks(locale: Locale) {
   return useQuery({
-    queryKey: ['stocks'],
-    queryFn: fetchStocks,
+    queryKey: ['stocks', locale],
+    queryFn: () => fetchStocks(locale),
     staleTime: 5 * 60 * 1000,
   })
 }

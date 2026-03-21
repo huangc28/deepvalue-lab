@@ -24,8 +24,8 @@ type SortMode = 'most-actionable' | 'largest-discount' | 'recently-updated'
 const EMPTY_STOCKS: StockSummary[] = []
 
 export function DashboardPage() {
-  const { m } = useI18n()
-  const { data: stocks = EMPTY_STOCKS, isLoading, error } = useStocks()
+  const { locale, m } = useI18n()
+  const { data: stocks = EMPTY_STOCKS, isLoading, error } = useStocks(locale)
   const counts = useMemo(() => computeDashboardCounts(stocks), [stocks])
   const [viewMode, setViewMode] = useState<ViewMode>('cards')
   const [bucketFilter, setBucketFilter] = useState<DashboardBucket | 'all'>(

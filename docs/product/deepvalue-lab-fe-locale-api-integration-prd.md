@@ -8,7 +8,7 @@ Status:
 
 ## Summary
 
-Move the web frontend from local mock research content toward backend-backed stock analysis reads, with locale-aware fetching for `zh-TW`.
+Add locale-aware frontend reads for backend-backed stock analysis content, with `zh-TW` as the first non-English locale.
 
 This PRD covers:
 - feasibility of fetching localized structured analysis data from the backend
@@ -24,18 +24,18 @@ The intended read path is:
 
 Approved decisions:
 - backend detail endpoint should guarantee a full `StockDetail` shape
-- zh-TW UI may render English research content as an explicit fallback when zh-TW detail is unavailable
+- zh-TW UI may render English research content as an acceptable fallback when zh-TW detail is unavailable
 - delivery order is dashboard first, detail second
 
 ## Problem
 
-The current frontend still relies on local mock stock data and a bilingual `LocalizedText` content model that was originally built for the mockup phase.
+The current frontend already reads stock data from backend APIs, but the locale is not yet part of the request path or React Query cache key.
 
 The backend now supports locale-aware stock analysis reads, but the frontend has not yet been wired to use locale-specific API requests.
 
 As a result:
 - switching the UI locale does not trigger a backend refetch
-- the dashboard and detail page are still coupled to local mock content
+- the dashboard and detail page can reuse stale English cache entries after a locale switch
 - the app does not yet prove the real publish/read workflow for `zh-TW` structured analysis data
 
 ## Goals
@@ -77,8 +77,10 @@ Current frontend behavior:
 - stores locale in localStorage
 - uses `LocalizedText = string | Record<Locale, string>`
 - resolves text via `text()` and `flattenLocalizedText()`
-- fetches backend data without locale query params today
+- already fetches dashboard/detail data from backend APIs
+- does not append locale query params today
 - keys React Query data only by `['stocks']` and `['stocks', ticker]`
+- still keeps legacy mock data in the repo for UI development, but not as the intended production read path
 
 ### Important Compatibility Observation
 
@@ -148,9 +150,9 @@ Why this is preferred:
 If backend behavior is intentionally kept as-is, the frontend must harden its detail fetch path:
 
 - request locale-specific detail
-- validate whether the payload is a complete `StockDetail`
-- if the payload is summary-only or incomplete, fetch English detail
-- optionally render English research content under zh-TW UI chrome
+- validate whether the payload is a complete renderable `StockDetail`
+- if the zh-TW payload is summary-only or incomplete, fetch English detail immediately
+- only show a controlled error state if English detail is also unavailable or invalid
 
 This path is feasible, but it makes the frontend responsible for repairing an ambiguous backend contract.
 
@@ -225,18 +227,44 @@ Without this:
 
 The frontend should not blindly trust the detail response until the contract is hardened.
 
-Minimum validation:
+Validation must cover every field the current detail page dereferences, not just a small top-level subset.
+
+Minimum render-safe validation:
 - `ticker`
 - `companyName`
+- `businessType`
 - `summary`
+- `lastUpdated`
+- `actionState`
+- `valuationStatus`
+- `thesisStatus`
+- `technicalEntryStatus`
+- `currentPrice`
+- `bearFairValue`
+- `baseFairValue`
+- `bullFairValue`
+- `discountToBase`
+- `variantPerception`
+- `currentPriceImplies`
 - `scenarios`
+- `valuationLens.primary`
+- `valuationLens.crossCheck`
+- `valuationLens.rationale`
+- `currentValuationSnapshot.multiples`
 - `newsToModel`
+- `thesisStatement`
+- `thesisBullets`
+- `risks`
+- `catalysts`
 - `monitorNext`
 - `sourcesUsed`
+- `history`
+
+Nested arrays and objects must also be validated as renderable shapes, not just checked for presence.
 
 If validation fails:
-- either do a second English-detail fetch as fallback
-- or show a controlled error state
+- if the attempted locale was `zh-TW`, do a second English-detail fetch as fallback
+- only show a controlled error state if the English detail fetch is missing or still fails validation
 
 ### 4. Keep Current Component Contract Where Possible
 
@@ -248,11 +276,11 @@ Because `LocalizedText` already accepts `string`, existing `text()` helpers rema
 
 ### 5. Mock Data Transition
 
-The frontend should stop treating `mockStocks` as the default runtime source for dashboard/detail pages.
+The frontend should not treat `mockStocks` as the runtime source of truth for dashboard/detail pages.
 
 Recommended transition:
 - keep mock data only for isolated UI development if needed
-- production routes should read from backend APIs
+- production routes should continue reading from backend APIs
 
 ## Backend Dependency
 
@@ -274,7 +302,7 @@ If yes, implement:
 
 ### Optional But Helpful
 
-- explicit response header or field indicating resolved locale
+- explicit response header or field indicating resolved locale when the product later wants an in-UI fallback indicator
 - explicit contract docs that distinguish list summary shape from detail shape
 
 These are helpful but not required for the first FE integration pass.
@@ -341,14 +369,16 @@ Phase 1 acceptance checklist:
 - zh-TW dashboard renders localized summary fields when available
 - stocks without zh-TW summary still render via English fallback
 - dashboard search still works against returned data
+- automated tests or network assertions verify the request URL in both locales
+- automated tests or network assertions verify locale-specific query keys and prevent cross-locale cache reuse
 - `pnpm build` passes
 - `pnpm lint` passes
 
 ### Phase 2: Detail API Contract Hardening
 
 Scope:
-- finalize backend decision for detail-route fallback
-- either harden backend contract or add temporary FE validation fallback
+- implement the approved backend detail-route fallback contract
+- remove summary-payload fallback from the detail endpoint
 
 Success criteria:
 - detail route always produces a full renderable `StockDetail`
@@ -364,6 +394,11 @@ Backend requirement:
   1. zh-TW detail
   2. English detail
   3. not found or explicit error when no detail exists
+
+Temporary exception policy:
+- a frontend validation-and-refetch bridge is allowed only as a short-lived sequencing exception
+- that bridge does not count as Phase 2 completion
+- if used, it should be removed once the backend contract above is deployed
 
 Phase 2 acceptance checklist:
 - detail endpoint never returns summary-only JSON
@@ -398,7 +433,7 @@ File-level change scope:
 - `web/src/pages/stock-detail-page.tsx`
   - read active locale from i18n context through the query path
   - rely on locale-aware detail fetch
-- optionally add a temporary runtime guard in the data layer if backend rollout lags
+- only add a temporary runtime guard in the data layer if backend rollout lags and the exception is explicitly approved
 
 Implementation notes:
 - keep the current `StockDetail` render contract
@@ -412,6 +447,9 @@ Phase 3 acceptance checklist:
 - English detail renders as fallback when zh-TW detail is unavailable
 - locale switching refetches detail data
 - detail page does not crash on locale fallback cases
+- automated tests or network assertions verify locale-specific request URLs for detail reads
+- automated tests or network assertions verify locale-scoped detail query keys and prevent cache leakage across locales
+- if a temporary frontend bridge exists, tests verify `zh-TW` invalid/missing detail refetches English detail before showing an error
 - `pnpm build` passes
 - `pnpm lint` passes
 
@@ -429,7 +467,7 @@ Scope:
 - Dashboard renders zh-TW summaries when available.
 - Detail page renders zh-TW detail when available.
 - Detail page does not crash when zh-TW detail is unavailable.
-- English fallback behavior is explicit and consistent.
+- English fallback behavior is deterministic and consistent.
 - Query caching does not leak English results into zh-TW state, or vice versa.
 - No frontend code parses markdown report bodies on the read path.
 
@@ -441,7 +479,7 @@ The detail route may return summary JSON today.
 
 Mitigation:
 - change backend contract, or
-- add frontend runtime validation plus fallback fetch
+- as a temporary exception only, add frontend runtime validation plus fallback fetch
 
 ### Risk 2: Locale Switch Does Not Refetch Data
 
@@ -463,7 +501,7 @@ Mitigation:
 Local mock data may continue to mask runtime issues.
 
 Mitigation:
-- move route rendering onto backend data as soon as locale-aware fetching is introduced
+- keep route rendering on backend data and avoid reintroducing mock-only assumptions into production paths
 
 ## Open Questions
 
@@ -491,6 +529,7 @@ What the next agent should not assume:
 - that the detail endpoint can safely return summary JSON to the detail page
 - that mock bilingual objects remain the long-term source of truth
 - that locale switching is only a presentation concern; it must affect fetch and query-key behavior
+- that a temporary FE bridge means the backend contract has been completed
 
 Recommended first task for the next agent:
 - implement Phase 1 only
@@ -503,7 +542,7 @@ Proceed with the feature.
 
 Decision framing:
 - dashboard locale-aware API integration is ready now
-- detail-page locale-aware integration is ready after one contract decision is made
+- detail-page locale-aware integration is ready after the approved backend contract is implemented
 
 Approved implementation framing:
 - build Phase 1 dashboard integration first

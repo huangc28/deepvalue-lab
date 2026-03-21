@@ -1,4 +1,5 @@
 import type { StockDetail, StockSummary } from '../types/stocks'
+import type { Locale } from '../i18n/types'
 
 const API_URL = import.meta.env.VITE_API_URL ?? ''
 
@@ -20,8 +21,16 @@ async function fetchJson<T>(url: string): Promise<T> {
   return response.json() as Promise<T>
 }
 
-export async function fetchStocks(): Promise<StockSummary[]> {
-  const data = await fetchJson<{ stocks: StockSummary[] }>(`${API_URL}/v1/stocks`)
+function buildStocksUrl(locale: Locale) {
+  if (locale === 'zh-TW') {
+    return `${API_URL}/v1/stocks?locale=zh-TW`
+  }
+
+  return `${API_URL}/v1/stocks`
+}
+
+export async function fetchStocks(locale: Locale): Promise<StockSummary[]> {
+  const data = await fetchJson<{ stocks: StockSummary[] }>(buildStocksUrl(locale))
   return data.stocks
 }
 
