@@ -9,7 +9,6 @@ import { ErrorState } from '../components/ui/error-state'
 import { LoadingState } from '../components/ui/loading-state'
 import { MetricBlock } from '../components/ui/metric-block'
 import { Panel, PanelBody, PanelChrome } from '../components/ui/panel'
-import { ProjectConfessionCard } from '../components/ui/project-confession-card'
 import {
   ActionBadge,
   NewsImpactBadge,
@@ -364,8 +363,6 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
             legacyItems={historyItems}
           />
         </ResearchSection>
-
-        <ProjectConfessionCard />
       </div>
     </div>
   )
