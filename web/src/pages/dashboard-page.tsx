@@ -115,6 +115,8 @@ export function DashboardPage() {
         </PanelBody>
       </Panel>
 
+      <ProjectConfessionCard />
+
       <div>
         <Panel className="overflow-hidden">
           <PanelChrome
@@ -234,8 +236,6 @@ export function DashboardPage() {
           </PanelBody>
         </Panel>
       </div>
-
-      <ProjectConfessionCard />
     </div>
   )
 }
