@@ -53,24 +53,17 @@ func (h *DetailHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if isZhTWLocale(r) {
-		if row.R2DetailZhTwKey != "" {
-			h.respondWithR2Detail(w, r, ticker, row.R2DetailZhTwKey)
-			return
-		}
-
-		if hasNonEmptySummaryJSON(row.SummaryJsonZhTw) {
-			render.ChiJSON(w, r, http.StatusOK, json.RawMessage(row.SummaryJsonZhTw))
-			return
-		}
+	key := row.R2DetailKey
+	if isZhTWLocale(r) && row.R2DetailZhTwKey != "" {
+		key = row.R2DetailZhTwKey
 	}
 
-	if row.R2DetailKey == "" {
-		render.ChiJSON(w, r, http.StatusOK, json.RawMessage(row.SummaryJson))
+	if key == "" {
+		render.ChiErr(w, r, http.StatusNotFound, errors.New("stock detail not found"))
 		return
 	}
 
-	h.respondWithR2Detail(w, r, ticker, row.R2DetailKey)
+	h.respondWithR2Detail(w, r, ticker, key)
 }
 
 func (h *DetailHandler) respondWithR2Detail(w http.ResponseWriter, r *http.Request, ticker, key string) {
