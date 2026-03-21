@@ -3,11 +3,13 @@ import { useState, type ReactNode } from 'react'
 import { Link } from '@tanstack/react-router'
 
 import { ExpectationBridge } from '../components/detail/expectation-bridge'
+import { HistoricalRevisionLedger } from '../components/detail/historical-revision-ledger'
 import { ScenarioCard } from '../components/detail/scenario-card'
 import { ErrorState } from '../components/ui/error-state'
 import { LoadingState } from '../components/ui/loading-state'
 import { MetricBlock } from '../components/ui/metric-block'
 import { Panel, PanelBody, PanelChrome } from '../components/ui/panel'
+import { ProjectConfessionCard } from '../components/ui/project-confession-card'
 import {
   ActionBadge,
   NewsImpactBadge,
@@ -16,6 +18,7 @@ import {
   ValuationBadge,
 } from '../components/ui/status-badge'
 import { TerminalLabel } from '../components/ui/terminal-label'
+import { getStockByTicker } from '../data/mock-stocks'
 import { useI18n } from '../i18n/context'
 import { ApiError } from '../lib/api'
 import { useStock } from '../lib/queries'
@@ -26,12 +29,16 @@ interface StockDetailPageProps {
 }
 
 export function StockDetailPage({ ticker }: StockDetailPageProps) {
-  const { m, text } = useI18n()
-  const { data: stock, isLoading, error } = useStock(ticker)
+  const { locale, m, text } = useI18n()
+  const mockStock = getStockByTicker(ticker)
+  const { data: liveStock, isLoading, error } = useStock(ticker, locale)
+  const stock = liveStock ?? mockStock
 
-  if (isLoading) return <LoadingState label={`value-deck://stocks/${ticker}`} />
+  if (isLoading && !stock) {
+    return <LoadingState label={`value-deck://stocks/${ticker}`} />
+  }
 
-  if (error instanceof ApiError && error.status === 404) {
+  if (error instanceof ApiError && error.status === 404 && !stock) {
     return (
       <section className="rounded-[1.75rem] border border-dashed border-[var(--line-strong)] bg-[var(--surface-panel)] p-10">
         <p className="font-mono text-sm font-semibold uppercase tracking-[0.2em] text-[var(--ink-muted)]">
@@ -53,6 +60,8 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
   if (error || !stock) return <ErrorState label={`value-deck://stocks/${ticker}`} />
 
   const nearestScenario = getNearestScenario(stock)
+  const historicalReports = stock.historicalReports ?? mockStock?.historicalReports
+  const historyItems = stock.history ?? mockStock?.history ?? []
 
   return (
     <div className="flex flex-col gap-8">
@@ -350,8 +359,13 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           title={m.detail.historyTitle}
           description={m.detail.historyDescription}
         >
-          <BulletList items={stock.history} />
+          <HistoricalRevisionLedger
+            reports={historicalReports}
+            legacyItems={historyItems}
+          />
         </ResearchSection>
+
+        <ProjectConfessionCard />
       </div>
     </div>
   )
