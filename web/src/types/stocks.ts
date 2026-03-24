@@ -64,7 +64,7 @@ export interface SourceReference {
   url?: string
 }
 
-export interface HistoricalReport {
+export interface HistoricalReportSummary {
   reportId: string
   publishedAtMs: number
   provenance: HistoricalReportProvenance
@@ -76,12 +76,18 @@ export interface HistoricalReport {
   baseFairValue: number
   bullFairValue: number
   summary: LocalizedText
-  currentPriceImpliesBrief: LocalizedText
-  currentPriceImplies: LocalizedText
-  monitorNext: LocalizedText[]
-  changeSummary: LocalizedText
+  localeHasFallback: boolean
   latest?: boolean
 }
+
+export interface HistoricalReportDetail extends HistoricalReportSummary {
+  currentPriceImpliesBrief: LocalizedText
+  currentPriceImplies: LocalizedText
+  changeSummary: LocalizedText
+  monitorNext: LocalizedText[]
+}
+
+export type HistoricalReport = HistoricalReportDetail
 
 export interface StockSummary {
   id: string
@@ -122,5 +128,6 @@ export interface StockDetail extends StockSummary {
   monitorNext: LocalizedText[]
   sourcesUsed: Array<string | SourceReference>
   history: LocalizedText[]
-  historicalReports?: HistoricalReport[]
+  historicalReports?: HistoricalReportSummary[]
+  historicalReportDetails?: Record<string, HistoricalReportDetail>
 }
