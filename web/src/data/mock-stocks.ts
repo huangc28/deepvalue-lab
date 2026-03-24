@@ -28,11 +28,7 @@ const tsmHistoricalSummaries: HistoricalReportSummary[] = [
         '第一次 DeepValue 版本把 TSM 視為高品質 infrastructure 資產，而且當時估值支持仍明顯站在我們這邊。',
     },
     // All TSM fields are Record<Locale, string> — no string fallbacks
-    localeHasFallback: computeLocaleHasFallback([
-      '第一次 DeepValue 版本把 TSM 視為高品質 infrastructure 資產，而且當時估值支持仍明顯站在我們這邊。',
-    ])
-      ? true
-      : false,
+    localeHasFallback: false,
   },
   {
     reportId: 'tsm-20260211-board',
