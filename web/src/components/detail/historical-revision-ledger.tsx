@@ -18,6 +18,7 @@ export function HistoricalRevisionLedger({
     ? [...reports].sort((left, right) => right.publishedAtMs - left.publishedAtMs)
     : undefined
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [compareId, setCompareId] = useState<string | null>(null)
 
   if (!sortedReports) {
     return <LegacyHistory items={legacyItems} />
@@ -38,9 +39,49 @@ export function HistoricalRevisionLedger({
     (report) => report.reportId === selectedReport.reportId,
   )
 
+  const resolvedCompareId =
+    compareId && sortedReports.some((r) => r.reportId === compareId) && compareId !== resolvedSelectedId
+      ? compareId
+      : null
+  const compareReport = resolvedCompareId
+    ? (sortedReports.find((r) => r.reportId === resolvedCompareId) ?? null)
+    : null
+
+  const inCompareMode = resolvedCompareId !== null
+  const canCompare = sortedReports.length > 1
+
+  function handleSelectRevision(reportId: string) {
+    // If clicking the compare target while in compare mode, swap them
+    if (inCompareMode && reportId === resolvedCompareId) {
+      setSelectedId(resolvedCompareId)
+      setCompareId(resolvedSelectedId)
+      return
+    }
+    // Clear compare if the new base selection would collide
+    if (inCompareMode && reportId === resolvedSelectedId) {
+      return
+    }
+    setSelectedId(reportId)
+  }
+
+  function handleSetCompare(reportId: string) {
+    if (reportId === resolvedSelectedId) return
+    setCompareId(reportId)
+  }
+
+  function handleClearCompare() {
+    setCompareId(null)
+  }
+
+  function handleExitCompare() {
+    setCompareId(null)
+    // base selection is preserved — do not touch selectedId
+  }
+
   return (
     <div className="space-y-6">
       <div className="grid gap-6 xl:grid-cols-[minmax(18rem,0.86fr)_minmax(0,1.14fr)]">
+        {/* Left column: revision list */}
         <div className="space-y-4">
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -62,25 +103,30 @@ export function HistoricalRevisionLedger({
             aria-label={m.detail.historyLedgerLabel}
           >
             {sortedReports.map((report) => {
-              const isSelected = report.reportId === selectedReport.reportId
+              const isBase = report.reportId === resolvedSelectedId
+              const isCompare = inCompareMode && report.reportId === resolvedCompareId
 
               return (
                 <div
                   key={report.reportId}
+                  role="listitem"
                   className={cx(
                     'rounded-[1.2rem] border bg-[var(--surface-muted)] transition',
-                    isSelected
+                    isBase && !isCompare
                       ? 'border-[var(--accent-copper)] shadow-[0_0_0_1px_rgba(88,166,255,0.22)]'
-                      : 'border-[var(--line-subtle)]',
+                      : isCompare
+                        ? 'border-[color:rgba(46,160,67,0.6)] shadow-[0_0_0_1px_rgba(46,160,67,0.18)]'
+                        : 'border-[var(--line-subtle)]',
                   )}
                 >
                   <button
                     type="button"
-                    onClick={() => setSelectedId(report.reportId)}
+                    onClick={() => handleSelectRevision(report.reportId)}
+                    aria-pressed={isBase}
                     className="block w-full cursor-pointer rounded-[1.2rem] px-4 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-copper)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-panel)]"
                   >
                     <div className="flex items-start justify-between gap-3">
-                      <div>
+                      <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
                           <span className="font-mono text-[0.66rem] uppercase tracking-[0.18em] text-[var(--ink-muted)]">
                             {formatRevisionDate(report.publishedAtMs, locale)}
@@ -94,10 +140,16 @@ export function HistoricalRevisionLedger({
                               tone="accent"
                             />
                           ) : null}
-                          {isSelected ? (
+                          {isBase ? (
                             <Chip
                               label={m.detail.historySelected}
                               tone="neutral"
+                            />
+                          ) : null}
+                          {isCompare ? (
+                            <Chip
+                              label={m.detail.historyCompareTarget}
+                              tone="positive"
                             />
                           ) : null}
                         </div>
@@ -136,34 +188,278 @@ export function HistoricalRevisionLedger({
                       />
                     </div>
                   </button>
+
+                  {/* Compare affordance: shown on non-base rows when canCompare */}
+                  {canCompare && !isBase ? (
+                    <div className="border-t border-[var(--line-subtle)] px-4 py-3">
+                      {isCompare ? (
+                        <button
+                          type="button"
+                          onClick={handleClearCompare}
+                          className="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-[var(--signal-positive-soft)] transition hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-copper)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--surface-panel)]"
+                        >
+                          {m.detail.historyClearComparison}
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleSetCompare(report.reportId)}
+                          disabled={inCompareMode}
+                          className={cx(
+                            'font-mono text-[0.62rem] uppercase tracking-[0.16em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-copper)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--surface-panel)]',
+                            inCompareMode
+                              ? 'cursor-not-allowed text-[var(--ink-muted)] opacity-40'
+                              : 'cursor-pointer text-[var(--ink-muted)] hover:text-[var(--ink-secondary)]',
+                          )}
+                        >
+                          {m.detail.historyAddComparison}
+                        </button>
+                      )}
+                    </div>
+                  ) : null}
                 </div>
               )
             })}
           </div>
         </div>
 
+        {/* Right column: snapshot or compare panel */}
         <div className="space-y-4">
-          <div>
-            <p className="font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--accent-copper)]">
-              {sortedReports.length === 1
-                ? m.detail.historySingleRevision
-                : m.detail.historySelectedRevision}
-            </p>
-            <p className="mt-2 text-sm leading-7 text-[var(--ink-secondary)]">
-              {sortedReports.length === 1
-                ? m.detail.historySingleRevisionDescription
-                : m.detail.historySelectedDescription}
-            </p>
-          </div>
+          {inCompareMode && compareReport ? (
+            <ComparePanel
+              baseReport={selectedReport}
+              compareReport={compareReport}
+              onExit={handleExitCompare}
+            />
+          ) : (
+            <>
+              <div>
+                <p className="font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--accent-copper)]">
+                  {sortedReports.length === 1
+                    ? m.detail.historySingleRevision
+                    : m.detail.historySelectedRevision}
+                </p>
+                <p className="mt-2 text-sm leading-7 text-[var(--ink-secondary)]">
+                  {sortedReports.length === 1
+                    ? m.detail.historySingleRevisionDescription
+                    : m.detail.historySelectedDescription}
+                </p>
+              </div>
 
-          <SelectedRevisionCard
-            report={selectedReport}
-            isOldestRevision={selectedIndex === sortedReports.length - 1}
-          />
+              <SelectedRevisionCard
+                report={selectedReport}
+                isOldestRevision={selectedIndex === sortedReports.length - 1}
+              />
+            </>
+          )}
         </div>
       </div>
 
-      <RevisionTrend reports={sortedReports} />
+      <RevisionTrend reports={sortedReports} selectedId={resolvedSelectedId} compareId={resolvedCompareId} />
+    </div>
+  )
+}
+
+function ComparePanel({
+  baseReport,
+  compareReport,
+  onExit,
+}: {
+  baseReport: HistoricalReport
+  compareReport: HistoricalReport
+  onExit: () => void
+}) {
+  const { m } = useI18n()
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--accent-copper)]">
+            {m.detail.historyCompareMode}
+          </p>
+          <p className="mt-2 text-sm leading-7 text-[var(--ink-secondary)]">
+            {m.detail.historyCompareDescription}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onExit}
+          className="shrink-0 rounded-full border border-[var(--line-subtle)] bg-[var(--surface-chip)] px-3 py-1.5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-[var(--ink-muted)] transition hover:border-[var(--line-strong)] hover:text-[var(--ink-secondary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-copper)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-panel)]"
+        >
+          {m.detail.historyExitCompare}
+        </button>
+      </div>
+
+      <div className="grid gap-5 md:grid-cols-2">
+        <CompareRevisionCard
+          report={baseReport}
+          roleLabel={m.detail.historyBaseRevision}
+          roleColor="var(--accent-copper)"
+        />
+        <CompareRevisionCard
+          report={compareReport}
+          roleLabel={m.detail.historyComparisonRevision}
+          roleColor="var(--signal-positive-soft)"
+        />
+      </div>
+
+      <CompareMetricDiff base={baseReport} compare={compareReport} />
+    </div>
+  )
+}
+
+function CompareRevisionCard({
+  report,
+  roleLabel,
+  roleColor,
+}: {
+  report: HistoricalReport
+  roleLabel: string
+  roleColor: string
+}) {
+  const { locale, m, text } = useI18n()
+
+  return (
+    <div className="rounded-[1.25rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] p-5">
+      <div className="flex items-center gap-2">
+        <span
+          className="h-2 w-2 shrink-0 rounded-full"
+          style={{ backgroundColor: roleColor }}
+        />
+        <span
+          className="font-mono text-[0.62rem] uppercase tracking-[0.18em]"
+          style={{ color: roleColor }}
+        >
+          {roleLabel}
+        </span>
+      </div>
+
+      <p className="mt-3 font-mono text-[0.66rem] uppercase tracking-[0.18em] text-[var(--ink-muted)]">
+        {formatRevisionDate(report.publishedAtMs, locale)}
+      </p>
+
+      <div className="mt-2 flex flex-wrap gap-2">
+        <Chip label={m.detail.revisionProvenance[report.provenance]} />
+        {report.latest ? (
+          <Chip label={m.detail.historyLatest} tone="accent" />
+        ) : null}
+      </div>
+
+      <p className="mt-4 text-sm leading-7 text-[var(--ink-secondary)]">
+        {text(report.summary)}
+      </p>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        <ValuationBadge value={report.valuationStatus} />
+        <ThesisBadge value={report.thesisStatus} />
+        <TechnicalBadge value={report.technicalEntryStatus} />
+      </div>
+
+      <div className="mt-4 grid grid-cols-3 gap-2">
+        <MiniMetric
+          label={m.detail.scenario.Bear}
+          value={formatCurrency(report.bearFairValue)}
+        />
+        <MiniMetric
+          label={m.detail.scenario.Base}
+          value={formatCurrency(report.baseFairValue)}
+        />
+        <MiniMetric
+          label={m.detail.scenario.Bull}
+          value={formatCurrency(report.bullFairValue)}
+        />
+      </div>
+
+      <div className="mt-4 rounded-[1.1rem] border border-[var(--line-subtle)] bg-[var(--surface-panel)] px-4 py-3">
+        <p className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[var(--ink-muted)]">
+          {m.detail.historyPriceImpliesBrief}
+        </p>
+        <p className="mt-2 text-sm leading-7 text-[var(--ink-secondary)]">
+          {text(report.currentPriceImpliesBrief)}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function CompareMetricDiff({
+  base,
+  compare,
+}: {
+  base: HistoricalReport
+  compare: HistoricalReport
+}) {
+  const { m } = useI18n()
+
+  const priceDiff = base.currentPrice - compare.currentPrice
+  const baseDiff = base.baseFairValue - compare.baseFairValue
+  const bearDiff = base.bearFairValue - compare.bearFairValue
+  const bullDiff = base.bullFairValue - compare.bullFairValue
+
+  return (
+    <div className="rounded-[1.25rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] p-5">
+      <p className="font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--ink-muted)]">
+        {m.detail.historyCompareHelper}
+      </p>
+      <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+        <DiffMetric
+          label={m.detail.currentPrice}
+          value={formatCurrency(base.currentPrice)}
+          diff={priceDiff}
+        />
+        <DiffMetric
+          label={m.detail.scenario.Bear}
+          value={formatCurrency(base.bearFairValue)}
+          diff={bearDiff}
+        />
+        <DiffMetric
+          label={m.detail.scenario.Base}
+          value={formatCurrency(base.baseFairValue)}
+          diff={baseDiff}
+        />
+        <DiffMetric
+          label={m.detail.scenario.Bull}
+          value={formatCurrency(base.bullFairValue)}
+          diff={bullDiff}
+        />
+      </div>
+    </div>
+  )
+}
+
+function DiffMetric({
+  label,
+  value,
+  diff,
+}: {
+  label: string
+  value: string
+  diff: number
+}) {
+  const isPositive = diff > 0
+  const isNeutral = diff === 0
+
+  return (
+    <div className="rounded-[1rem] border border-[var(--line-subtle)] bg-[var(--surface-panel)] px-3 py-3">
+      <p className="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">
+        {label}
+      </p>
+      <p className="mt-2 font-mono text-sm font-semibold text-[var(--ink-primary)]">
+        {value}
+      </p>
+      {!isNeutral ? (
+        <p
+          className={cx(
+            'mt-1 font-mono text-[0.62rem] font-medium',
+            isPositive
+              ? 'text-[var(--signal-positive-soft)]'
+              : 'text-[var(--signal-danger-soft)]',
+          )}
+        >
+          {isPositive ? '+' : ''}{formatCurrency(diff)}
+        </p>
+      ) : null}
     </div>
   )
 }
@@ -261,7 +557,15 @@ function SelectedRevisionCard({
   )
 }
 
-function RevisionTrend({ reports }: { reports: HistoricalReport[] }) {
+function RevisionTrend({
+  reports,
+  selectedId,
+  compareId,
+}: {
+  reports: HistoricalReport[]
+  selectedId: string | null
+  compareId: string | null
+}) {
   const { locale, m } = useI18n()
   const chronological = [...reports].reverse()
   const values = chronological.flatMap((report) => [
@@ -329,21 +633,47 @@ function RevisionTrend({ reports }: { reports: HistoricalReport[] }) {
             />
             {chronological.map((report, index) => {
               const x = toPointX(index, chronological.length)
+              const isSelected = report.reportId === selectedId
+              const isCompare = report.reportId === compareId
 
               return (
                 <g key={report.reportId}>
                   <circle
                     cx={x}
                     cy={toPointY(report.baseFairValue, minValue, maxValue)}
-                    r="4.5"
+                    r={isSelected || isCompare ? 6 : 4.5}
                     fill="var(--signal-positive-soft)"
+                    opacity={isSelected || isCompare ? 1 : 0.7}
                   />
                   <circle
                     cx={x}
                     cy={toPointY(report.currentPrice, minValue, maxValue)}
-                    r="4.5"
+                    r={isSelected || isCompare ? 6 : 4.5}
                     fill="var(--accent-copper)"
+                    opacity={isSelected || isCompare ? 1 : 0.7}
                   />
+                  {isSelected ? (
+                    <circle
+                      cx={x}
+                      cy={toPointY(report.currentPrice, minValue, maxValue)}
+                      r={11}
+                      fill="none"
+                      stroke="var(--accent-copper)"
+                      strokeWidth="1.5"
+                      opacity={0.5}
+                    />
+                  ) : null}
+                  {isCompare ? (
+                    <circle
+                      cx={x}
+                      cy={toPointY(report.currentPrice, minValue, maxValue)}
+                      r={11}
+                      fill="none"
+                      stroke="var(--signal-positive-soft)"
+                      strokeWidth="1.5"
+                      opacity={0.5}
+                    />
+                  ) : null}
                 </g>
               )
             })}
