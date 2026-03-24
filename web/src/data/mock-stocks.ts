@@ -1,10 +1,16 @@
 import type {
   DashboardBucket,
-  HistoricalReport,
+  HistoricalReportDetail,
+  HistoricalReportSummary,
   StockDetail,
 } from '../types/stocks'
+import type { LocalizedText } from '../i18n/types'
 
-const tsmHistoricalReports: HistoricalReport[] = [
+function computeLocaleHasFallback(fields: LocalizedText[]): boolean {
+  return fields.some((field) => typeof field === 'string')
+}
+
+const tsmHistoricalSummaries: HistoricalReportSummary[] = [
   {
     reportId: 'tsm-20260115-init',
     publishedAtMs: Date.UTC(2026, 0, 15),
@@ -21,29 +27,12 @@ const tsmHistoricalReports: HistoricalReport[] = [
       'zh-TW':
         '第一次 DeepValue 版本把 TSM 視為高品質 infrastructure 資產，而且當時估值支持仍明顯站在我們這邊。',
     },
-    currentPriceImpliesBrief: {
-      en: 'Market still priced TSM more like a cyclical foundry than a bottleneck owner.',
-      'zh-TW': '市場當時仍把 TSM 更像 cyclical foundry，而不是 bottleneck owner 來定價。',
-    },
-    currentPriceImplies: {
-      en: 'At $287, investors were underwriting a good but not fully infrastructure-like 2026 setup, leaving room for both earnings and multiple expansion.',
-      'zh-TW':
-        '在 287 美元時，市場反映的是一個「不錯但還不算 infrastructure 化」的 2026 框架，因此盈餘與倍數都仍有上修空間。',
-    },
-    monitorNext: [
-      {
-        en: 'Whether AI packaging demand stays supply-constrained through 2026.',
-        'zh-TW': 'AI 封裝需求是否在 2026 年仍維持供給吃緊。',
-      },
-      {
-        en: 'Whether overseas fab dilution remains manageable.',
-        'zh-TW': '海外廠稀釋是否仍在可控範圍內。',
-      },
-    ],
-    changeSummary: {
-      en: 'Initial baseline. Thesis started from valuation support plus underappreciated infrastructure characteristics.',
-      'zh-TW': '初始基準版本。核心論點來自估值支撐與被低估的 infrastructure 屬性。',
-    },
+    // All TSM fields are Record<Locale, string> — no string fallbacks
+    localeHasFallback: computeLocaleHasFallback([
+      '第一次 DeepValue 版本把 TSM 視為高品質 infrastructure 資產，而且當時估值支持仍明顯站在我們這邊。',
+    ])
+      ? true
+      : false,
   },
   {
     reportId: 'tsm-20260211-board',
@@ -61,29 +50,7 @@ const tsmHistoricalReports: HistoricalReport[] = [
       'zh-TW':
         '董事會資本支出決議強化了多年度需求信心，但也把 capex 強度推得比簡單 bull 故事更高。',
     },
-    currentPriceImpliesBrief: {
-      en: 'The market began paying for stronger demand durability, but still not for a full infrastructure-style rerating.',
-      'zh-TW': '市場開始為需求耐久度付費，但還沒有完全反映 infrastructure 式重評。',
-    },
-    currentPriceImplies: {
-      en: 'At $301, the stock priced in stronger 2026 demand confidence while still leaving upside if AI and packaging bottlenecks proved more durable.',
-      'zh-TW':
-        '在 301 美元時，股價已開始反映更強的 2026 需求信心，但若 AI 與封裝瓶頸更持久，仍有上行空間。',
-    },
-    monitorNext: [
-      {
-        en: 'Whether board-approved capex signals stronger customer demand visibility or merely higher intensity.',
-        'zh-TW': '董事會核准的 capex 究竟代表更高需求可見度，還是只是更高資本強度。',
-      },
-      {
-        en: 'Whether AI accelerators become a structurally larger revenue share.',
-        'zh-TW': 'AI 加速器是否成為結構性更高的營收占比。',
-      },
-    ],
-    changeSummary: {
-      en: 'Fair value moved up modestly as demand confidence improved, but capex intensity became a more explicit ceiling variable.',
-      'zh-TW': '隨著需求信心改善，fair value 小幅上修，但 capex 強度也更明確成為估值上限變數。',
-    },
+    localeHasFallback: false,
   },
   {
     reportId: 'tsm-20260310-monthly-revenue',
@@ -101,30 +68,7 @@ const tsmHistoricalReports: HistoricalReport[] = [
       'zh-TW':
         '單月營收驗證了接近 30% 成長框架，但股價重評速度快於 fair value 的上修速度。',
     },
-    currentPriceImpliesBrief: {
-      en: 'The market was no longer skeptical about demand; the question shifted to how much multiple expansion remained.',
-      'zh-TW': '市場已不再懷疑需求，問題開始轉向倍數擴張還剩多少。',
-    },
-    currentPriceImplies: {
-      en: 'At $329, the market was underwriting something close to a healthy base case, leaving less room for simple rerating upside.',
-      'zh-TW':
-        '在 329 美元時，市場已經反映接近健康 base case 的結果，單靠重評帶來的上行空間明顯變少。',
-    },
-    monitorNext: [
-      {
-        en: 'Whether gross-margin dilution lands near the low or high end of management guidance.',
-        'zh-TW': '毛利率稀釋最終落在管理層指引的低端還是高端。',
-      },
-      {
-        en: 'Whether the next revenue prints keep confirming the near-30% full-year frame.',
-        'zh-TW': '後續營收是否持續驗證接近全年 30% 的框架。',
-      },
-    ],
-    changeSummary: {
-      en: 'Price moved faster than fair value. The debate shifted from “is demand real?” to “is too much good news already priced?”',
-      'zh-TW':
-        '價格上漲速度快於 fair value。討論焦點從「需求是否真實」轉成「好消息是否已被反映太多」。',
-    },
+    localeHasFallback: false,
   },
   {
     reportId: 'tsm-20260316-full-review',
@@ -142,6 +86,93 @@ const tsmHistoricalReports: HistoricalReport[] = [
       'zh-TW':
         '企業品質依然非常強，但目前股價其實已經反映了一個相當強勁的 2026 年結果。',
     },
+    localeHasFallback: false,
+    latest: true,
+  },
+]
+
+const tsmHistoricalDetails: Record<string, HistoricalReportDetail> = {
+  'tsm-20260115-init': {
+    ...tsmHistoricalSummaries[0],
+    currentPriceImpliesBrief: {
+      en: 'Market still priced TSM more like a cyclical foundry than a bottleneck owner.',
+      'zh-TW': '市場當時仍把 TSM 更像 cyclical foundry，而不是 bottleneck owner 來定價。',
+    },
+    currentPriceImplies: {
+      en: 'At $287, investors were underwriting a good but not fully infrastructure-like 2026 setup, leaving room for both earnings and multiple expansion.',
+      'zh-TW':
+        '在 287 美元時，市場反映的是一個「不錯但還不算 infrastructure 化」的 2026 框架，因此盈餘與倍數都仍有上修空間。',
+    },
+    changeSummary: {
+      en: 'Initial baseline. Thesis started from valuation support plus underappreciated infrastructure characteristics.',
+      'zh-TW': '初始基準版本。核心論點來自估值支撐與被低估的 infrastructure 屬性。',
+    },
+    monitorNext: [
+      {
+        en: 'Whether AI packaging demand stays supply-constrained through 2026.',
+        'zh-TW': 'AI 封裝需求是否在 2026 年仍維持供給吃緊。',
+      },
+      {
+        en: 'Whether overseas fab dilution remains manageable.',
+        'zh-TW': '海外廠稀釋是否仍在可控範圍內。',
+      },
+    ],
+  },
+  'tsm-20260211-board': {
+    ...tsmHistoricalSummaries[1],
+    currentPriceImpliesBrief: {
+      en: 'The market began paying for stronger demand durability, but still not for a full infrastructure-style rerating.',
+      'zh-TW': '市場開始為需求耐久度付費，但還沒有完全反映 infrastructure 式重評。',
+    },
+    currentPriceImplies: {
+      en: 'At $301, the stock priced in stronger 2026 demand confidence while still leaving upside if AI and packaging bottlenecks proved more durable.',
+      'zh-TW':
+        '在 301 美元時，股價已開始反映更強的 2026 需求信心，但若 AI 與封裝瓶頸更持久，仍有上行空間。',
+    },
+    changeSummary: {
+      en: 'Fair value moved up modestly as demand confidence improved, but capex intensity became a more explicit ceiling variable.',
+      'zh-TW': '隨著需求信心改善，fair value 小幅上修，但 capex 強度也更明確成為估值上限變數。',
+    },
+    monitorNext: [
+      {
+        en: 'Whether board-approved capex signals stronger customer demand visibility or merely higher intensity.',
+        'zh-TW': '董事會核准的 capex 究竟代表更高需求可見度，還是只是更高資本強度。',
+      },
+      {
+        en: 'Whether AI accelerators become a structurally larger revenue share.',
+        'zh-TW': 'AI 加速器是否成為結構性更高的營收占比。',
+      },
+    ],
+  },
+  'tsm-20260310-monthly-revenue': {
+    ...tsmHistoricalSummaries[2],
+    currentPriceImpliesBrief: {
+      en: 'The market was no longer skeptical about demand; the question shifted to how much multiple expansion remained.',
+      'zh-TW': '市場已不再懷疑需求，問題開始轉向倍數擴張還剩多少。',
+    },
+    currentPriceImplies: {
+      en: 'At $329, the market was underwriting something close to a healthy base case, leaving less room for simple rerating upside.',
+      'zh-TW':
+        '在 329 美元時，市場已經反映接近健康 base case 的結果，單靠重評帶來的上行空間明顯變少。',
+    },
+    changeSummary: {
+      en: 'Price moved faster than fair value. The debate shifted from “is demand real?” to “is too much good news already priced?”',
+      'zh-TW':
+        '價格上漲速度快於 fair value。討論焦點從「需求是否真實」轉成「好消息是否已被反映太多」。',
+    },
+    monitorNext: [
+      {
+        en: 'Whether gross-margin dilution lands near the low or high end of management guidance.',
+        'zh-TW': '毛利率稀釋最終落在管理層指引的低端還是高端。',
+      },
+      {
+        en: 'Whether the next revenue prints keep confirming the near-30% full-year frame.',
+        'zh-TW': '後續營收是否持續驗證接近全年 30% 的框架。',
+      },
+    ],
+  },
+  'tsm-20260316-full-review': {
+    ...tsmHistoricalSummaries[3],
     currentPriceImpliesBrief: {
       en: 'Market prices in something close to base, not stress.',
       'zh-TW': '市場反映的已經更接近 base，而不是 stress。',
@@ -150,6 +181,11 @@ const tsmHistoricalReports: HistoricalReport[] = [
       en: 'At $338.31, the stock already underwrites something closer to base than to stress: roughly $13 of ADR EPS, about $153B of revenue, and around a 44% net margin if investors hold the name near 26x forward earnings.',
       'zh-TW':
         '在 338.31 美元時，這檔股票其實已經反映了一個更接近 base 而不是 stress 的結果：如果市場給它大約 26 倍遠期本益比，代表隱含 ADR EPS 約 13 美元、營收約 1,530 億美元、淨利率約 44%。',
+    },
+    changeSummary: {
+      en: 'The thesis stayed intact, but valuation support narrowed. This revision is more about rerating exhaustion than business deterioration.',
+      'zh-TW':
+        '論點沒有壞，但估值支撐明顯收斂。這次變化更像是重評空間縮小，而不是基本面惡化。',
     },
     monitorNext: [
       {
@@ -161,16 +197,11 @@ const tsmHistoricalReports: HistoricalReport[] = [
         'zh-TW': '海外廠與 N2 稀釋最終落在管理層警示區間的低端還是高端。',
       },
     ],
-    changeSummary: {
-      en: 'The thesis stayed intact, but valuation support narrowed. This revision is more about rerating exhaustion than business deterioration.',
-      'zh-TW':
-        '論點沒有壞，但估值支撐明顯收斂。這次變化更像是重評空間縮小，而不是基本面惡化。',
-    },
-    latest: true,
   },
-]
+}
 
-const adbeHistoricalReports: HistoricalReport[] = [
+// ADBE uses plain string fields (not Record<Locale, string>) — localeHasFallback: true
+const adbeHistoricalSummaries: HistoricalReportSummary[] = [
   {
     reportId: 'adbe-20260314-initial',
     publishedAtMs: Date.UTC(2026, 2, 14),
@@ -183,22 +214,32 @@ const adbeHistoricalReports: HistoricalReport[] = [
     baseFairValue: 620,
     bullFairValue: 690,
     summary: 'Valuation support and favorable technical setup align, while the core thesis remains intact.',
+    localeHasFallback: computeLocaleHasFallback([
+      'Valuation support and favorable technical setup align, while the core thesis remains intact.',
+    ]),
+    latest: true,
+  },
+]
+
+const adbeHistoricalDetails: Record<string, HistoricalReportDetail> = {
+  'adbe-20260314-initial': {
+    ...adbeHistoricalSummaries[0],
     currentPriceImpliesBrief:
       'Market prices Adobe like a slower software asset with muted AI monetization.',
     currentPriceImplies:
       'At $482.1, the market appears to be underwriting structurally lower growth and limited AI monetization, leaving room for re-rating if execution stays clean.',
+    changeSummary:
+      'Initial baseline. This mockup intentionally keeps Adobe as the single-revision case.',
     monitorNext: [
       'Net new ARR momentum',
       'AI feature monetization uptake',
       'Free cash flow durability',
     ],
-    changeSummary:
-      'Initial baseline. This mockup intentionally keeps Adobe as the single-revision case.',
-    latest: true,
   },
-]
+}
 
-const sofiHistoricalReports: HistoricalReport[] = []
+const sofiHistoricalSummaries: HistoricalReportSummary[] = []
+const sofiHistoricalDetails: Record<string, HistoricalReportDetail> = {}
 
 export const mockStocks: StockDetail[] = [
   {
@@ -625,7 +666,8 @@ export const mockStocks: StockDetail[] = [
         '2026-03-16：在把價格更新為 338.31 美元、base fair value 更新為 375 美元後，valuation status 從 cheap 調整為 fair。',
       },
     ],
-    historicalReports: tsmHistoricalReports,
+    historicalReports: tsmHistoricalSummaries,
+    historicalReportDetails: tsmHistoricalDetails,
   },
   {
     id: 'adbe',
@@ -722,7 +764,8 @@ export const mockStocks: StockDetail[] = [
     ],
     sourcesUsed: ['Latest earnings release', 'Recent earnings call transcript'],
     history: ['2026-03-14: Action state upgraded to strong accumulation.'],
-    historicalReports: adbeHistoricalReports,
+    historicalReports: adbeHistoricalSummaries,
+    historicalReportDetails: adbeHistoricalDetails,
   },
   {
     id: 'avgo',
@@ -1943,7 +1986,8 @@ export const mockStocks: StockDetail[] = [
     history: [
       '2026-03-18: Initial DeepValue Lab analysis at $17.37 (post-Muddy Waters short report). Verdict: fair with binary pending. Thesis: watch.',
     ],
-    historicalReports: sofiHistoricalReports,
+    historicalReports: sofiHistoricalSummaries,
+    historicalReportDetails: sofiHistoricalDetails,
   },
 ]
 

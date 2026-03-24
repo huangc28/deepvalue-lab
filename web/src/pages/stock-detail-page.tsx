@@ -60,6 +60,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
 
   const nearestScenario = getNearestScenario(stock)
   const historicalReports = stock.historicalReports ?? mockStock?.historicalReports
+  const historicalReportDetails = stock.historicalReportDetails ?? mockStock?.historicalReportDetails
   const historyItems = stock.history ?? mockStock?.history ?? []
 
   return (
@@ -360,6 +361,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
         >
           <HistoricalRevisionLedger
             reports={historicalReports}
+            reportDetails={historicalReportDetails}
             legacyItems={historyItems}
           />
         </ResearchSection>

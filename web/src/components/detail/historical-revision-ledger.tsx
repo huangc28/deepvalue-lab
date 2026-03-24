@@ -3,14 +3,19 @@ import { useState } from 'react'
 import { AccentBadge, TechnicalBadge, ThesisBadge, ValuationBadge } from '../ui/status-badge'
 import { cx } from '../../lib/cx'
 import { useI18n } from '../../i18n/context'
-import type { HistoricalReport } from '../../types/stocks'
+import type {
+  HistoricalReportDetail,
+  HistoricalReportSummary,
+} from '../../types/stocks'
 import type { LocalizedText } from '../../i18n/types'
 
 export function HistoricalRevisionLedger({
   reports,
+  reportDetails,
   legacyItems,
 }: {
-  reports?: HistoricalReport[]
+  reports?: HistoricalReportSummary[]
+  reportDetails?: Record<string, HistoricalReportDetail>
   legacyItems: LocalizedText[]
 }) {
   const { locale, m, text } = useI18n()
@@ -35,6 +40,7 @@ export function HistoricalRevisionLedger({
   const selectedReport =
     sortedReports.find((report) => report.reportId === resolvedSelectedId) ??
     sortedReports[0]
+  const selectedDetail = reportDetails?.[selectedReport.reportId] ?? null
   const selectedIndex = sortedReports.findIndex(
     (report) => report.reportId === selectedReport.reportId,
   )
@@ -43,9 +49,7 @@ export function HistoricalRevisionLedger({
     compareId && sortedReports.some((r) => r.reportId === compareId) && compareId !== resolvedSelectedId
       ? compareId
       : null
-  const compareReport = resolvedCompareId
-    ? (sortedReports.find((r) => r.reportId === resolvedCompareId) ?? null)
-    : null
+  const compareDetail = resolvedCompareId ? (reportDetails?.[resolvedCompareId] ?? null) : null
 
   const inCompareMode = resolvedCompareId !== null
   const canCompare = sortedReports.length > 1
@@ -225,10 +229,10 @@ export function HistoricalRevisionLedger({
 
         {/* Right column: snapshot or compare panel */}
         <div className="space-y-4">
-          {inCompareMode && compareReport ? (
+          {inCompareMode && compareDetail && selectedDetail ? (
             <ComparePanel
-              baseReport={selectedReport}
-              compareReport={compareReport}
+              baseReport={selectedDetail}
+              compareReport={compareDetail}
               onExit={handleExitCompare}
             />
           ) : (
@@ -246,10 +250,12 @@ export function HistoricalRevisionLedger({
                 </p>
               </div>
 
-              <SelectedRevisionCard
-                report={selectedReport}
-                isOldestRevision={selectedIndex === sortedReports.length - 1}
-              />
+              {selectedDetail ? (
+                <SelectedRevisionCard
+                  report={selectedDetail}
+                  isOldestRevision={selectedIndex === sortedReports.length - 1}
+                />
+              ) : null}
             </>
           )}
         </div>
@@ -265,8 +271,8 @@ function ComparePanel({
   compareReport,
   onExit,
 }: {
-  baseReport: HistoricalReport
-  compareReport: HistoricalReport
+  baseReport: HistoricalReportDetail
+  compareReport: HistoricalReportDetail
   onExit: () => void
 }) {
   const { m } = useI18n()
@@ -314,7 +320,7 @@ function CompareRevisionCard({
   roleLabel,
   roleColor,
 }: {
-  report: HistoricalReport
+  report: HistoricalReportDetail
   roleLabel: string
   roleColor: string
 }) {
@@ -387,8 +393,8 @@ function CompareMetricDiff({
   base,
   compare,
 }: {
-  base: HistoricalReport
-  compare: HistoricalReport
+  base: HistoricalReportDetail
+  compare: HistoricalReportDetail
 }) {
   const { m } = useI18n()
 
@@ -468,7 +474,7 @@ function SelectedRevisionCard({
   report,
   isOldestRevision,
 }: {
-  report: HistoricalReport
+  report: HistoricalReportDetail
   isOldestRevision: boolean
 }) {
   const { m, text } = useI18n()
@@ -562,7 +568,7 @@ function RevisionTrend({
   selectedId,
   compareId,
 }: {
-  reports: HistoricalReport[]
+  reports: HistoricalReportSummary[]
   selectedId: string | null
   compareId: string | null
 }) {
