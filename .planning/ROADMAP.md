@@ -1,76 +1,81 @@
-# Roadmap: DeepValue Lab — Analysis Localization & Simplification
+# Roadmap: DeepValue Lab — Historical Analysis Reports
 
 ## Overview
 
-Two phases deliver zh-TW analysis output for Traditional Chinese readers. Phase 1 defines the contracts — what the skill must produce, how translation rules work, and how the archive naming convention changes. Phase 2 executes against those contracts: the analysis skill gains zh-TW report output and bilingual StockDetail JSON, and both are saved to the research archive.
+This milestone adds historical analysis report review to the stock detail page. Delivery is intentionally staged: first build a frontend-only revision ledger mockup, stop for visual review, then continue with data-contract, backend read-model, and frontend API integration phases after the user approves the direction.
 
 ## Phases
 
 **Phase Numbering:**
-- Integer phases (1, 2, 3): Planned milestone work
-- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
+- Integer phases continue from the previous milestone
+- This milestone starts at Phase 4
+- Decimal phases remain reserved for urgent insertions
 
-Decimal phases appear between their surrounding integers in numeric order.
-
-- [x] **Phase 1: Contracts** - Define skill output contract, translation rules, and SOP update (completed 2026-03-20)
-- [x] **Phase 2: Skill Output** - Produce zh-TW reports and bilingual StockDetail JSON with archive persistence (completed 2026-03-20)
-- [x] **Phase 3: Add zh-TW StockDetail JSON support to backend API** - Accept, persist, and serve zh-TW StockDetail JSON from the backend API (completed 2026-03-20)
+- [ ] **Phase 4: Historical Revision Ledger Mockup** - Build a frontend-only historical revision ledger mockup inside the stock detail page using local mock data
+- [ ] **Phase 5: Interaction Contract And Frontend History Data Model** - Lock the post-review interaction contract and move the frontend history UI onto structured summary/detail types
+- [ ] **Phase 6: Historical Report Read Model And Backend APIs** - Add persisted historical summary data plus historical detail read APIs
+- [ ] **Phase 7: Frontend API Integration For Historical Reports** - Connect the revision ledger and compare flows to live APIs without regressing the current stock detail path
 
 ## Phase Details
 
-### Phase 1: Contracts
-**Goal**: The skill's output contract, translation rules, and execution SOP fully specify zh-TW requirements before any implementation begins
-**Depends on**: Nothing (first phase)
-**Requirements**: DOC-01, DOC-02, DOC-03
+### Phase 4: Historical Revision Ledger Mockup
+**Goal**: The stock detail page renders a visual-first historical revision ledger mockup that can be manually reviewed and adjusted before any backend contract work continues
+**Depends on**: Phase 3
+**Requirements**: HIST-01, HIST-02, HIST-03, HIST-04, HIST-05
 **Success Criteria** (what must be TRUE):
-  1. SKILL.md states that every analysis run must produce a zh-TW markdown report alongside the English one, with archive naming convention `-zh-TW.md`
-  2. Report contract specifies zh-TW translation rules: plain-language leads, acronyms explained on first use, financial jargon retained
-  3. Agent execution SOP contains an explicit translation step that appears in the workflow sequence
-**Plans**: 2 plans
-
-Plans:
-- [ ] 01-01-PLAN.md — Update SKILL.md with zh-TW output requirements and archive naming convention (DOC-01), and add zh-TW translation rules section to report contract (DOC-02)
-- [ ] 01-02-PLAN.md — Insert zh-TW translation step into agent execution SOP workflow sequence (DOC-03)
-
-### Phase 2: Skill Output
-**Goal**: Running the analysis skill on any ticker produces a zh-TW markdown report and a bilingual StockDetail JSON, both saved correctly to the research archive
-**Depends on**: Phase 1
-**Requirements**: SKILL-01, SKILL-02, SKILL-03, SKILL-04, ARCH-01, ARCH-02
-**Success Criteria** (what must be TRUE):
-  1. Running the analysis skill on a ticker produces two markdown files in the archive: `<TICKER>-analysis.md` and `<TICKER>-analysis-zh-TW.md`
-  2. The zh-TW report follows the same 15-section structure as the English report with no missing sections
-  3. zh-TW report uses plain-language leads before technical detail and explains acronyms on first use, while retaining financial jargon
-  4. StockDetail JSON contains `LocalizedText` objects (`{ en, zh-TW }`) for all user-facing display fields (summary, thesis, scenarios)
-  5. Archive JSON file contains bilingual LocalizedText fields matching the live StockDetail structure
+  1. The stock detail page replaces the old text-only history block with a revision ledger mockup rendered from local mock data
+  2. The mockup explicitly handles no-history, single-revision, and many-revision states
+  3. Latest revision is shown first, auto-selected, and visually marked as latest
+  4. Compare mode supports exactly two revisions and can be entered, exited, and partially cleared without losing the base selection
+  5. The mockup is usable on desktop and mobile, and keyboard interaction works for selection and compare flow
 **Plans**: 1 plan
 
 Plans:
-- [x] 02-01-PLAN.md — Update SKILL.md to mandate bilingual LocalizedText for all StockDetail fields, remove English-only default, and document bilingual publish payload (SKILL-01, SKILL-02, SKILL-03, SKILL-04, ARCH-01, ARCH-02)
+- [ ] 04-01-PLAN.md — Seed structured historical mock data, replace the stock detail History block with a revision ledger mockup, and add compare/trend states for manual UI review
 
-### Phase 3: Add zh-TW StockDetail JSON support to backend API
-**Goal**: The backend API accepts optional zh-TW StockDetail JSON on publish, stores zh-TW summary/detail metadata, and serves locale-aware zh-TW detail/summary responses with EN fallback
-**Depends on**: Phase 2
-**Requirements**: API-01, PH3-STORAGE, PH3-PUBLISH, PH3-DETAIL, PH3-LIST, PH3-BACKCOMPAT
+### Phase 5: Interaction Contract And Frontend History Data Model
+**Goal**: The frontend history experience uses a stable interaction contract and structured history types, ready for API integration after the Phase 4 review
+**Depends on**: Phase 4
+**Requirements**: FEH-01, FEH-02
 **Success Criteria** (what must be TRUE):
-  1. `POST /v1/stocks/{ticker}/reports` accepts optional `stockDetailZhTW` without breaking EN-only callers
-  2. `published_stock_details` stores `r2_detail_zh_tw_key` and `summary_json_zh_tw` with safe defaults for existing rows
-  3. zh-TW detail artifacts are stored in R2 with `.zh-TW.json` suffix
-  4. `GET /v1/stocks/{ticker}?locale=zh-TW` prefers zh-TW detail, then zh-TW summary, then EN fallback
-  5. `GET /v1/stocks?locale=zh-TW` returns zh-TW summaries per row where available and EN summaries otherwise
-  6. `cd be && go test ./...` passes with automated publish/detail/list handler coverage
-**Plans**: 2 plans
+  1. Frontend history uses explicit summary/detail types rather than a temporary mock-only shape
+  2. `publishedAtMs` is the canonical historical timestamp used for sorting and display
+  3. Locale fallback is surfaced clearly in both selected-revision and compare states
+  4. The compare flow and delta-summary rules are fixed and no longer depend on mockup-only assumptions
+**Plans**: 0 plans yet — start only after Phase 4 review
 
-Plans:
-- [x] 03-01-PLAN.md — Add zh-TW persistence columns, regenerate sqlc, and extend the publish path for optional zh-TW StockDetail JSON
-- [x] 03-02-PLAN.md — Add locale-aware zh-TW detail/list responses with EN fallback and automated handler tests
+### Phase 6: Historical Report Read Model And Backend APIs
+**Goal**: Historical report data can be read efficiently through stable summary and detail APIs without relying on per-request fan-out across all report artifacts
+**Depends on**: Phase 5
+**Requirements**: APIH-01, APIH-02, APIH-03
+**Success Criteria** (what must be TRUE):
+  1. Historical per-report summary data is persisted for revision-list reads
+  2. `GET /v1/stocks/{ticker}/reports` returns all required summary fields in descending `publishedAtMs` order
+  3. `GET /v1/stocks/{ticker}/reports/{reportId}` returns locale-aware structured historical detail for a single revision
+  4. Historical list reads do not require request-time fan-out across all detail artifacts
+**Plans**: 0 plans yet — start only after Phase 4 review
+
+### Phase 7: Frontend API Integration For Historical Reports
+**Goal**: The stock detail page consumes live historical report APIs for revision list, selected snapshot, and compare mode while preserving the current latest detail experience
+**Depends on**: Phase 6
+**Requirements**: INTH-01, INTH-02
+**Success Criteria** (what must be TRUE):
+  1. The revision ledger renders from live API data instead of local mock data
+  2. Compare mode loads two historical detail payloads reliably
+  3. Mixed-locale fallback behavior is clearly labeled and usable
+  4. Current stock detail latest path does not regress
+**Plans**: 0 plans yet — start only after Phase 4 review
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3
+Phases execute in numeric order: 4 → 5 → 6 → 7
+
+**Execution strategy note:** Stop after Phase 4 execution and wait for manual UI review before planning or executing later phases.
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Contracts | 2/2 | Complete   | 2026-03-20 |
-| 2. Skill Output | 1/1 | Complete | 2026-03-20 |
-| 3. Backend zh-TW StockDetail API | 2/2 | Complete | 2026-03-20 |
+| 4. Historical Revision Ledger Mockup | 0/1 | Ready to execute | — |
+| 5. Interaction Contract And Frontend History Data Model | 0/0 | Planned | — |
+| 6. Historical Report Read Model And Backend APIs | 0/0 | Planned | — |
+| 7. Frontend API Integration For Historical Reports | 0/0 | Planned | — |

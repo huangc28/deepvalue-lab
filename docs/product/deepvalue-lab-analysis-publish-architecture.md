@@ -98,17 +98,17 @@ Locale behavior:
 - default behavior returns the published English detail payload
 - `?locale=zh-TW` fallback order is:
   1. published zh-TW detail artifact
-  2. published zh-TW summary JSON
-  3. published English detail artifact
-  4. published English summary JSON
+  2. published English detail artifact
+  3. `404` when no detail artifact exists
 
 Important note:
 
 - the backend read path now supports separate locale-specific zh-TW detail storage
-- older docs that describe a single embedded bilingual payload are stale relative to current backend behavior
+- the backend detail read path does not fall back to summary JSON
+- older docs that describe summary fallback or a single embedded bilingual payload are stale relative to current backend behavior
 
 Response `200`: full `StockDetail` JSON object
-Response `404`: `{ "error": "not found" }`
+Response `404`: `{ "error": "not found" }` or `{ "error": "stock detail not found" }` depending on the failure point
 
 ### `GET /v1/stocks/:ticker/reports`
 

@@ -63,9 +63,8 @@ Current backend behavior is locale-aware:
 - `GET /v1/stocks?locale=zh-TW` returns zh-TW summaries when available, otherwise English summaries.
 - `GET /v1/stocks/{ticker}?locale=zh-TW` currently uses fallback order:
   1. zh-TW detail artifact
-  2. zh-TW summary JSON
-  3. English detail artifact
-  4. English summary JSON
+  2. English detail artifact
+  3. not found when no detail artifact exists
 - Locale opt-in is exact query value `locale=zh-TW`.
 
 ### Frontend
@@ -111,18 +110,18 @@ Detail-page integration is feasible, but there is one important backend contract
 
 ### Primary Risk
 
-The current backend detail fallback can return a summary-shaped payload for the detail endpoint.
+The earlier product proposal assumed the backend detail fallback might return a summary-shaped payload for the detail endpoint.
 
-Specifically:
-- `GET /v1/stocks/{ticker}?locale=zh-TW` may return `summary_json_zh_tw` when `r2_detail_zh_tw_key` is absent
-- `summary_json_zh_tw` is not a full `StockDetail`
-- the current detail page assumes a complete `StockDetail`
+Current code no longer does that:
+- `GET /v1/stocks/{ticker}` returns only detail JSON on success
+- missing detail artifacts return `404` rather than summary fallback
+- the detail page can rely on a full `StockDetail` contract from this endpoint
 
 Impact:
-- dashboard/list view is safe because it expects summaries
-- detail page is at risk of runtime breakage if the backend returns summary-only JSON for a detail request
+- dashboard/list view remains safe because it expects summaries
+- detail page behavior is simpler because the endpoint contract is unambiguous
 
-This is the main issue that must be addressed before calling the full detail integration production-safe.
+The remaining integration risk is normal missing-data handling, not summary-vs-detail shape ambiguity.
 
 ## Recommendation
 
@@ -130,7 +129,7 @@ Use a two-part rollout.
 
 ### Recommendation A: Preferred Contract
 
-Adjust the backend detail endpoint so that `GET /v1/stocks/{ticker}` always returns a full `StockDetail` shape.
+Keep the backend detail endpoint contract as `GET /v1/stocks/{ticker}` returning a full `StockDetail` shape.
 
 Recommended fallback order for detail reads:
 - zh-TW detail
@@ -145,24 +144,23 @@ Why this is preferred:
 - easier runtime validation
 - avoids mixed assumptions between list and detail endpoints
 
-### Recommendation B: Frontend Fallback If Backend Contract Stays As-Is
+### Recommendation B: Frontend Missing-Detail Handling
 
-If backend behavior is intentionally kept as-is, the frontend must harden its detail fetch path:
+The frontend should still harden the detail fetch path for absent artifacts:
 
 - request locale-specific detail
-- validate whether the payload is a complete renderable `StockDetail`
-- if the zh-TW payload is summary-only or incomplete, fetch English detail immediately
-- only show a controlled error state if English detail is also unavailable or invalid
+- treat `404` as "detail unavailable" rather than attempting summary fallback
+- show a controlled empty or error state if no detail artifact exists
 
-This path is feasible, but it makes the frontend responsible for repairing an ambiguous backend contract.
+This keeps the frontend aligned with the backend's explicit contract.
 
 Recommendation:
-- use Recommendation A if backend changes are acceptable
-- only use Recommendation B as a temporary compatibility bridge
+- use Recommendation A as the steady-state contract
+- use Recommendation B only for UX around not-found handling
 
 Decision:
-- adopt Recommendation A as the target contract
-- Recommendation B remains an optional temporary bridge only if sequencing requires it
+- Recommendation A is the current backend contract
+- Recommendation B is a frontend UX concern, not a contract repair path
 
 ## Proposed Product Behavior
 
@@ -378,7 +376,7 @@ Phase 1 acceptance checklist:
 
 Scope:
 - implement the approved backend detail-route fallback contract
-- remove summary-payload fallback from the detail endpoint
+- keep the detail endpoint detail-only, with no summary fallback
 
 Success criteria:
 - detail route always produces a full renderable `StockDetail`
@@ -389,7 +387,6 @@ Risk:
 
 Backend requirement:
 - `GET /v1/stocks/{ticker}` must guarantee a full `StockDetail` response shape
-- remove summary-payload fallback from the detail endpoint
 - preferred fallback order becomes:
   1. zh-TW detail
   2. English detail

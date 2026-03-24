@@ -1,70 +1,72 @@
-# Requirements: DeepValue Lab — Analysis Localization & Simplification
+# Requirements: DeepValue Lab — Historical Analysis Reports
 
-**Defined:** 2026-03-20
-**Core Value:** Every stock analysis produces a zh-TW report and bilingual StockDetail JSON so the platform can serve Traditional Chinese readers.
+**Defined:** 2026-03-21
+**Core Value:** A stock detail page should show not only the latest judgment, but how that judgment changed over time and why.
 
-## v1 Requirements
+## v1.1 Requirements
 
-### Skill Output
+### Historical Review UX
 
-- [ ] **SKILL-01**: Analysis skill produces a separate zh-TW markdown report following the same 15-section structure as the English report
-- [ ] **SKILL-02**: zh-TW report uses lightly simplified language — clearer sentences, acronyms explained on first use, plain-language leads before technical detail
-- [ ] **SKILL-03**: Unavoidable financial jargon remains in zh-TW report (jargon education is a separate future feature)
-- [ ] **SKILL-04**: StockDetail JSON uses `LocalizedText` (`{ en, 'zh-TW' }`) for all user-facing display fields
+- [ ] **HIST-01**: User can browse a latest-first historical revision ledger within the stock detail page
+- [ ] **HIST-02**: User lands on the latest historical revision by default and can inspect a selected revision snapshot
+- [ ] **HIST-03**: User can compare exactly two historical revisions side by side
+- [ ] **HIST-04**: The history UI handles no-history, single-revision, and many-revision states explicitly
+- [ ] **HIST-05**: The revision ledger supports visible focus states, keyboard navigation, and clear selected/latest/compare-selected markers
 
-### Archive & Persistence
+### Frontend Data Contract
 
-- [ ] **ARCH-01**: zh-TW report saved to research archive as `<TICKER>-analysis-zh-TW.md` alongside the English version
-- [ ] **ARCH-02**: StockDetail JSON in archive contains bilingual `LocalizedText` fields
+- [ ] **FEH-01**: Frontend history surfaces use structured historical summary/detail types with canonical `publishedAtMs`
+- [ ] **FEH-02**: Frontend labels locale fallback explicitly in single-revision and compare views
 
-### Documentation
+### Historical Report API
 
-- [x] **DOC-01**: SKILL.md updated with zh-TW output requirements and archive naming convention
-- [x] **DOC-02**: Report contract updated to specify zh-TW translation rules and simplification guidelines
-- [x] **DOC-03**: Agent execution SOP updated with translation step in the workflow
+- [ ] **APIH-01**: Backend persists historical per-report summary data for performant revision list reads
+- [ ] **APIH-02**: `GET /v1/stocks/{ticker}/reports` returns summary fields sorted by `publishedAtMs` descending
+- [ ] **APIH-03**: `GET /v1/stocks/{ticker}/reports/{reportId}` returns locale-aware structured historical detail for a single revision
 
-## v2 Requirements
+### Frontend Integration
 
-### Backend API
+- [ ] **INTH-01**: Frontend revision ledger consumes live historical report APIs without regressing the current latest stock detail experience
+- [ ] **INTH-02**: Live revision ledger handles mixed-locale compare and explicit fallback labels correctly
 
-- **API-01**: Publish endpoint accepts and stores bilingual StockDetail JSON
-- **API-02**: Publish endpoint accepts both EN and zh-TW markdown reports
-- **API-03**: API serves locale-specific report content to frontend
+## v1.2+ Requirements
 
-### Frontend
+### Original Report Access
 
-- **FE-01**: Frontend renders zh-TW reports based on user locale
-- **FE-02**: Frontend displays bilingual StockDetail fields in user's locale
+- **RPT-01**: User can open the original markdown report for a historical revision
+- **RPT-02**: User can access original report artifacts without exposing storage-layout internals directly
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Frontend i18n / locale switching | Requires backend API changes first — separate phase |
-| Jargon glossary or tooltip | Planned as a separate feature |
-| Heavy report simplification | Light simplification chosen; audience includes finance-literate readers |
-| Changing analysis methodology | Out of scope — only output format changes |
-| Backend API modifications | Needs its own phase with proper API design |
+| Raw markdown viewer in this milestone | Deferred until revision ledger behavior is validated |
+| Cross-stock historical comparison | Not required for the first historical reports milestone |
+| 3+ way compare mode | Adds interaction complexity without first proving the two-way compare workflow |
+| Generic locale expansion beyond `zh-TW` | Existing locale scope is sufficient for this milestone |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SKILL-01 | Phase 2 | Pending |
-| SKILL-02 | Phase 2 | Pending |
-| SKILL-03 | Phase 2 | Pending |
-| SKILL-04 | Phase 2 | Pending |
-| ARCH-01 | Phase 2 | Pending |
-| ARCH-02 | Phase 2 | Pending |
-| DOC-01 | Phase 1 | Complete |
-| DOC-02 | Phase 1 | Complete |
-| DOC-03 | Phase 1 | Complete |
+| HIST-01 | Phase 4 | Pending |
+| HIST-02 | Phase 4 | Pending |
+| HIST-03 | Phase 4 | Pending |
+| HIST-04 | Phase 4 | Pending |
+| HIST-05 | Phase 4 | Pending |
+| FEH-01 | Phase 5 | Pending |
+| FEH-02 | Phase 5 | Pending |
+| APIH-01 | Phase 6 | Pending |
+| APIH-02 | Phase 6 | Pending |
+| APIH-03 | Phase 6 | Pending |
+| INTH-01 | Phase 7 | Pending |
+| INTH-02 | Phase 7 | Pending |
 
 **Coverage:**
-- v1 requirements: 9 total
-- Mapped to phases: 9
+- v1.1 requirements: 12 total
+- Mapped to phases: 12
 - Unmapped: 0 ✓
 
 ---
-*Requirements defined: 2026-03-20*
-*Last updated: 2026-03-20 after roadmap creation*
+*Requirements defined: 2026-03-21*
+*Last updated: 2026-03-21 after milestone v1.1 definition*

@@ -1,0 +1,198 @@
+{
+  "id": "amat",
+  "ticker": "AMAT",
+  "companyName": "Applied Materials, Inc.",
+  "businessType": "High-quality semiconductor capital equipment compounder with cyclical exposure",
+  "currentPrice": 361.79,
+  "valuationStatus": "rich",
+  "newsImpactStatus": "improving",
+  "thesisStatus": "intact",
+  "technicalEntryStatus": "stretched",
+  "actionState": "trim zone",
+  "dashboardBucket": "at-risk",
+  "baseFairValue": 303,
+  "bearFairValue": 239,
+  "bullFairValue": 398,
+  "discountToBase": 19.4,
+  "summary": "Applied Materials remains a high-quality semicap franchise, but at $361.79 the stock already prices something close to a bull-path FY2026. The thesis is intact; the margin of safety is not.",
+  "lastUpdated": "2026-03-24",
+  "thesisStatement": "Applied Materials is a high-quality semiconductor capital equipment franchise with real AI/HBM, advanced-packaging, and service-floor support, but the stock now requires near-bull execution to justify the price.",
+  "thesisBullets": [
+    "AI-related leading-edge logic, HBM/DRAM, and advanced packaging are pushing customers toward the exact process steps where Applied is a leader.",
+    "AGS produced record services and spares revenue in Q1 FY2026, giving the model more resilience than a pure tools story.",
+    "The balance sheet remains net-cash, so the real underwriting question is not solvency but whether investors are overpaying for the AI cycle.",
+    "The investor is really betting that AI-driven semiconductor equipment demand can stay strong long enough for Applied to hold a premium multiple well above classic semicap averages."
+  ],
+  "variantPerception": "The market is right to award Applied a quality premium, but it may be paying a compounder multiple for a cyclical tools business whose re-rating can reverse quickly if capex timing softens.",
+  "valuationLens": {
+    "primary": "Forward non-GAAP P/E",
+    "crossCheck": "EV / EBIT",
+    "rationale": "Forward non-GAAP P/E is the cleanest primary lens because FY2026 GAAP results are distorted by the BIS settlement and acquisition-related items, while EV / EBIT remains the right cross-check for a capital-equipment business with cyclicality and capital-intensity constraints."
+  },
+  "currentValuationSnapshot": {
+    "marketCap": "~$255.3B",
+    "enterpriseValue": "~$248B after netting cash and investments against debt",
+    "multiples": [
+      "~41.8x trailing GAAP P/E on FY2025 diluted EPS of $8.66",
+      "~33.4x base-case FY2026 non-GAAP EPS of $10.83",
+      "~26.8x base-case forward EV / EBIT"
+    ],
+    "balanceSheetNote": "Balance sheet is still net-cash: $13.5B cash and investments versus $6.6B debt at 2026-01-25."
+  },
+  "newsToModel": [
+    {
+      "event": "Q1 FY2026 revenue was $7.01B with non-GAAP EPS of $2.38, and Q2 guide is $7.65B +/- $500M with non-GAAP EPS of $2.64 +/- $0.20.",
+      "modelVariableChanged": "FY2026 revenue and EPS",
+      "impact": "Raises confidence that FY2026 will re-accelerate from FY2025's 4% revenue growth and supports a double-digit top-line base case.",
+      "affectedScenario": "Base and Bull"
+    },
+    {
+      "event": "Management said semiconductor equipment revenue should grow more than 20% in calendar 2026, while Q1 delivered record DRAM revenue and record AGS services and spares revenue.",
+      "modelVariableChanged": "Segment mix, margin durability, and bull-case probability",
+      "impact": "Stronger DRAM/HBM and services mix increase confidence that gross margin can hold near 49% even if foundry/logic is uneven.",
+      "affectedScenario": "Base and Bull"
+    },
+    {
+      "event": "Applied settled the BIS export-controls matter for $252.5M; DOJ and SEC inquiries were closed with no enforcement action.",
+      "modelVariableChanged": "GAAP earnings, cash outflow, regulatory overhang, and multiple support",
+      "impact": "The one-time charge hurts FY2026 GAAP optics and cash deployment, but the closure of the broader overhang modestly improves the probability that the market keeps awarding a premium multiple.",
+      "affectedScenario": "Bear and Base"
+    },
+    {
+      "event": "China still represented 30% of Q1 FY2026 revenue.",
+      "modelVariableChanged": "Downside risk and multiple cap",
+      "impact": "Even after the settlement, export controls and China shipment restrictions remain a real variable that should keep me from underwriting an open-ended re-rating.",
+      "affectedScenario": "Bear"
+    }
+  ],
+  "scenarios": [
+    {
+      "label": "Bear",
+      "keyMetrics": {
+        "revenue": "$29.93B",
+        "eps": "$9.94",
+        "targetPE": "24x"
+      },
+      "operatingAssumption": "FY2026 revenue reaches about $29.93B, up 5.5% year over year, as AI/HBM demand stays healthy but foundry and logic spending remains patchy, China restrictions limit upside, and AGS cannot fully offset weaker systems mix. Non-GAAP EPS is about $9.94.",
+      "valuationAssumption": "24x forward non-GAAP P/E, which still gives Applied a quality premium to old-cycle semicap averages but assumes the market stops paying a near-compounder multiple.",
+      "fairValue": "$239 per share",
+      "whatMustBeTrue": "DRAM strength cools from Q1 record levels, leading-edge logic does not ramp fast enough to absorb the gap, China remains a ceiling rather than a tailwind, and investors decide the right lens is premium semicap, not AI infrastructure compounder."
+    },
+    {
+      "label": "Base",
+      "keyMetrics": {
+        "revenue": "$31.35B",
+        "eps": "$10.83",
+        "targetPE": "28x"
+      },
+      "operatingAssumption": "FY2026 revenue reaches about $31.35B, up 10.5% year over year, as Q2 guide proves real, DRAM/HBM and advanced packaging stay strong, AGS keeps growing, and share count keeps drifting lower through buybacks. Non-GAAP EPS is about $10.83.",
+      "valuationAssumption": "28x forward non-GAAP P/E. This is above a normal semicap cycle multiple because Applied has broad process exposure, services support, and AI-linked demand, but it is below the very richest AI-infrastructure valuations because cyclicality and export risk still matter.",
+      "fairValue": "$303 per share",
+      "whatMustBeTrue": "FY2026 growth lands in a low-double-digit range, AGS keeps cushioning the cycle, DRAM/HBM spending does not crack, and the stock keeps at least some premium multiple support without requiring a full bull-market re-rating."
+    },
+    {
+      "label": "Bull",
+      "keyMetrics": {
+        "revenue": "$32.62B",
+        "eps": "$11.72",
+        "targetPE": "34x"
+      },
+      "operatingAssumption": "FY2026 revenue reaches about $32.62B, up 15.0% year over year, as leading-edge logic, HBM/DRAM, and advanced packaging all stay exceptionally strong, AGS maintains record-like growth, and operating leverage plus buybacks drive non-GAAP EPS to about $11.72.",
+      "valuationAssumption": "34x forward non-GAAP P/E, reflecting a market view that AMAT deserves to be priced closer to AI infrastructure enablers than to traditional semicap peers.",
+      "fairValue": "$398 per share",
+      "whatMustBeTrue": "Customers keep pushing capital into leading-edge nodes and packaging with little digestion, China exposure does not deteriorate further, and investors stay willing to pay a near-peak multiple for a tools business."
+    }
+  ],
+  "currentPriceImplies": "At $361.79, the market is already underwriting something close to a bull-leaning path. If investors only pay 32x forward earnings, the stock needs roughly $11.31 of FY2026 EPS, which maps to roughly $32.7B of revenue at a 27.5% net margin - about 15.4% growth over FY2025. If the multiple falls to 30x, the market would need roughly $12.06 of EPS, which maps to roughly $34.9B of revenue - about 23.1% growth. In other words, today's price does not merely assume that AI and DRAM stay good; it assumes either sustained near-bull operating execution or that the market will keep awarding AMAT a premium multiple that already looks full for semicap.",
+  "currentPriceImpliesBrief": "Market already prices a bull-leaning FY2026 path: either ~15% revenue growth at ~32x earnings or >20% growth at ~30x.",
+  "currentPriceImpliedFacts": [
+    {
+      "label": "Implied EPS @ 32x",
+      "value": "~$11.31"
+    },
+    {
+      "label": "Implied Revenue @ 32x",
+      "value": "~$32.7B (+15.4% YoY)"
+    },
+    {
+      "label": "Implied EPS @ 30x",
+      "value": "~$12.06"
+    },
+    {
+      "label": "Implied Revenue @ 30x",
+      "value": "~$34.9B (+23.1% YoY)"
+    }
+  ],
+  "provisionalConclusion": "AMAT looks rich, not broken. The business is attractive, but the current price is already discounting something close to my upside path, leaving little room for ordinary semicap volatility.",
+  "technicalCommentary": "Technical entry looks stretched. RSI (22) is about 56.7 and just above its 12-day EMA around 55.4, while price sits about 6.0% above the 50-day average and 49.0% above the 200-day average. That is not a clean momentum blow-off, but it is far from a washed-out accumulation zone. Since valuation is already rich, the chart does not improve the risk-reward for a fresh entry.",
+  "technicalSignals": [
+    {
+      "label": "RSI (22)",
+      "value": "56.7"
+    },
+    {
+      "label": "RSI EMA (12)",
+      "value": "55.4"
+    },
+    {
+      "label": "50-day average",
+      "value": "~$341.45 (+6.0%)"
+    },
+    {
+      "label": "200-day average",
+      "value": "~$242.79 (+49.0%, z-score ~1.8)"
+    },
+    {
+      "label": "3-month support / resistance",
+      "value": "~$255.96 / ~$395.95"
+    }
+  ],
+  "risks": [
+    "AI/HBM spending cools faster than the market expects, causing both EPS and the multiple to compress.",
+    "China export restrictions or compliance issues cap shipments and keep the valuation multiple from expanding.",
+    "Foundry and logic customers delay projects, leaving DRAM and packaging too narrow a support base for the current valuation.",
+    "The market re-rates semicap multiples lower even if Applied continues to execute operationally."
+  ],
+  "catalysts": [
+    "Q2 and Q3 FY2026 revenue and non-GAAP EPS landing at or above the top half of guidance.",
+    "Continued record DRAM/HBM and advanced-packaging demand, especially if management keeps pointing to 20%+ semiconductor equipment growth.",
+    "Further proof that AGS can compound with better mix and margins, strengthening the floor beneath the tools cycle.",
+    "Clean execution after the BIS settlement, with no renewed U.S. enforcement escalation."
+  ],
+  "monitorNext": [
+    "Whether Q2 FY2026 revenue and non-GAAP EPS land near the midpoint or high end of guidance, because that will show whether the Q1 optimism is translating into a sustained FY2026 run-rate.",
+    "Whether management continues to frame calendar 2026 semiconductor equipment growth above 20%, especially if foundry and logic improve rather than leaving DRAM/HBM to do all the work.",
+    "Whether AGS can sustain record services and spares revenue with margins around the high-20s, because that is the best support for premium multiple durability.",
+    "Whether China remains around 30% of revenue or becomes a larger drag through export controls, shipment limits, or compliance friction.",
+    "Whether DRAM/HBM and advanced-packaging demand stays broad and durable rather than peaking into a narrower capex burst."
+  ],
+  "sourcesUsed": [
+    {
+      "label": "Applied Materials FY2025 Form 10-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/6951/000162828025056742/amat-20251026.htm"
+    },
+    {
+      "label": "Applied Materials Q1 FY2026 Form 10-Q",
+      "url": "https://www.sec.gov/Archives/edgar/data/6951/000162828026009694/amat-20260125.htm"
+    },
+    {
+      "label": "Applied Materials Q1 FY2026 earnings release, Exhibit 99.1",
+      "url": "https://www.sec.gov/Archives/edgar/data/6951/000162828026007661/exhibit991q12026earningsre.htm"
+    },
+    {
+      "label": "Applied Materials 8-K on BIS settlement and export controls inquiry closure",
+      "url": "https://www.sec.gov/Archives/edgar/data/6951/000162828026007444/amat-20260211.htm"
+    },
+    {
+      "label": "Yahoo Finance chart API for AMAT daily closes",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/AMAT?range=1y&interval=1d&includePrePost=false"
+    },
+    {
+      "label": "Stooq AMAT daily history",
+      "url": "https://stooq.com/q/d/l/?s=amat.us&i=d"
+    }
+  ],
+  "history": [
+    "2026-03-24 @ $361.79 - Thesis: intact. Valuation rich versus base $303 and bull $398. Technicals: stretched. Action: trim zone."
+  ]
+}

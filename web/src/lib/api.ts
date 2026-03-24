@@ -29,11 +29,21 @@ function buildStocksUrl(locale: Locale) {
   return `${API_URL}/v1/stocks`
 }
 
+function buildStockDetailUrl(ticker: string, locale: Locale) {
+  const encodedTicker = encodeURIComponent(ticker)
+
+  if (locale === 'zh-TW') {
+    return `${API_URL}/v1/stocks/${encodedTicker}?locale=zh-TW`
+  }
+
+  return `${API_URL}/v1/stocks/${encodedTicker}`
+}
+
 export async function fetchStocks(locale: Locale): Promise<StockSummary[]> {
   const data = await fetchJson<{ stocks: StockSummary[] }>(buildStocksUrl(locale))
   return data.stocks
 }
 
-export async function fetchStock(ticker: string): Promise<StockDetail> {
-  return fetchJson<StockDetail>(`${API_URL}/v1/stocks/${encodeURIComponent(ticker)}`)
+export async function fetchStock(ticker: string, locale: Locale): Promise<StockDetail> {
+  return fetchJson<StockDetail>(buildStockDetailUrl(ticker, locale))
 }

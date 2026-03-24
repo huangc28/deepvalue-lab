@@ -1,0 +1,171 @@
+{
+  "id": "tmdx",
+  "ticker": "TMDX",
+  "companyName": "TransMedics Group, Inc.",
+  "businessType": "Capital-intensive hybrid growth platform: medical device + integrated organ logistics services",
+  "currentPrice": 113,
+  "valuationStatus": "fair",
+  "newsImpactStatus": "improving",
+  "thesisStatus": "intact",
+  "technicalEntryStatus": "neutral",
+  "actionState": "watch for confirmation",
+  "dashboardBucket": "now-actionable",
+  "baseFairValue": 130,
+  "bearFairValue": 83,
+  "bullFairValue": 194,
+  "discountToBase": -13.1,
+  "summary": "At $113, TMDX trades in fair value territory (base $130), with the kidney program — the largest solid-organ transplant market — receiving zero credit in the current price; the 28% pullback from $156 is sentiment-driven, not fundamental, and a patient investor with a 12-18 month horizon has an asymmetric setup if the kidney protocol clears Q3 2026.",
+  "lastUpdated": "2026-03-22",
+
+  "thesisStatement": "TransMedics has built a proprietary platform that is fundamentally expanding the organ transplant market, not just competing within it — and at $113, the market is not fully pricing the kidney program as a new high-value growth vector.",
+  "thesisBullets": [
+    "FY2025 revenue reached $605.5M (+37% YoY) with 60% gross margin and 5,139 U.S. OCS cases (+38% YoY)",
+    "2026 guidance of $727M–$757M (+20-25%) represents strong absolute growth even as pace normalizes from FY2025's exceptional base",
+    "OCS Heart ENHANCE trial received full FDA IDE approval (February 2026) and OCS DENOVO Lung IDE received full FDA approval (January 2026) — de-risking the next-gen product roadmap",
+    "The kidney program is the underappreciated growth vector: kidney transplants represent ~50%+ of all solid organ transplants in the US — a market several times larger than heart and liver combined",
+    "European NOP expansion is underway (Italian program live), providing a replicable international playbook",
+    "22-aircraft fleet creates a logistical moat that most competitors cannot feasibly replicate on a short timeline",
+    "Balance sheet is near-neutral on net debt (~$466M cash vs. $456M convertible notes), providing adequate runway"
+  ],
+  "variantPerception": "The market is treating the FY2026 growth deceleration (37% → 20-25%) as a fundamental slowdown story. The variant view is that 20-25% at $742M scale is still exceptional, and the kidney program represents a market expansion that consensus models are not yet fully pricing. The dominant sell-side narrative after Q4 2025 earnings: growth is slowing, the FY2025 EPS figure was inflated by a one-time valuation allowance release (tax benefit), and the stock was expensive at $156. This narrative is directionally correct but misses two structural points: first, the kidney market is genuinely large — kidney transplants are the most common solid organ transplant globally, and if TMDX can replicate its OCS liver/heart success in kidney, it would be entering a market that dwarfs the existing business; second, the NOP model is becoming a durable oligopoly — building a national organ aviation network requires enormous capital, coordination, and regulatory relationships that a new competitor cannot credibly replicate in 2-3 years. The market appears to be valuing TMDX purely as a device company with decelerating growth. It is actually a platform company with a new, untapped market category (kidney) whose economics will become clearer over the next 12-18 months.",
+  "valuationLens": {
+    "primary": "Forward EV/Sales (2026E and 2027E scenarios)",
+    "crossCheck": "Normalized forward P/E (2026E, ~37–40x) — with caveat that the FY2025 GAAP EPS is inflated by a large tax benefit and is not a reliable baseline",
+    "rationale": "TMDX is a high-growth hybrid that has not yet reached normalized profitability. EV/Sales is the most appropriate primary lens because it avoids distortion from the one-time FY2025 tax benefit and reflects the revenue trajectory that determines long-term economics. The normalized forward P/E cross-check (~37–40x on ~$2.83–$3.06 normalized EPS) confirms the stock is not cheap by traditional standards but is reasonable for a high-growth medical platform with a major new market catalyst pending. FCF yield is not used as a cross-check because aviation fleet capex distorts FCF significantly and would misrepresent the underlying cash economics."
+  },
+  "currentValuationSnapshot": {
+    "marketCap": "~$3.88B at $113 per share (34.3M diluted shares)",
+    "enterpriseValue": "~$3.87B (near net-debt neutral: ~$466M cash vs. ~$456M convertible notes due 2028)",
+    "multiples": [
+      "EV/2025 Sales ($605.5M): ~6.4x",
+      "EV/2026E Sales (~$742M midpoint): ~5.2x",
+      "Normalized forward P/E (2026E): ~37–40x (FY2025 GAAP EPS not usable due to tax benefit; normalized EPS ~$2.83–$3.06 at ~25% effective rate)"
+    ],
+    "balanceSheetNote": "~$466M cash vs. $456M convertible notes (1.5%, due 2028). Near net debt neutral. 52-week range: $62.23–$156.00; stock has pulled back ~28% from 52-week high."
+  },
+  "newsToModel": [
+    {
+      "event": "FDA Full IDE Approval for OCS ENHANCE Heart Trial (February 2026) — randomized, blinded study of Gen 2 OCS Heart vs. cold static storage",
+      "modelVariableChanged": "Valuation multiple / scenario probability",
+      "impact": "De-risks the next-gen product roadmap. A successful ENHANCE trial would support pricing power for the Gen 2 platform and extend TMDX's clinical differentiation. Positive for base and bull scenario multiple assumptions.",
+      "affectedScenario": "Base and Bull (raises multiple ceiling)"
+    },
+    {
+      "event": "FDA Full IDE Approval for OCS DENOVO Lung Trial (January 2026) — covers lungs from donation-after-cardiac-death (DCD) donors",
+      "modelVariableChanged": "Long-term lung revenue trajectory",
+      "impact": "Opens a new clinical pathway in the lung segment, potentially expanding the addressable pool of viable donor lungs. No immediate FY2026 revenue impact; relevant for FY2027+ modeling.",
+      "affectedScenario": "Bull (FY2027+ upside driver)"
+    },
+    {
+      "event": "2026 Guidance: $727M–$757M (+20-25%) — primary driver of ~28% stock pullback from $156 to ~$113",
+      "modelVariableChanged": "Near-term EV/Sales multiple / bear scenario probability",
+      "impact": "Growth moderation is real — driven by tougher comps, higher aviation fleet costs, and natural maturation of the heart/liver NOP. However, guidance implies continued strong absolute growth and is consistent with the durable thesis. Changes near-term multiple assumption downward but does not challenge the fundamental thesis.",
+      "affectedScenario": "Bear (probability increased modestly)"
+    },
+    {
+      "event": "Italian NOP Program Launch — European Expansion (live as of early 2026)",
+      "modelVariableChanged": "Long-cycle international revenue trajectory / bull scenario multiple",
+      "impact": "Italy as proof-of-concept reduces execution risk for broader European rollout. This is a long-cycle revenue driver (2027-2028 meaningful contribution), but its de-risking is positive for bull scenario multiple. No immediate FY2026 revenue impact.",
+      "affectedScenario": "Bull (reduces execution risk for international expansion)"
+    },
+    {
+      "event": "OCS Kidney Program — Clinical Protocol Expected by Q3 2026",
+      "modelVariableChanged": "Option value / bull scenario probability",
+      "impact": "Not modeled in current FY2026 guidance — any positive update is additive. If OCS Kidney can make marginal kidneys viable, the addressable revenue per case would be meaningful in a market larger than heart and liver combined. A positive protocol disclosure would shift base → bull; disappointment has limited downside since kidney is not in current guidance.",
+      "affectedScenario": "Bull (potential upside); neutral on Bear/Base if delayed"
+    }
+  ],
+  "scenarios": [
+    {
+      "label": "Bear",
+      "keyMetrics": {
+        "revenue": "$815M",
+        "targetPE": "3.5x EV/S"
+      },
+      "operatingAssumption": "2026 guidance met at midpoint ($742M). 2027 growth decelerates sharply to ~10%: European NOP launch is slower than expected; logistics cost inflation outpaces revenue growth; heart and liver penetration plateaus; kidney program delays past 2027. Competition intensifies from alternative organ preservation methods.",
+      "valuationAssumption": "Multiple compresses to 3.5x EV/Sales — consistent with a slowing medical device/logistics hybrid where growth has stalled and profitability clarity is still limited.",
+      "fairValue": "~$83 per share (2027 EV ~$2.85B at 3.5x $815M, plus ~$10M net cash, ÷ 34.3M shares)",
+      "whatMustBeTrue": "European expansion disappoints. Kidney protocol reveals difficult clinical trial design (slow enrollment). A competitor launches a credible alternative organ preservation system. Aviation fleet costs escalate materially."
+    },
+    {
+      "label": "Base",
+      "keyMetrics": {
+        "revenue": "$890M",
+        "targetPE": "5.0x EV/S"
+      },
+      "operatingAssumption": "2026 guidance delivered at midpoint. 2027 growth maintains ~20% pace: heart/liver NOP continues mid-teens growth; European NOP (Italy + one or two additional markets) adds incremental revenue; OCS Kidney protocol is disclosed and enrollment begins (no revenue yet). Aviation fleet costs managed within operating leverage.",
+      "valuationAssumption": "Multiple holds at 5.0x EV/Sales — a reasonable premium for a high-growth medical device platform with a new market catalyst visible but not yet generating revenue.",
+      "fairValue": "~$130 per share (2027 EV ~$4.45B at 5.0x $890M, plus ~$10M net cash, ÷ 34.3M shares)",
+      "whatMustBeTrue": "2026 guidance delivered. No major execution failure in European NOP. Kidney protocol disclosed on schedule with credible clinical design. Gross margins sustain near 60%. No major competitive disruption in heart/liver."
+    },
+    {
+      "label": "Bull",
+      "keyMetrics": {
+        "revenue": "$950M",
+        "targetPE": "7.0x EV/S"
+      },
+      "operatingAssumption": "2026 guidance beaten at the high end (~$757M+). 2027 growth reaccelerates to ~28%: European NOP outperforms (Italy + 2-3 additional markets contributing); OCS Kidney protocol is positively received and early enrollment data is promising; heart and lung NOP cases accelerate driven by Gen 2 OCS data; international expansion beyond Europe begins.",
+      "valuationAssumption": "Multiple re-rates to 7.0x EV/Sales — consistent with high-confidence re-entry into a multi-year, multi-category growth cycle with the kidney market visible as a major new total addressable market.",
+      "fairValue": "~$194 per share (2027 EV ~$6.65B at 7.0x $950M, plus ~$10M net cash, ÷ 34.3M shares)",
+      "whatMustBeTrue": "European NOP lands strongly (Italy proves out, 2-3 additional markets begin). OCS Kidney clinical design is favorable and market-expanding in scope. Heart/lung Gen 2 OCS data from ENHANCE and DENOVO trials are positive. No meaningful competitive challenge to the NOP model."
+    }
+  ],
+  "currentPriceImplies": "At ~$113, the stock is pricing approximately 2027 revenue of ~$800-825M — slightly above the bear case, implying minimal credit for European acceleration or kidney upside. The implied EV/Sales of ~4.5-5.0x is consistent with a business where growth decelerates from 37% to 15-20% and does not re-accelerate. Critically, zero option value is assigned to the kidney program — the largest untapped market TMDX can address — and zero option value for European NOP at scale. In practical terms: a buyer at $113 is paying only for the existing U.S. heart/liver/lung NOP business continuing to grow at a moderate pace, with the multiple contracting toward mature medical device peers. The kidney program, European NOP, and next-gen OCS clinical data are all optionality embedded in the current price for free — which is unusual for a company with this track record of execution. The key embedded assumption the market is making: the current deceleration from 37% to 20-25% is the beginning of a secular moderation, not a temporary normalization against tough comps. If the kidney program proves out even modestly (~$50-75M incremental 2027 revenue), the implied revenue and multiple assumptions in the current price look too conservative.",
+  "currentPriceImpliesBrief": "The market prices TMDX as a decelerating device play at $113 — assigning zero value to the kidney program and European NOP optionality.",
+  "currentPriceImpliedFacts": [
+    { "label": "Implied 2027 Revenue", "value": "~$800–825M (bear-case territory)" },
+    { "label": "Implied EV/2027 Sales", "value": "~4.5–5.0x (no re-acceleration credit)" },
+    { "label": "Implied Kidney Option Value", "value": "$0" },
+    { "label": "Implied European NOP Option Value", "value": "$0" },
+    { "label": "Implied Growth Rate (2026–2027)", "value": "~8–11% (below base case 20%)" }
+  ],
+  "provisionalConclusion": "Fair to moderately undervalued, with the kidney program as the key unpriced option. At $113 vs. bear fair value of ~$83, base of ~$130, and bull of ~$194, the risk/reward skews to the upside if the base case holds. The stock is not cheap in the absolute sense — at 5.2x 2026E EV/Sales and ~37-40x normalized forward P/E, there is no traditional value margin of safety. But for a business growing 20-25% with 60% gross margins, a proprietary NOP logistics moat, and the kidney program as a substantial unmodeled catalyst, the current price is attractive relative to intrinsic potential. The most important judgment: the 28% pullback from $156 is not driven by fundamental deterioration — FY2025 results were strong, 2026 guidance is credible, and FDA de-risking has continued. The pullback was driven by normalization of excessive optimism and the optics of the one-time tax benefit in 2025 EPS. Neither is a thesis-breaker. A patient investor who believes TMDX will execute on European expansion and announce a credible kidney protocol by Q3 2026 can build a position here with a reasonable 12-18 month horizon for the base case ($130) to prove out.",
+  "technicalCommentary": "Neutral. RSI (14-day) at ~40 is approaching oversold territory but has not reached confirmed capitulation levels. The stock is trading below both the 50-day MA (~$132.79) and 200-day MA (~$123.82) with downward-sloping EMAs — a structurally bearish setup. A tentative pivot-bottom buy signal was noted on March 12, 2026, but there has been no confirmed reversal through the 200-day MA (~$124). Key support is ~$100-105 (prior base area from late 2025); key resistance is ~$123-127 (200-day MA and prior consolidation zone). Entry at $113 is not technically ideal; a patient investor could wait for a close back above the 200-day MA (~$124) as confirmation before adding meaningfully. This costs ~10% of upside to base case but significantly improves entry quality.",
+  "technicalSignals": [
+    { "label": "RSI (14-day)", "value": "~40 (approaching oversold, not confirmed capitulation)" },
+    { "label": "50-day MA", "value": "~$132.79 (price trading well below — bearish)" },
+    { "label": "200-day MA", "value": "~$123.82 (price broken below — structural bearish signal)" },
+    { "label": "Key Support", "value": "~$100–105 (prior late-2025 base)" },
+    { "label": "Key Resistance", "value": "~$123–127 (200-day MA + prior consolidation)" },
+    { "label": "Pivot Signal", "value": "Tentative pivot-bottom March 12, 2026 — unconfirmed reversal" }
+  ],
+  "risks": [
+    "Kidney program clinical complexity — a narrow trial design, slow enrollment, or competitive alternative announced would shift thesis to 'watch'",
+    "Growth deceleration below guidance — if H2 2026 cases slow meaningfully, bear probability rises and multiple compresses toward 3.5x EV/Sales",
+    "Aviation fleet cost inflation — 22 aircraft fleet; any logistics cost escalation outpacing revenue growth would pressure margins and shift scenario probability toward bear",
+    "Competitive disruption — alternative organ preservation systems (Organ Recovery Systems, XVIVO) gaining clinical acceptance could threaten NOP pricing power",
+    "European NOP slower than expected — delayed regulatory approvals or weaker case ramp in Italy/additional markets reduces the international optionality embedded in the bull case",
+    "Convertible note risk — $456M in 1.5% convertibles due 2028; refinancing risk is modest but exists if market conditions deteriorate"
+  ],
+  "catalysts": [
+    "Q3 2026 OCS Kidney clinical protocol disclosure — the highest-stakes single catalyst; scope, enrollment timeline, and trial design will determine whether kidney becomes a bull-case driver by 2027",
+    "Q1 2026 earnings report (expected April-May 2026) — first tracking data on 2026 guidance trajectory; case volume and gross margin are key metrics",
+    "European NOP expansion update — additional markets entering active operations beyond Italy; revenue contribution timeline",
+    "OCS Heart ENHANCE trial enrollment progress — speed and interim data signals de-risk next-gen device roadmap",
+    "Multiple compression reversal — any technical break above 200-day MA (~$124) would attract momentum buyers and could accelerate re-rating"
+  ],
+  "monitorNext": [
+    "Q3 2026 OCS Kidney clinical protocol disclosure: scope of trial, target patient population, and enrollment timeline will determine whether kidney becomes a bull-case driver by 2027",
+    "Q1 2026 earnings report (expected April-May 2026): first data point on whether 2026 growth trajectory tracks toward low end (~$727M) or high end (~$757M) of guidance",
+    "European NOP expansion update: number of additional markets beyond Italy entering active operations and revenue contribution timeline",
+    "OCS Heart ENHANCE trial enrollment progress: speed of enrollment and any interim data signals de-risk next-gen device roadmap",
+    "Aviation fleet cost trajectory: any indication of logistics cost inflation outpacing revenue growth would signal margin pressure",
+    "Competitive development: any announcement of a credible competing organ preservation system from Organ Recovery Systems, XVIVO, or other players"
+  ],
+  "sourcesUsed": [
+    { "label": "TransMedics Q4 & FY2025 Financial Results — PR Newswire", "url": "https://www.prnewswire.com/news-releases/transmedics-reports-fourth-quarter-and-full-year-2025-financial-results-302696184.html" },
+    { "label": "TransMedics Q4 FY2025 Revenue $160.8M, FY2025 $605.5M — StockTitan", "url": "https://www.stocktitan.net/news/TMDX/trans-medics-reports-fourth-quarter-and-full-year-2025-financial-xd4k8mvp5tvo.html" },
+    { "label": "TransMedics 2026 Revenue Guidance 20-25% — Seeking Alpha", "url": "https://seekingalpha.com/news/4556428-transmedics-outlines-20-25-percent-2026-revenue-growth-target-while-advancing-ocs-programs" },
+    { "label": "OCS Heart ENHANCE Trial Full FDA IDE Approval — TransMedics IR", "url": "https://investors.transmedics.com/news-releases/news-release-details/transmedics-receives-full-and-unconditional-fda-ide-approval" },
+    { "label": "OCS DENOVO Lung IDE Approval — TransMedics IR", "url": "https://investors.transmedics.com/news-releases/news-release-details/transmedics-receives-fda-ide-approval-initiate-next-generation/" },
+    { "label": "Italian NOP Program — Seeking Alpha", "url": "https://seekingalpha.com/article/4865150-transmedics-stock-italian-nop-program-reinforces-huge-international-opportunity" },
+    { "label": "TransMedics Stock Up 104% Over Last Year — Motley Fool", "url": "https://www.fool.com/investing/2026/03/08/transmedics-stock-is-up-104-over-the-last-year-is/" },
+    { "label": "TMDX Q4 EPS Tax Benefit Analysis — SignalBloom", "url": "https://www.signalbloom.ai/news/TMDX/transmedics-q4-revenue-jumps-32-but-tax-benefit-skews-eps-guides-for-moderating-growth-in-2026" },
+    { "label": "TMDX Technical Analysis — Investing.com", "url": "https://www.investing.com/equities/transmedics-group-inc-technical" },
+    { "label": "TransMedics 10-K FY2025 — Last10K", "url": "https://last10k.com/sec-filings/tmdx/0001193125-26-067032.htm" },
+    { "label": "TMDX Balance Sheet — MarketBeat", "url": "https://www.marketbeat.com/stocks/NASDAQ/TMDX/financials/" }
+  ],
+  "history": [
+    "2026-03-22 @ $113.00 — Thesis: intact. Fair value territory (base $130, bear $83, bull $194, discount to base -13.1%). Market pricing growth deceleration only; kidney program and European NOP receive zero option value credit. Technicals: neutral (below 50-day and 200-day MA). Action: watch for confirmation. Key catalyst: Q3 2026 OCS Kidney protocol disclosure."
+  ]
+}

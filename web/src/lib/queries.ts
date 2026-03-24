@@ -12,10 +12,10 @@ export function useStocks(locale: Locale) {
   })
 }
 
-export function useStock(ticker: string) {
+export function useStock(ticker: string, locale: Locale) {
   return useQuery({
-    queryKey: ['stocks', ticker],
-    queryFn: () => fetchStock(ticker),
+    queryKey: ['stocks', ticker, locale],
+    queryFn: () => fetchStock(ticker, locale),
     staleTime: 5 * 60 * 1000,
   })
 }

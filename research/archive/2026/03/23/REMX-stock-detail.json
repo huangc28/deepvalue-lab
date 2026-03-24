@@ -1,0 +1,201 @@
+{
+  "id": "remx",
+  "ticker": "REMX",
+  "companyName": "VanEck Rare Earth & Strategic Metals ETF",
+  "businessType": "Cyclical Sector ETF — Rare Earth & Critical Metals",
+  "currentPrice": 79.10,
+  "valuationStatus": "fair",
+  "newsImpactStatus": "improving",
+  "thesisStatus": "watch",
+  "technicalEntryStatus": "neutral",
+  "actionState": "watch for confirmation",
+  "dashboardBucket": "needs-review",
+  "baseFairValue": 88,
+  "bearFairValue": 55,
+  "bullFairValue": 122,
+  "discountToBase": -10.11,
+  "summary": "REMX trades 10% below base case fair value after a China export control suspension triggered a 24% pullback from the February peak; the structural policy floor architecture — DoD price deals, Lynas Japan contract — remains intact and the market appears to be over-pricing the near-term suspension while under-pricing the durable earnings floors now embedded in the top two holdings.",
+  "lastUpdated": "2026-03-23",
+
+  "thesisStatement": "REMX offers leveraged exposure to the structural re-rating of Western rare earth supply chains driven by Chinese export controls, unprecedented US government capital deployment, and secular demand growth from EV permanent magnet motors — a re-rating that is durable even after China's one-year suspension because government price floors have been contractually embedded in the largest holdings.",
+  "thesisBullets": [
+    "NdPr repriced from $49/kg (Dec 2024) to $104/kg today — a structural reset, not a transient spike",
+    "DoD/Lynas $110/kg NdPr price floor + Japan supply deal through 2038 de-risks the largest holding (8.94%)",
+    "MP Materials DoD price floor prevents a return to pre-2026 cycle lows for the US's only significant REE miner",
+    "54-country Critical Minerals Ministerial + $14.8B EXIM pipeline signals durable Western government backing",
+    "Secular demand: each EV requires ~10kg rare earth minerals; neodymium demand projected +70% by 2030",
+    "~14% of fund holds explicit government-backed NdPr price floors — hard downside protection above $49/kg"
+  ],
+
+  "variantPerception": "The market is treating China's one-year export control suspension as a structural reversal, marking REMX down 24% from its February peak. The variant perception is that the suspension is a pause within an intact licensing regime, not a rollback. The extraterritorial provisions remain on the books, case-by-case export licenses are still required per shipment, and China's rare earth price index merely fell from 300 to 265 — not collapsed. More critically, the DoD/Lynas $110/kg NdPr price floor and MP Materials deal have structurally changed the earnings floor for Western producers regardless of short-term spot price movements. The market appears to be over-indexing on the 30-day policy pause while underweighting the permanent floor-building that has already occurred beneath the two largest holdings.",
+
+  "valuationLens": {
+    "primary": "Implied NdPr breakeven / holdings NAV sensitivity — anchors fair value to explicit commodity price ranges rather than aggregating meaningless blended P/E across multi-currency holdings",
+    "crossCheck": "Price-to-NAV premium/discount — at -1.5% vs. historical small premium, confirms mild institutional selling pressure but not fundamental overvaluation",
+    "rationale": "Standard P/E or EV/EBITDA aggregation across Chinese, Australian, and US holdings in different currencies would produce a statistically meaningless blended number. The commodity cycle position — specifically NdPr price — and government policy floor architecture are the correct valuation anchors for a cyclical sector ETF of this type."
+  },
+
+  "currentValuationSnapshot": {
+    "marketCap": "AUM ~$3.04B (Mar 22, 2026); ~3x the December 2024 level, reflecting strong inflows during the rally",
+    "multiples": [
+      "Current Price: $79.10",
+      "NAV (Mar 20): $80.34 → -1.5% discount (historically trades at a small premium)",
+      "52-Week Range: $32.36 – $103.68; current price at 76% of range from low",
+      "Expense Ratio: 0.57%",
+      "NdPr oxide (domestic China): ~$104/kg — 2x the Dec 2024 trough of $49/kg",
+      "NdPr oxide (FOB export): ~$184/kg — 63% export premium reflecting licensing friction"
+    ],
+    "balanceSheetNote": "ETF structure — no consolidated balance sheet. Key credit risk is counterparty exposure to Chinese-listed holdings (~32% geographic weight) and AUM-driven liquidity."
+  },
+
+  "newsToModel": [
+    {
+      "event": "China suspended rare earth export controls for 1 year (through Nov 2026) as part of US-China trade negotiations",
+      "modelVariableChanged": "Multiple compression / NdPr spot price",
+      "impact": "Near-term negative — removes acute scarcity premium; NdPr peaked at $111.5/kg, now ~$104 and consolidating toward $95-100. Bear scenario probability increases slightly.",
+      "affectedScenario": "Bear probability ↑ slightly; reduces bull case ceiling near-term"
+    },
+    {
+      "event": "Lynas secures landmark Japan supply deal: $110/kg NdPr floor + upside sharing above $150/kg, 5,000 tpy through 2038",
+      "modelVariableChanged": "Revenue floor for largest holding (8.94%)",
+      "impact": "Positive structural — locks in a contractual price floor materially above the Dec 2024 trough ($49/kg), de-risks base case for the ETF's largest position regardless of spot price volatility",
+      "affectedScenario": "Base case floor raised; bear case floor raised"
+    },
+    {
+      "event": "Pentagon restructures Lynas deal to expenditure-based, $258M US government contribution for Seadrift (Texas) heavy rare earth separation facility",
+      "modelVariableChanged": "Capex risk / balance sheet risk for Lynas",
+      "impact": "Mixed — confirms continued US government commitment to Lynas but structure change may alter facility timeline slightly, introducing execution risk",
+      "affectedScenario": "Watch indicator for base case timing"
+    },
+    {
+      "event": "MP Materials ships first commercial NdFeB permanent magnets from Fort Worth Independence Facility",
+      "modelVariableChanged": "Revenue mix, business model complexity for MP (5.45%)",
+      "impact": "Positive — vertical integration reduces MP's pure commodity price sensitivity and raises per-unit value capture; first US commercial-scale magnet production in over two decades",
+      "affectedScenario": "Improves base case quality for MP holding; supports bull case"
+    },
+    {
+      "event": "DoD establishes $110/kg NdPr price floor for MP Materials",
+      "modelVariableChanged": "Revenue floor for MP Materials",
+      "impact": "Positive — prevents the pre-2026 $49/kg scenario recurring for the US's largest domestic REE miner; structurally raises the ETF's bear case floor",
+      "affectedScenario": "Bear case floor raised"
+    },
+    {
+      "event": "Trump Administration 54-country Critical Minerals Ministerial + $14.8B EXIM pipeline + $134M DOE NOFO",
+      "modelVariableChanged": "Sector-wide capex enablement, financing risk for Western producers",
+      "impact": "Medium-term positive — signals durable Western government support, reduces financing risk for non-Chinese producers; base case timeline support",
+      "affectedScenario": "Base case timing support"
+    }
+  ],
+
+  "scenarios": [
+    {
+      "label": "Bear",
+      "keyMetrics": {
+        "revenue": "NdPr $70-75/kg",
+        "eps": "N/A (ETF)",
+        "targetPE": "Trough re-rate"
+      },
+      "operatingAssumption": "China does not renew the licensing regime after Nov 2026; NdPr normalizes to $70-80/kg. EV demand growth disappoints. Western supply chain investment stalls. Lithium holdings (Albemarle, SQM, PLS — ~19% combined) remain at cycle trough.",
+      "valuationAssumption": "Holdings de-rate toward 2024 trough multiples. Lynas and MP provide technical support for ~14% of the ETF via government price floor contracts, but the remaining ~86% re-prices toward cycle lows.",
+      "fairValue": "$52–58 (midpoint $55; implied NdPr $70-75/kg)",
+      "whatMustBeTrue": "China formally reverses the export licensing regime post-Nov 2026; NdPr falls sustainably below DoD price floor levels; US government withdraws rare earth investment programs; EV permanent magnet demand disappoints materially."
+    },
+    {
+      "label": "Base",
+      "keyMetrics": {
+        "revenue": "NdPr $95-110/kg",
+        "eps": "N/A (ETF)",
+        "targetPE": "Mid-cycle"
+      },
+      "operatingAssumption": "China maintains the licensing regime through 2027; NdPr consolidates at $90-110/kg (consensus $100-105 Q2 2026). Lynas and MP execute facility timelines. EV demand grows ~15-20% annually. Lithium holdings recover modestly.",
+      "valuationAssumption": "Top holdings hold near current cycle-reset multiples. NdPr at $100/kg is a sustainable structural reset (~2x the 2024 trough), not a transient spike. Government price floors provide earnings visibility for ~14% of the fund.",
+      "fairValue": "$83–92 (midpoint $88; implied NdPr $95-110/kg)",
+      "whatMustBeTrue": "China does not fully reverse export licensing before mid-2027; NdPr stabilizes above $90/kg; Lynas/MP price floor contracts hold; no major macro deterioration affecting EV demand."
+    },
+    {
+      "label": "Bull",
+      "keyMetrics": {
+        "revenue": "NdPr $130-150/kg",
+        "eps": "N/A (ETF)",
+        "targetPE": "Re-rating"
+      },
+      "operatingAssumption": "China re-tightens licensing in late 2026. NdPr pushes to $130-150/kg. Lynas Texas comes online ahead of schedule. Magnet demand from AI/robotics provides incremental demand beyond EVs. Lithium recovers to mid-cycle.",
+      "valuationAssumption": "Sector-wide re-rating as investors price a structurally higher commodity environment with Western supply chain security premium. AUM inflows accelerate.",
+      "fairValue": "$115–130 (midpoint $122; implied NdPr $130-150/kg)",
+      "whatMustBeTrue": "China re-tightens licensing or introduces new restrictions post-Nov 2026; NdPr sustains above $120/kg; Western processing capacity ramps on schedule; EV + wind + robotics demand absorbs new supply without meaningful price relief."
+    }
+  ],
+
+  "currentPriceImplies": "At $79.10, the market appears to be pricing NdPr in an $85-100/kg consolidation zone with limited near-term policy catalyst and moderate geopolitical risk. The implied market view: the China export control suspension is a meaningful signal, not just noise; NdPr will drift lower toward $90-95/kg as the acute scarcity premium fades; Western supply chain investment is real but will take 2-3 years to flow through to earnings. The price does not appear to be pricing in a full reversal to pre-2026 lows (which would justify $45-55), nor does it price in a China re-tightening event ($110+ justified). The current price reflects a market that has repriced the structural narrative but is temporarily de-risking policy uncertainty — and is partially ignoring the hard earnings floor that government price floor contracts have already created for ~14% of the fund.",
+
+  "currentPriceImpliesBrief": "Market is pricing NdPr at $85-100/kg consolidation — discounting the near-term suspension while the structural floor architecture goes underweighted.",
+
+  "currentPriceImpliedFacts": [
+    { "label": "Implied NdPr price range", "value": "$85–100/kg" },
+    { "label": "Implied market view on China licensing", "value": "Suspension is structural (not just a pause)" },
+    { "label": "Implied Western supply chain premium", "value": "Minimal — market pricing minimal urgency premium" },
+    { "label": "Discount to base case midpoint", "value": "-10.1% ($79.10 vs. $88)" },
+    { "label": "Distance from 52W low", "value": "+144% from $32.36 — significant cycle run already priced" }
+  ],
+
+  "provisionalConclusion": "Fair, leaning attractive at current levels. REMX at $79 is 10% below the base case midpoint ($88) and 24% below the February peak, while the structural thesis has not materially changed. The correction is driven by China's export control suspension — a real near-term headwind but not a reversal of the fundamental re-architecture of the Western rare earth supply chain. Bear case ($55) = -30% from here; base case ($88) = +11%; bull case ($122) = +54%. Risk/reward is skewed long, but downward momentum is real. Scaling in here is defensible; a full position requires conviction that NdPr holds $90+ and that China does not fully reverse the licensing regime.",
+
+  "technicalCommentary": "REMX is in a confirmed downtrend since the February peak (~$103). Current price ~$79 sits below the 20-day EMA ($93.72), 50-day EMA ($89.44), and is approaching the 100-day EMA (~$81.90) from below. RSI at ~49.5 is neutral — not oversold, not overbought, suggesting the selloff has not yet reached exhaustion. A close above the 100-day EMA ($81.90) is the first technical confirmation of stabilization; a reclaim of the 50-day EMA ($89.44) signals recovery mode. No favorable momentum signal exists yet. For long-horizon investors with valuation conviction, scaling in here is acceptable. For momentum-confirmation investors, hold until 100-day EMA reclaim.",
+
+  "technicalSignals": [
+    { "label": "RSI (14-day)", "value": "~49.5 — Neutral" },
+    { "label": "20-day EMA", "value": "$93.72 — Price below (bearish)" },
+    { "label": "50-day EMA", "value": "$89.44 — Price below (bearish)" },
+    { "label": "100-day EMA", "value": "~$81.90 — Price approaching from below (watch level)" },
+    { "label": "52-Week Range", "value": "$32.36 – $103.68" },
+    { "label": "Drawdown from peak", "value": "-23.7% from $103.68" }
+  ],
+
+  "risks": [
+    "China formally reverses the export licensing regime post-November 2026, collapsing NdPr below $80/kg",
+    "NdPr drifts toward $85-90/kg in Q2 before finding support, extending ETF price decline before recovery",
+    "Lynas Texas facility delayed or DoD contract restructuring undermines the largest holding thesis",
+    "EV adoption disappoints materially (Honda $15.7B restructuring signals near-term weakness)",
+    "~32% China-listed holdings exposure creates direct geopolitical and regulatory risk",
+    "~14% lithium ETF exposure (Albemarle, SQM, PLS) dilutes the pure rare-earth thesis and adds a separate cycle risk",
+    "Large AUM inflows during the rally ($3B vs. ~$1B in Dec 2024) may create selling pressure on pullbacks"
+  ],
+
+  "catalysts": [
+    "China re-tightens export licensing regime (post-Nov 2026) — single highest-impact catalyst",
+    "NdPr sustains above $115/kg signaling supply/demand tightness beyond the policy cycle",
+    "Lynas Texas (Seadrift) facility construction milestone or production announcement",
+    "MP Materials quarterly earnings showing meaningful magnet revenue ramp",
+    "Additional DoD or EXIM critical minerals contracts with REMX-held companies",
+    "US Section 232/301 tariff action on Chinese rare earth imports accelerating domestic supply urgency"
+  ],
+
+  "monitorNext": [
+    "China export licensing regime status (Oct-Nov 2026) — will China renew suspension or reimpose stricter controls?",
+    "NdPr oxide price monthly — watch for sustained close below $90/kg (bear signal) or recovery to $115+ (bull reactivation)",
+    "Lynas Texas (Seadrift) facility progress — construction timeline and US government funding disbursements",
+    "MP Materials quarterly earnings (~May 2026) — magnet volume from Fort Worth, DoD off-take confirmation",
+    "US Section 232/301 tariff actions on rare earth imports from China",
+    "EV sales data Q1 2026 — leading indicator for NdPr permanent magnet demand trajectory"
+  ],
+
+  "sourcesUsed": [
+    { "label": "VanEck REMX Product Page", "url": "https://www.vaneck.com/us/en/investments/rare-earth-strategic-metals-etf-remx/" },
+    { "label": "REMX Holdings — StockAnalysis.com", "url": "https://stockanalysis.com/etf/remx/holdings/" },
+    { "label": "REMX Technical Analysis — Investing.com", "url": "https://www.investing.com/etfs/marketv.-rare-earth-strat.-metals-technical" },
+    { "label": "Critical Minerals Report Mar 15, 2026 — InvestorNews", "url": "https://investornews.com/critical-minerals-rare-earths/critical-minerals-report-03-15-2026-price-floors-arrive-lynas-japan-deal-reshapes-rare-earth-markets-u-s-dod-solicits-supply-of-13-critical-minerals/" },
+    { "label": "Rare Earth Market Pricing Analysis March 2026 — rare-earth-mining.com", "url": "https://rare-earth-mining.com/rare-earth-market-pricing-analysis-march-2026/" },
+    { "label": "China Hits Pause on Rare Earth Export Controls — Clark Hill", "url": "https://www.clarkhill.com/news-events/news/china-hits-pause-on-rare-earth-export-controls-and-what-it-means-for-supply-chains/" },
+    { "label": "Pentagon Resets Lynas Rare Earths Deal — Metal Tech News", "url": "https://www.metaltechnews.com/story/2026/03/18/tech-metals/pentagon-resets-lynas-rare-earths-deal/2685.html" },
+    { "label": "MP Materials Deal — Columbia CGEP", "url": "https://www.energypolicy.columbia.edu/mp-materials-deal-marks-a-significant-shift-in-us-rare-earths-policy/" },
+    { "label": "2026 Critical Minerals Ministerial — US State Department", "url": "https://www.state.gov/releases/office-of-the-spokesperson/2026/02/2026-critical-minerals-ministerial" },
+    { "label": "Trump Administration Critical Minerals Path — WilmerHale", "url": "https://www.wilmerhale.com/en/insights/client-alerts/20260305-trump-administration-charts-ambitious-path-toward-us-critical-mineral-dominance" },
+    { "label": "NdPr Prices 2026 — Crux Investor", "url": "https://www.cruxinvestor.com/posts/sharp-surge-in-praseodymium-neodymium-prices-signals-deepening-scarcity-premium-in-rare-earth-supply-chains" },
+    { "label": "EV Rare Earth Demand 2026 — Farmonaut", "url": "https://farmonaut.com/mining/electric-vehicle-rare-earth-minerals-2026-key-trends" },
+    { "label": "Lynas Expands Heavy Rare Earth Production — Metal Tech News", "url": "https://www.metaltechnews.com/story/2026/03/25/tech-metals/lynas-expands-heavy-rare-earth-production/2691.html" }
+  ],
+
+  "history": [
+    "2026-03-23: Initial DeepValue Lab analysis. Price $79.10. Thesis: Watch. Valuation: Fair (10% below base case $88). China export control suspension triggered 24% pullback from Feb peak; structural policy floors intact. Technical: Neutral — below all three major EMAs, RSI ~49.5."
+  ]
+}

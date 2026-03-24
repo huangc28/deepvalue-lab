@@ -1,0 +1,176 @@
+{
+  "id": "nvda",
+  "ticker": "NVDA",
+  "companyName": "NVIDIA Corporation",
+  "businessType": "高成長 AI 基礎設施平台",
+  "currentPrice": 174.90,
+  "valuationStatus": "cheap",
+  "newsImpactStatus": "improving",
+  "thesisStatus": "intact",
+  "technicalEntryStatus": "neutral",
+  "actionState": "watch for confirmation",
+  "dashboardBucket": "now-actionable",
+  "baseFairValue": 231,
+  "bearFairValue": 178,
+  "bullFairValue": 298,
+  "discountToBase": -24.3,
+  "summary": "NVDA 以 $174.90 交易，接近熊市情境合理價值（約 $178），但領先指標（Q1 FY2027 指引 $78B、主權 AI 三倍成長）顯示市場對超大規模資本支出衰退的定價過度悲觀；基本面案例公允價值約 $231，風險報酬不對稱地偏向上行。",
+  "lastUpdated": "2026-03-21",
+
+  "thesisStatement": "英偉達（NVIDIA）是 AI 基礎設施的主導全棧供應商，目前股價所隱含的近熊市情境（即超大規模資本支出大幅減速），與 Q1 FY2027 指引（$78B）及主權 AI 動能並不相符。",
+  "thesisBullets": [
+    "FY2026 營收達 $215.9B（同比+65%），每股盈利（EPS）為 $4.90，自由現金流（FCF）約 $96.6B——產生的現金超過多數財富 50 強企業",
+    "Q4 FY2026 單季營收 $68.1B（同比+73%，環比+20%），毛利率 75%，確認需求持續加速",
+    "Q1 FY2027 指引 $78.0B（±2%），年化約 $312B，與基本面案例軌跡吻合",
+    "主權 AI（各國政府建設國家 AI 基礎設施）在 FY2026 三倍成長至逾 $30B，佔總營收約 14%，分散了對單純超大規模資本支出的依賴",
+    "Rubin 平台（6 款新晶片及次世代 AI 超級電腦）於 GTC 2026 發布，將架構路線圖延伸至 Blackwell 之後 12–18 個月",
+    "英偉達與 OpenAI 正式簽署 $1,300 億戰略合作協議，部署 10GW 專用 AI 資料中心容量，代表長週期承諾需求",
+    "資產負債表穩健：現金及有價證券約 $62.6B，債務 $8.5B，淨現金約 $54B；無財務風險"
+  ],
+  "variantPerception": "市場將英偉達視為純超大規模資本支出的槓桿，並對未來資本支出放緩進行定價，但這一敘事日益不完整。差異化觀點在於：主權 AI（FY2026 達 $30B，同比三倍）不受超大規模運營商投資回報（ROI）週期影響——它由各國政府驅動，將 AI 算力視為關鍵基礎設施。若主權 AI 僅溫和成長至 $42–45B（FY2027），即可在超大規模客戶放緩時提供結構性的營收緩衝。此外，Rubin 平台及英偉達與 OpenAI 的 $1,300 億合作協議代表多年承諾需求管線，目前股價並未體現任何溢價。",
+  "valuationLens": {
+    "primary": "FY2027 預期每股盈利（EPS）× 目標本益比（P/E）",
+    "crossCheck": "過去 12 個月自由現金流（FCF）殖利率（約 2.3%），作為對傳統價值標準的核實",
+    "rationale": "前瞻 EPS × 本益比（P/E）是最適合高成長平台的主要估值框架，因為未來盈利能力（而非當前 FCF 殖利率）是驅動回報的核心變數。追蹤式本益比（約 35.7x）低估了成長路徑；企業價值/銷售比（EV/Sales 約 19.7x）無法反映 75% 的高毛利結構。FCF 殖利率交叉核實確認當前估值以傳統標準而言並不便宜（2.3%），但若以 FY2027 基本面案例推算，殖利率將改善至 3.1–3.4%，與再投資型成長複利企業的特性一致。"
+  },
+  "currentValuationSnapshot": {
+    "marketCap": "以每股 $174.90 計算，市值約 $4.26 兆美元",
+    "enterpriseValue": "企業價值約 $4.21 兆美元（扣除淨現金約 $54B：現金及有價證券 $62.6B 減去債務 $8.5B）",
+    "multiples": [
+      "追蹤式本益比（FY2026 GAAP EPS $4.90）：約 35.7x",
+      "前瞻本益比（FY2027E 基本面案例 EPS 約 $6.80）：約 25.7x——以 40%+ EPS 成長率計算，本益成長比（PEG）約 0.6x",
+      "追蹤式自由現金流殖利率（FCF 約 $96.6B / 市值 $4.26T）：約 2.3%",
+      "市銷率（P/S，FY2026 營收 $215.9B）：約 19.7x"
+    ],
+    "balanceSheetNote": "淨現金約 $54B；無資產負債表風險。FY2026 經營現金流約 $102.7B，資本支出約 $6.1B，自由現金流（FCF）約 $96.6B。"
+  },
+  "newsToModel": [
+    {
+      "event": "GTC 2026：Rubin 平台發布——6 款新晶片及次世代 AI 超級電腦；將於 2026 下半年透過 AWS、Google Cloud、Microsoft、OCI 提供",
+      "modelVariableChanged": "估值倍數 / 情境概率",
+      "impact": "將英偉達架構路線圖在 Blackwell 之後延伸 12–18 個月，降低產品過時風險。支撐基本面和牛市情境中的估值溢價倍數。對 FY2027 營收無直接影響，但顯著提升 FY2028 能見度，降低熊市概率。",
+      "affectedScenario": "基本面及牛市情境（降低熊市概率）"
+    },
+    {
+      "event": "英偉達與 OpenAI 正式簽署 $1,300 億戰略合作協議，部署 10GW 專用 AI 資料中心容量",
+      "modelVariableChanged": "營收軌跡 / 情境概率",
+      "impact": "代表跨多個財年的結構性承諾需求信號，降低超大規模客戶需求突然中斷的概率。對基本面及牛市情境的營收軌跡構成正面支撐。",
+      "affectedScenario": "基本面及牛市情境"
+    },
+    {
+      "event": "主權 AI 營收在 FY2026 三倍成長至逾 $30B——英國、日本、沙烏地阿拉伯等國家為主要客戶",
+      "modelVariableChanged": "營收 / 投資主題質量 / 估值倍數",
+      "impact": "過去半年最重要的質性發展。主權 AI 是不受超大規模資本支出 ROI 週期影響的新結構性需求來源。FY2027 若成長至 $42–45B，即可新增 $12–15B 增量營收，顯著降低熊市情境的嚴重程度。提高基本面情境概率，支撐估值溢價倍數。",
+      "affectedScenario": "所有情境——對基本面及熊市情境（降低熊市下行幅度）影響最大"
+    },
+    {
+      "event": "超大規模資本支出可持續性辯論：「五大」超大規模運營商預計合計支出 $7,200 億資本支出；空頭認為投資回報尚未實現",
+      "modelVariableChanged": "營收 / 估值倍數",
+      "impact": "主要熊市風險。若任何主要超大規模運營商在 2026 年 Q1 財報中傳出資本支出縮減訊號，英偉達近期指引可能令人失望。熊市情境對此建模為：營收減速至 $288B，倍數壓縮至 30x。這是決定 FY2027 走向最關鍵的單一變數。",
+      "affectedScenario": "熊市情境"
+    },
+    {
+      "event": "出口管制：DeepSeek 據報使用走私的 Blackwell 晶片；中國推動華為國產替代方案",
+      "modelVariableChanged": "營收（中國市場准入）/ 估值倍數",
+      "impact": "持續中，與先前分析一致。中國市場對英偉達而言結構性受限。部分由其他地區主權 AI 支出抵銷。截至目前無執法風險的重大變化，但若進一步收緊（限制 H200 出口），將帶來邊際收入阻力。",
+      "affectedScenario": "熊市情境（邊際影響）"
+    }
+  ],
+  "scenarios": [
+    {
+      "label": "Bear",
+      "keyMetrics": {
+        "revenue": "$288B",
+        "eps": "$5.93",
+        "targetPE": "30x"
+      },
+      "operatingAssumption": "FY2027 營收 $288B（相較 FY2026 $215.9B 成長 +33%）。超大規模 AI 資本支出在 2026 下半年大幅正常化。主權 AI 成長但無法完全抵銷。AMD 及客製晶片（Google TPU、Amazon Trainium）競爭加劇，毛利率壓縮至約 70%。淨利率 50%。",
+      "valuationAssumption": "成長減速、投資者情緒轉向 ROI 檢視，倍數壓縮至 30x。",
+      "fairValue": "每股約 $178（EPS $5.93 × 本益比 30x）",
+      "whatMustBeTrue": "至少一家主要超大規模運營商傳出 AI 資本支出大幅縮減訊號。主權 AI 未能加速超過 $35B。競爭替代方案（AMD MI400、Google TPU、Amazon Trainium）獲得可量化的市佔份額。出口管制增量收緊。"
+    },
+    {
+      "label": "Base",
+      "keyMetrics": {
+        "revenue": "$306B",
+        "eps": "$6.80",
+        "targetPE": "34x"
+      },
+      "operatingAssumption": "FY2027 營收 $306B（相較 FY2026 成長 +42%）。Q1 FY2027 $78B 指引達成；後續季度維持約 40% 的成長節奏。主權 AI 從 $30B 成長至 $42–45B。毛利率穩定在 73–75%。Rubin 平台於 2026 下半年順利起步。淨利率 54%。",
+      "valuationAssumption": "倍數維持在 34x——對於具有驗證過的經營槓桿與持續擴張自由現金流的高成長平台而言，溢價合理但不極端。",
+      "fairValue": "每股約 $231（EPS $6.80 × 本益比 34x）",
+      "whatMustBeTrue": "2026 年 Q1 財報季中無主要超大規模運營商傳出資本支出縮減訊號。2026 上半年季度營收維持在 $70B 以上。毛利率不惡化。Rubin 平台順利過渡。主權 AI 持續成長。"
+    },
+    {
+      "label": "Bull",
+      "keyMetrics": {
+        "revenue": "$324B",
+        "eps": "$7.46",
+        "targetPE": "40x"
+      },
+      "operatingAssumption": "FY2027 營收 $324B（相較 FY2026 成長 +50%）。超大規模運營商維持或加速資本支出。主權 AI 加速至 $55–60B。企業推理市場快速擴張。英偉達與 OpenAI 合作協議帶動額外承諾需求。淨利率 56%。",
+      "valuationAssumption": "倍數重新評級至 40x，市場確信 AI 基礎設施需求為多週期結構性需求，英偉達護城河持續擴張——Rubin 路線圖支撐此重估。",
+      "fairValue": "每股約 $298（EPS $7.46 × 本益比 40x）",
+      "whatMustBeTrue": "所有需求來源同時發力。無重大超大規模資本支出暫停。主權 AI 加速成長。Rubin 平台超預期起步。出口管制未大幅收緊。"
+    }
+  ],
+  "currentPriceImplies": "以 $174.90 計算，股價距熊市情境合理價值（約 $178）不到 2%。市場隱含 FY2027 每股盈利（EPS）約 $5.80–6.00（低於熊市情境假設的 $5.93），本益比（P/E）壓縮至 29–30x，營收成長率從 FY2026 的 65% 大幅減速至約 30–33%。換言之：目前股價反映三項同時發生的負面情境——超大規模資本支出令人失望、主權 AI 無法彌補缺口，以及競爭對手搶佔份額——同年全部成真。Rubin 平台的重估潛力、英偉達與 OpenAI $1,300 億合作管線，以及主權 AI 超過 $30B 的成長，均未獲任何定價。Q1 FY2027 指引 $78B（年化約 $312B）已顯示成長動能符合基本面案例軌跡，使目前所隱含的情境顯得過度悲觀。在 $175 買入的投資者，是在以幾乎已是熊市定價的水位，承擔近期情緒波動的風險。",
+  "currentPriceImpliesBrief": "目前 $175 的股價已反映超大規模資本支出斷崖，但領先指標尚未支持這一嚴峻程度。",
+  "currentPriceImpliedFacts": [
+    { "label": "隱含 FY2027 每股盈利（EPS）", "value": "約 $5.80–6.00" },
+    { "label": "隱含 FY2027 營收", "value": "約 $280–290B" },
+    { "label": "隱含營收成長率", "value": "約 30–33%（對比 FY2026 的 65%）" },
+    { "label": "隱含本益比（P/E）上限", "value": "約 29–30x" },
+    { "label": "隱含 FY2027E 自由現金流（FCF）殖利率", "value": "約 2.7–2.8%" }
+  ],
+  "provisionalConclusion": "合理偏低估——目前價位的風險報酬不對稱地偏向上行。以 $174.90 對比熊市合理價值約 $178、基本面案例約 $231、牛市約 $298，下行空間有限，基本面案例上行潛力約 32%。以傳統標準衡量，股價並不便宜（追蹤式本益比 35.7x，自由現金流殖利率 2.3%），但對一個營收成長 65%、毛利率 75% 的主導 AI 基礎設施平台而言，當前股價所隱含的惡化程度，與領先指標並不相符。今日並非積極加倉的信號——技術面呈中性——但對於相信基本面案例的投資者而言，目前的風險報酬是過去 12 個月最具吸引力的時期之一。",
+  "technicalCommentary": "中性。相對強弱指標（RSI，14 日）約 44，處於中性至略微超賣區域，未出現明確的恐慌拋售信號。更重要的是，股價同時低於 50 日指數移動平均線（EMA，約 $183.8）和 200 日指數移動平均線（約 $183.9）——技術面看空，且 RSI 趨勢下降，顯示短期可能進一步走弱。關鍵支撐位約 $171，阻力位約 $207。有耐心的投資者可等待確認基本面案例的訊號（收盤突破 50 日均線）後再進場，僅需讓出約 5% 的上行空間即可獲得更佳的技術面入場位置。",
+  "technicalSignals": [
+    { "label": "相對強弱指標（RSI，14 日）", "value": "約 44" },
+    { "label": "50 日指數移動平均線（EMA）", "value": "約 $183.8（股價低於此線）" },
+    { "label": "200 日指數移動平均線（EMA）", "value": "約 $183.9（股價低於此線）" },
+    { "label": "關鍵支撐位", "value": "約 $171" },
+    { "label": "關鍵阻力位", "value": "約 $207" }
+  ],
+  "risks": [
+    "超大規模資本支出減速或暫停——主要熊市風險；若 Microsoft、Meta 或 Google 在 2026 年 Q1 財報中傳出縮減訊號，近期指引可能令人失望",
+    "客戶集中度——頂級超大規模運營商佔資料中心營收的絕大多數；任一客戶縮減對整體影響不成比例",
+    "出口管制收緊——進一步限制 Blackwell 或 Rubin 出口至中國或相關市場將壓縮營收機會",
+    "倍數壓縮——若營收成長率低於 33%，即使每股盈利維持，倍數從 34x 壓縮至 25–28x 將大幅降低公允價值",
+    "競爭替代方案份額提升——AMD MI400、Google TPU、Amazon Trainium 持續改善；目前尚非重大威脅，但需監控企業客戶的採購轉變",
+    "地緣政治升級加速中國國產晶片替代（華為）進度，早於市場預期"
+  ],
+  "catalysts": [
+    "Q1 FY2027 財報超預期並上修指引（預計 2026 年 5 月下旬）——單一影響最大的事件",
+    "2026 年 Q1 財報季超大規模資本支出確認（2026 年 4–5 月）——將驗證基本面案例軌跡",
+    "新主權 AI 合約宣布（在現有英國、日本、沙烏地阿拉伯客戶之外）",
+    "Rubin 平台按時於 2026 下半年起步——確認產品週期延續性",
+    "企業推理市場規模成長快於預期——新需求來源尚未納入市場共識",
+    "出口管制鬆綁（盟友選擇性批准）擴大可觸及市場規模"
+  ],
+  "monitorNext": [
+    "Q1 FY2027 財報（2026 年 5 月下旬）：營收是否達到 $78B 指引、毛利率是否維持 73–75%、Q2 指引質量",
+    "超大規模運營商 2026 年 Q1 財報電話會議（2026 年 4–5 月）：Microsoft、Meta、Google、Amazon 的 AI 資本支出措辭",
+    "主權 AI 合約宣布：任何新的政府基礎設施承諾，代表需求持久性的信號",
+    "Rubin 平台起步時間線：雲端夥伴的 Rubin 上線更新及早期需求信號",
+    "出口管制政策：H200 核准客戶制度的執法力度，以及任何 Rubin 層級的限制",
+    "AMD MI400 競爭動態：任何超大規模或企業客戶的採購轉向訊號"
+  ],
+  "sourcesUsed": [
+    { "label": "英偉達 Q4 FY2026 財報發布——NVIDIA Newsroom", "url": "https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-fourth-quarter-and-fiscal-2026" },
+    { "label": "英偉達 Q4 FY2026 財報報道——CNBC", "url": "https://www.cnbc.com/2026/02/25/nvidia-nvda-earnings-report-q4-2026.html" },
+    { "label": "英偉達 Q4 FY2026 營收達 $68.1B——StockTitan", "url": "https://www.stocktitan.net/news/NVDA/nvidia-announces-financial-results-for-fourth-quarter-and-fiscal-j0kg9vc0geqr.html" },
+    { "label": "Rubin 平台發布——英偉達投資者關係", "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Kicks-Off-the-Next-Generation-of-AI-With-Rubin--Six-New-Chips-One-Incredible-AI-Supercomputer/default.aspx" },
+    { "label": "AI 主權：英偉達 2026 深度分析（Finterra）", "url": "https://markets.financialcontent.com/stocks/article/finterra-2026-3-20-the-ai-sovereign-a-deep-dive-research-feature-on-nvidia-nvda-in-2026" },
+    { "label": "英偉達：GTC 2026 前瞻——Seeking Alpha", "url": "https://seekingalpha.com/article/4880091-nvidia-ahead-of-gtc-2026-architectural-supremacy-beyond-hyperscaler-capex-fomo" },
+    { "label": "AI 資本支出是否見頂？——NAI500", "url": "https://nai500.com/blog/2026/03/nvidia-nvda-beats-but-is-ai-capex-peaking/" },
+    { "label": "主權 AI 緩衝分析——Trefis", "url": "https://www.trefis.com/stock/nvda/articles/593684/sovereign-ai-could-the-demand-shift-that-re-rate-nvidia/2026-03-17" },
+    { "label": "DeepSeek 使用 Blackwell 晶片訓練（違反禁令）——Investing.com", "url": "https://www.investing.com/news/stock-market-news/deepseek-trained-latest-ai-model-on-nvidia-blackwell-chips-despite-us-ban-reuters-4520377" },
+    { "label": "NVDA 技術分析——Investing.com", "url": "https://www.investing.com/equities/nvidia-corp-technical" },
+    { "label": "NVDA 股價——CNBC", "url": "https://www.cnbc.com/quotes/NVDA" },
+    { "label": "NotebookLM 第二大腦——DeepValue Lab 英偉達先前分析（2026 年 3 月）" }
+  ],
+  "history": [
+    "2026-03-21 @ $174.90——投資主題：完整（intact）。接近熊市公允價值（$178）。市場對超大規模資本支出斷崖過度定價；主權 AI（$30B）及 Rubin 平台未獲信用。基本面案例公允價值 $231，牛市 $298。技術面：中性（低於 50 日及 200 日指數移動平均線）。操作建議：等待確認（watch for confirmation）。"
+  ]
+}

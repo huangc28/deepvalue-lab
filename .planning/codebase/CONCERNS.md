@@ -30,12 +30,12 @@
 
 ## Known Bugs
 
-**Fallback to summary on pre-migration R2 detail keys:**
-- Symptoms: Stock detail endpoint returns `summary_json` from database instead of full detail from R2 when `r2_detail_key` is empty string.
-- Files: `be/lib/app/stocks/detail_handler.go` (lines 47-51)
-- Trigger: Any stock records in `published_stock_details` table without an `r2_detail_key` value (e.g., created before migration `20260318100726_stock_detail_to_r2.sql`).
-- Workaround: This is intentional (comment on line 47) but depends on `summary_json` being a valid, complete `StockDetail` object. If the schema evolves and `summary_json` becomes truly a summary-only, this fallback will break.
-- Fix approach: Either guarantee all production records have `r2_detail_key` populated, or update the fallback logic to reconstruct full detail from summary.
+**Missing detail artifact returns 404:**
+- Symptoms: Stock detail endpoint returns `404` when neither locale-specific nor English detail artifacts are available.
+- Files: `be/lib/app/stocks/detail_handler.go`
+- Trigger: Any stock record in `published_stock_details` without a usable `r2_detail_key`, or a locale-specific request where the zh-TW key is absent and the English key is also absent.
+- Current behavior: This is the intended contract. The detail endpoint is detail-only and does not fall back to `summary_json`.
+- Operational implication: Publish flows should ensure `r2_detail_key` is populated for any ticker expected to render in the detail page.
 
 ## Security Considerations
 

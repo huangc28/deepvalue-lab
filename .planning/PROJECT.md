@@ -1,66 +1,59 @@
-# DeepValue Lab — Analysis Localization & Simplification
+# DeepValue Lab — Historical Analysis Reports
 
 ## What This Is
 
-An enhancement to the DeepValue Lab stock analysis skill that adds Traditional Chinese (繁體中文) report output and bilingual structured data. The analysis skill currently produces English-only markdown reports and StockDetail JSON — this project makes the output accessible to a zh-TW audience with lightly simplified language.
+DeepValue Lab is a personal web research cockpit for decision-first stock analysis. This milestone extends the stock detail experience so the user can review how a case changed over time, starting with a frontend-only historical revision ledger mockup and later adding stable historical report APIs.
 
 ## Core Value
 
-Every stock analysis produces a zh-TW markdown report alongside the English one, and the StockDetail JSON uses bilingual `LocalizedText` fields — so the frontend can serve zh-TW readers without a separate analysis pass.
+A stock detail page should show not only the latest judgment, but how that judgment changed over time and why.
 
 ## Requirements
 
 ### Validated
 
-- ✓ SKILL.md specifies zh-TW report as mandatory output with archive naming — Phase 1
-- ✓ Report contract defines zh-TW translation rules (plain-language leads, acronyms, jargon) — Phase 1
-- ✓ Agent execution SOP includes explicit zh-TW translation step — Phase 1
+- ✓ Every stock analysis produces a zh-TW report alongside the English report — Phase 2
+- ✓ StockDetail JSON is bilingual with `LocalizedText` fields for user-facing content — Phase 2
+- ✓ Backend publish/list/detail flows support exact `locale=zh-TW` with English fallback where implemented — Phase 3
 
 ### Active
 
-- (none — all requirements validated)
-
-### Validated in Phase 2
-
-- ✓ Analysis skill produces a separate zh-TW markdown report alongside the English report — Phase 2
-- ✓ zh-TW report uses lightly simplified language (clearer sentences, fewer unexplained acronyms) while keeping the same section structure — Phase 2
-- ✓ Unavoidable financial jargon remains in the zh-TW report (jargon education is a separate future feature) — Phase 2
-- ✓ StockDetail JSON uses `LocalizedText` (`{ en, 'zh-TW' }`) for all user-facing display fields (summary, thesis, scenarios, etc.) — Phase 2
-- ✓ Both EN and zh-TW reports are saved to the research archive — Phase 2
-- ✓ Publish endpoint accepts bilingual StockDetail and stores it correctly — Phase 2
+- [ ] User can browse a latest-first historical revision ledger inside the stock detail page
+- [ ] User can inspect the currently selected historical revision and compare two revisions side by side
+- [ ] Historical reports are eventually served through stable summary/detail APIs without request-time fan-out across all report artifacts
 
 ### Out of Scope
 
-- Frontend i18n / locale switching — separate phase
-- Jargon tooltip or glossary feature — separate future feature
-- Replacing the English report — English version is kept as-is
-- Changing the analysis methodology or section structure
-- Backend API structural changes beyond accepting bilingual data
+- Raw markdown viewer or original-report access — deferred until the revision ledger proves useful
+- Cross-stock historical comparison — this milestone is single-stock only
+- Comparing more than two revisions at once — keep the first interaction model simple
+- Generic locale framework beyond existing exact `locale=zh-TW` support — not needed for this milestone
 
 ## Context
 
-- The existing analysis skill is defined in `.claude/skills/deepvalue-stock-analysis/SKILL.md`
-- The skill's output contract, SOP, and report template live in `docs/analysis/` and `research/templates/`
-- `LocalizedText` type already exists at `web/src/types/stocks.ts` as `string | Record<'en' | 'zh-TW', string>`
-- The backend publish endpoint is `POST /v1/stocks/{TICKER}/reports` — it needs to handle bilingual StockDetail
-- The research archive path is `research/archive/YYYY/MM/DD/`
-- The audience is Traditional Chinese readers, some without finance backgrounds
+- The web app already has a stock detail page with a decision-first reading order and a placeholder `History` section
+- The frontend stack is React, TypeScript, Vite, TanStack Router, and Tailwind CSS
+- The backend already stores latest published stock detail plus a report metadata list, but it does not yet expose a historical detail read model
+- `web/docs/historical-analysis-reports-prd.md` is the milestone-level product spec and source for the historical reports behavior
+- The user explicitly wants a visual-first workflow: build the Phase 4 mockup, stop, review and manually adjust the UI, then continue with later phases
 
 ## Constraints
 
-- **Skill-only scope**: This project modifies the analysis skill output and related docs — no frontend changes
-- **Existing structure**: The zh-TW report must follow the same 15-section structure as the English report contract
-- **Archive format**: zh-TW reports go to the same archive directory as English ones, with a `-zh-TW` suffix
-- **Simplification level**: Light — clearer sentences, brief plain-language leads before technical detail, not a fundamental rewrite
+- **Execution strategy**: Stop after Phase 4 — do not auto-continue into later phases before visual review
+- **Product surface**: Historical reports stay inside the existing stock detail page for the first phase — no new route
+- **Interaction scope**: Compare mode is exactly two revisions, not more
+- **API timing**: Phase 4 must use local mock data only — no live historical API dependency
+- **Continuity**: Existing latest stock detail flow must remain the production reference path until later integration phases land
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Separate zh-TW file, not bilingual single file | Keeps each report clean and independently readable | — Pending |
-| Bilingual LocalizedText in JSON, not zh-TW only | Frontend can render either locale without re-fetching | — Pending |
-| Light simplification, not heavy rewrite | Audience includes some finance-literate readers; jargon education is a planned future feature | — Pending |
-| Skill output only, frontend is separate phase | Limits blast radius, frontend i18n is its own concern | — Pending |
+| Start this as a new milestone instead of extending the old zh-TW milestone | The historical reports feature has a different product goal and different delivery path | — Pending |
+| Build a frontend-only mockup first | The user wants to see and manually tune the visual before locking data/API decisions | — Pending |
+| Keep historical reports inside the stock detail page initially | Preserves current reading flow and reduces navigation complexity | — Pending |
+| Stop execution after Phase 4 | Prevents frontend/data/API contracts from hardening before the user reviews the mockup | — Pending |
+| Defer raw markdown viewer | Revision ledger and historical compare are the milestone priority | — Pending |
 
 ---
-*Last updated: 2026-03-20 after Phase 2 completion — all milestone phases complete*
+*Last updated: 2026-03-21 after starting milestone v1.1 Historical Analysis Reports*

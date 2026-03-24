@@ -1,0 +1,255 @@
+{
+  "id": "vst",
+  "ticker": "VST",
+  "companyName": "Vistra Corp.",
+  "businessType": "Hybrid contracted/merchant power infrastructure",
+  "currentPrice": 149,
+  "valuationStatus": "fair",
+  "newsImpactStatus": "improving",
+  "thesisStatus": "intact",
+  "technicalEntryStatus": "neutral",
+  "actionState": "watch for confirmation",
+  "dashboardBucket": "needs-review",
+  "baseFairValue": 174,
+  "bearFairValue": 122,
+  "bullFairValue": 214,
+  "discountToBase": -14.37,
+  "summary": "VST has sold off ~12% to ~$149 on March 20 — driven by ex-dividend mechanics, insider-sale optics, and sector rotation, not fundamental deterioration. The thesis is intact, the nuclear PPA book is growing (3.8 GW contracted with Meta and AWS), and the base case fair value of $174 represents ~17% upside from here. More interesting than it was at $163-$165.",
+  "lastUpdated": "2026-03-21",
+  "thesisStatement": "Vistra owns increasingly strategic gas and nuclear infrastructure in tightening power markets, and is converting that positional advantage into long-duration contracted cash flows — but the next return leg still depends on execution: Cogentrix closing, sequential contract wins, and 2027-2028 hedge roll-offs proving out.",
+  "thesisBullets": [
+    "The integrated retail-plus-generation model gives Vistra a better monetization path than a standalone merchant generator.",
+    "The nuclear PPA book has grown to approximately 3.8 GW contracted with Meta and Amazon Web Services under 20-year agreements, estimated to deliver ~25% annual FCFbG accretion at full ramp.",
+    "Management has introduced a 2027 FCF/share target of approximately $16, implying a ~10.7% forward FCFbG yield at the current $149 price.",
+    "The March 20 sell-off was driven by macro and sentiment factors — ex-dividend, rising yields, insider-sale optics — not by a change to the EBITDA or cash-flow trajectory.",
+    "The main underwriting risk is that Cogentrix integration, 2028 hedge roll, and sequential contract wins all need to execute on schedule for the earnings step-up to fully materialize."
+  ],
+  "variantPerception": "The market appears to be treating the sell-off as confirming some underlying worry about Vistra's earnings quality, when the evidence points in the opposite direction. The 2026 EBITDA guidance was reiterated, the AWS Comanche Peak PPA (1,200 MW, 20-year) adds contracted visibility, and the 2027 FCF/share target of ~$16 is stronger than prior market estimates. At ~$149, Vistra looks more like a 'cyclical power stock that might disappoint' in market pricing than a 'partly-contracted power infrastructure platform mid-way through a deliberate EBITDA step-up.' That gap is the setup.",
+  "valuationLens": {
+    "primary": "EV / EBITDA on normalized 2027 earnings power",
+    "crossCheck": "P / adjusted FCF before growth (FCFbG), using the 2027 management-guided FCF/share target",
+    "rationale": "Vistra is capital-intensive and meaningfully levered, so enterprise value is the cleanest anchor. Adjusted FCFbG is important because management runs the company around cash allocation targets and has now published forward FCF/share guidance through 2027 — making it a usable cross-check. P/E is less clean because acquisition accounting (Cogentrix), hedging, nuclear PTC treatment, and capital structure changes can move quarterly EPS materially."
+  },
+  "currentValuationSnapshot": {
+    "marketCap": "~$50.2B",
+    "enterpriseValue": "~$67.6B",
+    "multiples": [
+      "~9.4x EV / 2026 EBITDA midpoint ($7.2B)",
+      "~8.9x EV / 2027 EBITDA midpoint opportunity (~$7.6B)",
+      "~8.6% FCFbG yield on 2026 guidance (>$12.50/share × 337M shares)",
+      "~9.3x P / 2027 FCFbG (~$16/share × 337M shares)"
+    ],
+    "balanceSheetNote": "Net debt including cash collateral and margin deposits was approximately $17.4B at year-end 2025. Management is targeting approximately 2.3x net debt / EBITDA by year-end 2027. Current implied leverage at $7.2B 2026 EBITDA is approximately 2.4x — on track."
+  },
+  "newsToModel": [
+    {
+      "event": "March 20, 2026 sell-off: VST dropped ~12.6% to $146.02 on ex-dividend date, insider-sale disclosures, rising 10-year yields (4.28% → 4.39%), and sector-wide rotation out of AI-power names.",
+      "modelVariableChanged": "Price only — no change to EBITDA guidance, cash-flow targets, or strategic contracts",
+      "impact": "The sell-off improves the risk-reward materially (EV/EBITDA moves from ~10.1x to ~9.4x on 2026 guidance) but does not change any fundamental model variable. The primary impact is a better entry point, not a thesis revision.",
+      "affectedScenario": "All — entry price changes"
+    },
+    {
+      "event": "Amazon Web Services Comanche Peak PPA: 1,200 MW of ERCOT nuclear generation under a 20-year agreement. Combined with Meta (~2,609 MW nuclear + PJM upgrades), total contracted nuclear is approximately 3.8 GW.",
+      "modelVariableChanged": "Revenue visibility, contracted EBITDA share, and multiple justification",
+      "impact": "Improves quality of EBITDA base by shifting more of the story from merchant optionality toward contract-backed cash flow. Management estimates nuclear PPAs will deliver approximately 25% annual FCFbG accretion at full ramp. Also modestly caps pure merchant upside by locking in fixed-price agreements.",
+      "affectedScenario": "Base / Bull"
+    },
+    {
+      "event": "Q4 2025 earnings miss: adjusted EPS of $2.18 vs. $2.45 consensus; revenue of $4.58B vs. $5.75B consensus. Full-year 2025 ongoing operations adjusted EBITDA approximately $5.9B-$6.2B.",
+      "modelVariableChanged": "Near-term EPS credibility and bear scenario probability weight",
+      "impact": "The quarterly miss adds near-term EPS uncertainty and increases the probability weight on the bear scenario modestly. However, full-year EBITDA was broadly on target and 2026-2027 guidance was reiterated and upgraded. The miss was a timing/hedging artifact, not a structural deterioration.",
+      "affectedScenario": "Bear (modestly higher probability weight)"
+    },
+    {
+      "event": "2027 FCF/share guidance of ~$16 introduced on Q4 earnings call alongside 2026 guidance of >$12.50/share.",
+      "modelVariableChanged": "Forward cash-flow confidence and FCFbG yield calculation",
+      "impact": "At ~$16 FCF/share × 337M shares ≈ $5.4B of FCFbG in 2027 — this implies EBITDA in the $8.5B-$9.0B range at 60% conversion, consistent with the high end of the base-to-bull range. Adds confidence floor on cash generation trajectory.",
+      "affectedScenario": "Base / Bull"
+    }
+  ],
+  "scenarios": [
+    {
+      "label": "Bear",
+      "keyMetrics": {
+        "revenue": "6.8B EBITDA",
+        "eps": "$12/sh FCFbG",
+        "targetPE": "8.6x EV/EBITDA"
+      },
+      "operatingAssumption": "2027 EBITDA settles around $6.8B because Cogentrix encounters integration friction or regulatory delay, additional contract wins arrive slowly, and the market re-focuses on leverage and near-term EPS volatility.",
+      "valuationAssumption": "Apply 8.6x EV / EBITDA to approximately $6.8B, subtract net debt of approximately $17.4B, and divide the resulting equity value by approximately 337M diluted shares.",
+      "fairValue": "~$122",
+      "whatMustBeTrue": "Vistra needs to look more like a fully priced cyclical power name than a steadily improving infrastructure compounder — specifically: Cogentrix stumbles, no meaningful new contracts, and the market assigns a sustained discount for leverage and earnings noise."
+    },
+    {
+      "label": "Base",
+      "keyMetrics": {
+        "revenue": "7.6B EBITDA",
+        "eps": "$13.5/sh FCFbG",
+        "targetPE": "10.0x EV/EBITDA"
+      },
+      "operatingAssumption": "Vistra broadly achieves the 2027 EBITDA midpoint near $7.6B. Meta and AWS PPAs perform as guided, Cogentrix closes mid-to-late 2026 and begins contributing accretion in 2027, and cash conversion remains around the 60% medium-term framework.",
+      "valuationAssumption": "Apply 10.0x EV / EBITDA to approximately $7.6B, subtract net debt of approximately $17.4B, and divide by approximately 337M diluted shares.",
+      "fairValue": "~$174",
+      "whatMustBeTrue": "Retail execution stays strong, fleet operations remain reliable, Cogentrix closes on schedule, and sequential evidence shows that signed contracts lift base profitability."
+    },
+    {
+      "label": "Bull",
+      "keyMetrics": {
+        "revenue": "8.3B EBITDA",
+        "eps": "$14.8/sh FCFbG",
+        "targetPE": "10.8x EV/EBITDA"
+      },
+      "operatingAssumption": "Vistra exits 2027 with earnings power closer to $8.3B-$8.5B of EBITDA; the $16 FCF/share 2027 target proves achievable or conservative. Cogentrix integrates cleanly, load growth in ERCOT and PJM stays structurally elevated, and additional nuclear or gas contracts are signed.",
+      "valuationAssumption": "Apply 10.8x EV / EBITDA to approximately $8.3B, subtract net debt of approximately $17.4B, and divide by approximately 337M diluted shares.",
+      "fairValue": "~$214",
+      "whatMustBeTrue": "The market needs proof that Vistra deserves to be capitalized as a structurally tighter, more contracted, and more durable power-infrastructure platform — delivered via sequential contract wins, visible EBITDA step-ups, and continued deleveraging through 2027."
+    }
+  ],
+  "currentPriceImplies": "At approximately $149, the stock is pricing something noticeably closer to the bear-to-midpoint range than the base case. The market is underwriting approximately 9.4x 2026 EBITDA midpoint and approximately 9.3x 2027 FCFbG — a meaningful discount to the multiples seen at the $163-$165 range earlier in March. What the current price does not appear to credit: the improving quality of the EBITDA base from the 3.8 GW nuclear PPA book, the $16 FCF/share 2027 management target (which implies a ~10.7% forward FCFbG yield at $149), or the Cogentrix portfolio purchased at a price management described as approximately 7.25x 2027 EBITDA — itself cheaper than the current market multiple. What the current price does appear to price in: execution risk from the Q4 EPS miss, macro multiple compression from rising yields, and narrative fatigue around the AI-power trade. The sum of those concerns feels more like sentiment-driven mark-to-market than a model revision.",
+  "currentPriceImpliesBrief": "Market prices in execution risk and yield headwinds, not the growing nuclear PPA book or the $16/share 2027 FCF target.",
+  "currentPriceImpliedFacts": [
+    {
+      "label": "Current EV / 2026 EBITDA",
+      "value": "~9.4x"
+    },
+    {
+      "label": "Current EV / 2027 EBITDA midpoint",
+      "value": "~8.9x"
+    },
+    {
+      "label": "2026 FCFbG yield",
+      "value": "~8.6%"
+    },
+    {
+      "label": "Implied P / 2027 FCFbG at $16/share guidance",
+      "value": "~9.3x (FCFbG yield ~10.7%)"
+    },
+    {
+      "label": "Discount to base case fair value ($174)",
+      "value": "~14.4%"
+    },
+    {
+      "label": "Generation hedge profile",
+      "value": "~100% in 2026, ~84% in 2027, ~58% in 2028"
+    },
+    {
+      "label": "Contracted nuclear generation",
+      "value": "~3.8 GW (Meta + AWS, 20-year PPAs)"
+    }
+  ],
+  "provisionalConclusion": "Vistra looks fair-to-improving risk-reward at $149 — meaningfully better than the earlier March range of $163-$165. The business thesis is intact: nuclear PPAs are growing, 2027 FCF guidance is stronger than the prior model, and the sell-off was macro/sentiment-driven rather than fundamental. At ~$149, the base case fair value of $174 represents approximately 17% upside and the bull case $214 is approximately 44% higher. The stock is not yet technically cheap (still above the bear × 1.1 = $134 threshold), but the risk-reward is now more genuinely interesting. I would watch for a floor in the $145-$150 zone and build a position here rather than waiting for a clean oversold signal that may not arrive before recovery.",
+  "technicalCommentary": "Technical entry is neutral, approaching a more constructive zone. After the March 20 sell-off, RSI (14-day) has moved to approximately 41-43, approaching but not yet at the conventional oversold threshold of 30. The stock is now below the 5-day, 50-day, and 200-day SMAs, with MACD in negative territory. This is a short-term bearish technical posture. However, when valuation is improving and RSI is drifting toward oversold territory simultaneously, the setup becomes more interesting from a contrarian entry perspective. The 200-day SMA (~$173) is roughly coincident with the base-case fair value ($174), which makes a technical-fundamental crossover target unusually clean. A stabilization above $145 followed by a recovery above the 50-day SMA (~$168) would upgrade the technical entry status to favorable.",
+  "technicalSignals": [
+    {
+      "label": "RSI (14-day)",
+      "value": "~41-43"
+    },
+    {
+      "label": "5-day SMA",
+      "value": "~$164 (price below — bearish)"
+    },
+    {
+      "label": "50-day SMA",
+      "value": "~$168 (price below — bearish)"
+    },
+    {
+      "label": "200-day SMA",
+      "value": "~$173 (price below — bearish; ~coincident with base fair value $174)"
+    },
+    {
+      "label": "MACD",
+      "value": "Negative"
+    },
+    {
+      "label": "52-week range",
+      "value": "$90.51 – $219.82"
+    }
+  ],
+  "risks": [
+    "Cogentrix integration or regulatory approval (FERC, DOJ/HSR) delays push expected FCFbG accretion beyond 2027.",
+    "ERCOT or PJM power curves do not support the 2028 hedge roll earnings step-up when the current 58% hedge expires.",
+    "Q4 EPS miss pattern repeats in Q1 2026, undermining investor confidence in the 2026 EBITDA guidance range.",
+    "Rising 10-year Treasury yields (above 4.5%) continue compressing utility-adjacent multiples, capping recovery despite improving fundamentals.",
+    "Insider selling by CEO and EVP in March 2026 signals management confidence is less than the guidance implies — if a pattern, this could be a meaningful negative signal.",
+    "Plant outages or fleet reliability issues undermine the infrastructure-quality multiple argument.",
+    "Leverage stays above 2.5x net debt / EBITDA longer than targeted, capping equity multiple expansion.",
+    "Nuclear PTC economics become less supportive due to policy or IRS interpretation changes."
+  ],
+  "catalysts": [
+    "March 20-21 price stabilization: a floor in the $145-$150 zone would confirm the sell-off was sentiment-driven.",
+    "Cogentrix regulatory approval and closing on the expected mid-to-late 2026 timeline.",
+    "Additional long-duration gas or nuclear contract announcements beyond Meta and AWS.",
+    "Q1 2026 results confirming the 2026 EBITDA guidance range is tracking as expected.",
+    "Visible progress toward $16 FCF/share 2027 target (e.g., upward guidance revisions mid-year).",
+    "Broader yield stabilization or decline that re-opens multiple expansion for utility-adjacent names.",
+    "Continued buybacks alongside visible deleveraging toward the 2.3x target."
+  ],
+  "monitorNext": [
+    "Whether the March 20-21 low holds and VST stabilizes in the $145-$155 zone, confirming a sentiment-driven floor.",
+    "Cogentrix acquisition timeline: FERC, DOJ/HSR, and state regulatory approvals; any delay beyond mid-to-late 2026 would be a negative model variable.",
+    "Additional long-duration nuclear or gas contract announcements beyond Meta and AWS.",
+    "Q1 2026 results and whether the 2026 EBITDA guidance of $6.8B-$7.6B is tracking as expected.",
+    "2027 and 2028 hedge roll execution; especially how much incremental EBITDA survives in the 42% open 2028 position.",
+    "Net debt / EBITDA trajectory toward the ~2.3x year-end 2027 target.",
+    "Nuclear PTC economics and any policy or IRS interpretation changes affecting the contracted nuclear book.",
+    "10-year Treasury yield trajectory — sustained moves above 4.5% would compress sector multiples regardless of individual fundamentals."
+  ],
+  "sourcesUsed": [
+    {
+      "label": "Vistra Q4 / FY2025 earnings release (Feb 26, 2026)",
+      "url": "https://investor.vistracorp.com/2026-02-26-Vistra-Reports-Fourth-Quarter-and-Full-Year-2025-Results"
+    },
+    {
+      "label": "Vistra Q4 2025 earnings call transcript (Motley Fool)",
+      "url": "https://www.fool.com/earnings/call-transcripts/2026/02/26/vistra-vst-q4-2025-earnings-call-transcript/"
+    },
+    {
+      "label": "Vistra / Meta strategic relationship announcement (Jan 9, 2026)",
+      "url": "https://investor.vistracorp.com/2026-01-09-Vistra-Enters-into-Long-Term-Strategic-Relationship-with-Meta,-Supporting-Metas-AI-Innovation-and-Sustainability-Objectives"
+    },
+    {
+      "label": "Vistra Cogentrix acquisition announcement (Jan 5, 2026)",
+      "url": "https://investor.vistracorp.com/2026-01-05-Vistra-Adds-to-its-Industry-Leading-Generation-Portfolio-with-Acquisition-of-Cogentrix"
+    },
+    {
+      "label": "Bloomberg — Cogentrix deal coverage",
+      "url": "https://www.bloomberg.com/news/articles/2026-01-05/vistra-to-buy-big-us-gas-powered-fleet-for-4-billion"
+    },
+    {
+      "label": "Vistra 2025 Form 10-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/1692819/000169281926000006/vistra-20251231.htm"
+    },
+    {
+      "label": "MarketMinute — March 20 sell-off analysis",
+      "url": "https://markets.financialcontent.com/stocks/article/marketminute-2026-3-20-high-wire-act-vistra-corp-plunges-6-as-utility-sector-stumbles-amid-rising-yields-and-fading-ai-nuclear-hype"
+    },
+    {
+      "label": "Parameter.io — March 20 sell-off: insider sales and ex-dividend",
+      "url": "https://parameter.io/vistra-vst-stock-plunges-7-amid-heavy-executive-selling-and-ex-dividend-timing/"
+    },
+    {
+      "label": "StockAnalysis — VST analyst ratings",
+      "url": "https://stockanalysis.com/stocks/vst/ratings/"
+    },
+    {
+      "label": "BMO Capital March 2 Outperform reiteration, PT $241",
+      "url": "https://meyka.com/blog/bmo-maintained-outperform-on-vistra-corp-vst-mar-02-2026-pt-241-0303/"
+    },
+    {
+      "label": "TradingView VST technical analysis",
+      "url": "https://www.tradingview.com/symbols/NYSE-VST/technicals/"
+    },
+    {
+      "label": "Barchart VST technical analysis",
+      "url": "https://www.barchart.com/stocks/quotes/VST/technical-analysis"
+    },
+    {
+      "label": "Yahoo Finance VST quote",
+      "url": "https://finance.yahoo.com/quote/VST/"
+    }
+  ],
+  "history": [
+    "2026-03-20: Initial DeepValue Lab analysis. Price ~$163.69. Thesis intact, valuation fair, technical entry neutral. Base case $174, bear $122, bull $214.",
+    "2026-03-21: Updated analysis. Price ~$149 (after March 20 -12.6% sell-off driven by ex-dividend, insider sales, rising yields, sector rotation — not fundamental deterioration). AWS Comanche Peak PPA (1,200 MW, 20-year) confirmed. 2027 FCF/share guidance of ~$16 introduced. Q4 EPS miss noted as near-term noise. EV/2026 EBITDA moved from ~10.1x to ~9.4x. Thesis intact, valuation fair (improving risk-reward), technical entry neutral. Action state upgraded to watch-for-confirmation."
+  ]
+}

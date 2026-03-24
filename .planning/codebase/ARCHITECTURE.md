@@ -73,11 +73,11 @@
 
 1. Browser requests `GET /v1/stocks/{ticker}`
 2. Router extracts ticker, passes to `DetailHandler.Handle()`
-3. Handler queries Turso for stock metadata including `R2DetailKey`
-4. If `R2DetailKey` is populated, handler downloads full detail JSON from R2 (new architecture)
-5. If `R2DetailKey` is empty, fallback to `SummaryJson` from database (migration compatibility)
-6. Handler returns full `StockDetail` JSON with thesis, scenarios, news-to-model, etc.
-7. Frontend renders multi-section detail page
+3. Handler queries Turso for stock metadata including `R2DetailKey` and optional `R2DetailZhTwKey`
+4. For `?locale=zh-TW`, handler prefers `R2DetailZhTwKey`; otherwise it uses `R2DetailKey`
+5. If a usable detail key exists, handler downloads full detail JSON from R2
+6. If no usable detail key exists, handler returns `404` rather than falling back to summary JSON
+7. Frontend renders the multi-section detail page only from full `StockDetail` payloads
 
 **State Management:**
 

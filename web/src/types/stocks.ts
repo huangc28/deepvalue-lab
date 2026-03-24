@@ -5,6 +5,12 @@ export type NewsImpactStatus = 'improving' | 'unchanged' | 'deteriorating'
 export type ThesisStatus = 'intact' | 'watch' | 'broken'
 export type TechnicalEntryStatus = 'favorable' | 'neutral' | 'stretched'
 export type DashboardBucket = 'now-actionable' | 'needs-review' | 'at-risk'
+export type HistoricalReportProvenance =
+  | 'manual'
+  | 'scheduled-monitor'
+  | 'earnings-refresh'
+  | 'news-refresh'
+  | 'thesis-refresh'
 export type ActionState =
   | 'strong accumulation'
   | 'watch for confirmation'
@@ -58,6 +64,25 @@ export interface SourceReference {
   url?: string
 }
 
+export interface HistoricalReport {
+  reportId: string
+  publishedAtMs: number
+  provenance: HistoricalReportProvenance
+  valuationStatus: ValuationStatus
+  thesisStatus: ThesisStatus
+  technicalEntryStatus: TechnicalEntryStatus
+  currentPrice: number
+  bearFairValue: number
+  baseFairValue: number
+  bullFairValue: number
+  summary: LocalizedText
+  currentPriceImpliesBrief: LocalizedText
+  currentPriceImplies: LocalizedText
+  monitorNext: LocalizedText[]
+  changeSummary: LocalizedText
+  latest?: boolean
+}
+
 export interface StockSummary {
   id: string
   ticker: string
@@ -97,4 +122,5 @@ export interface StockDetail extends StockSummary {
   monitorNext: LocalizedText[]
   sourcesUsed: Array<string | SourceReference>
   history: LocalizedText[]
+  historicalReports?: HistoricalReport[]
 }

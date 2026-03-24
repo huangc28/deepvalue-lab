@@ -1,0 +1,198 @@
+{
+  "id": "amat",
+  "ticker": "AMAT",
+  "companyName": "Applied Materials, Inc.",
+  "businessType": "高品質半導體設備複合型公司，帶有景氣循環曝險",
+  "currentPrice": 361.79,
+  "valuationStatus": "rich",
+  "newsImpactStatus": "improving",
+  "thesisStatus": "intact",
+  "technicalEntryStatus": "stretched",
+  "actionState": "trim zone",
+  "dashboardBucket": "at-risk",
+  "baseFairValue": 303,
+  "bearFairValue": 239,
+  "bullFairValue": 398,
+  "discountToBase": 19.4,
+  "summary": "Applied Materials 仍是高品質的半導體設備公司，但在 $361.79 這個價位，股價已經反映接近牛市路徑的 FY2026 預期。投資論點仍然完整，安全邊際則不明顯。",
+  "lastUpdated": "2026-03-24",
+  "thesisStatement": "Applied Materials 是一家高品質的半導體設備公司，確實受惠於 AI/HBM、先進封裝與服務業務的支撐，但目前股價已經要求接近牛市情境的執行力才撐得住。",
+  "thesisBullets": [
+    "與 AI 相關的先進邏輯、HBM/DRAM 與先進封裝需求，正把客戶支出推向 Applied 擅長的製程環節。",
+    "AGS 在 FY2026 Q1 創下服務與零組件營收新高，讓模型比純設備故事更有韌性。",
+    "資產負債表仍屬淨現金，因此真正要承保的不是償債能力，而是投資人是否對 AI 週期付出過高價格。",
+    "投資人真正押注的是：AI 驅動的半導體設備需求能維持夠久，讓 Applied 得以長時間維持高於傳統 semicap 的溢價倍數。"
+  ],
+  "variantPerception": "市場給 Applied 品質溢價是合理的，但現在可能是在用複合成長股的倍數去定價一家景氣循環型設備公司；只要資本支出時點轉弱，重評速度就可能很快。",
+  "valuationLens": {
+    "primary": "前瞻 non-GAAP 本益比",
+    "crossCheck": "EV / EBIT",
+    "rationale": "前瞻 non-GAAP 本益比是最乾淨的主估值工具，因為 FY2026 的 GAAP 結果受到 BIS 和解與部分併購相關項目的干擾；而 EV / EBIT 仍是重要交叉檢查，因為這終究是一門受景氣循環與資本強度約束的設備生意。"
+  },
+  "currentValuationSnapshot": {
+    "marketCap": "約 $255.3B",
+    "enterpriseValue": "在扣除現金、投資並加回負債後，約為 $248B",
+    "multiples": [
+      "以 FY2025 稀釋後每股盈餘（EPS）$8.66 計算，過去 12 個月 GAAP 本益比約 41.8x",
+      "以基本情境 FY2026 non-GAAP EPS $10.83 計算，約為 33.4x",
+      "以基本情境計算，前瞻 EV / EBIT 約為 26.8x"
+    ],
+    "balanceSheetNote": "資產負債表仍是淨現金：截至 2026-01-25，現金與投資為 $13.5B，負債為 $6.6B。"
+  },
+  "newsToModel": [
+    {
+      "event": "FY2026 Q1 營收為 $7.01B、non-GAAP EPS 為 $2.38；Q2 指引為營收 $7.65B +/- $500M、non-GAAP EPS $2.64 +/- $0.20。",
+      "modelVariableChanged": "FY2026 營收與每股盈餘（EPS）",
+      "impact": "這讓我更有信心 FY2026 會從 FY2025 僅 4% 的營收成長重新加速，並支持低雙位數營收成長的基本情境。",
+      "affectedScenario": "Base and Bull"
+    },
+    {
+      "event": "管理層表示 2026 日曆年的半導體設備營收將成長超過 20%，同時 Q1 創下 DRAM 營收新高，AGS 的服務與零組件營收也創新高。",
+      "modelVariableChanged": "業務組合、利潤率韌性與牛市情境機率",
+      "impact": "更強的 DRAM/HBM 與服務組合，提升我對毛利率可維持在接近 49% 的信心，即使 foundry/logic 仍有波動。",
+      "affectedScenario": "Base and Bull"
+    },
+    {
+      "event": "Applied 以 $252.5M 解決 BIS 出口管制事項，DOJ 與 SEC 的調查則在未採取執法行動下結案。",
+      "modelVariableChanged": "GAAP 盈利、現金流出、監管陰影與估值倍數支撐",
+      "impact": "一次性費用會拖累 FY2026 的 GAAP 表現與現金部署，但更大的監管陰影消退，略微提高市場願意維持溢價倍數的機率。",
+      "affectedScenario": "Bear and Base"
+    },
+    {
+      "event": "中國仍占 FY2026 Q1 營收的 30%。",
+      "modelVariableChanged": "下行風險與倍數上限",
+      "impact": "即使和解已完成，出口管制與中國出貨限制仍是實質變數，因此我不願承保無上限的重評。",
+      "affectedScenario": "Bear"
+    }
+  ],
+  "scenarios": [
+    {
+      "label": "Bear",
+      "keyMetrics": {
+        "revenue": "$29.93B",
+        "eps": "$9.94",
+        "targetPE": "24x"
+      },
+      "operatingAssumption": "熊市情境下，FY2026 營收約為 $29.93B，年增 5.5%。這代表 AI/HBM 需求仍健康，但 foundry 與 logic 支出仍偏零散，中國限制壓住上行空間，AGS 也無法完全抵消系統業務組合轉弱。對應的 non-GAAP EPS 約為 $9.94。",
+      "valuationAssumption": "給予 24x 前瞻 non-GAAP 本益比。這仍高於舊週期 semicap 平均，但代表市場不再願意付出接近複合成長股的倍數。",
+      "fairValue": "$239 per share",
+      "whatMustBeTrue": "Q1 創高的 DRAM 動能降溫、先進邏輯節點拉貨速度不足以補缺口、中國仍是天花板而不是推力，且市場重新把它視為高品質 semicap，而不是 AI 基礎設施複合成長股。"
+    },
+    {
+      "label": "Base",
+      "keyMetrics": {
+        "revenue": "$31.35B",
+        "eps": "$10.83",
+        "targetPE": "28x"
+      },
+      "operatingAssumption": "基本情境下，FY2026 營收約為 $31.35B，年增 10.5%。這代表 Q2 指引成真、DRAM/HBM 與先進封裝維持強勢、AGS 持續成長，而且回購讓股數繼續下降。對應的 non-GAAP EPS 約為 $10.83。",
+      "valuationAssumption": "給予 28x 前瞻 non-GAAP 本益比。這高於一般 semicap 週期倍數，因為 Applied 具備廣泛製程布局、服務支撐與 AI 連動需求；但也低於最昂貴的 AI 基礎設施估值，因為景氣循環與出口風險仍然存在。",
+      "fairValue": "$303 per share",
+      "whatMustBeTrue": "FY2026 成長落在低雙位數、AGS 持續緩衝景氣波動、DRAM/HBM 支出不明顯轉弱，而且股價仍保有部分溢價倍數，不需要全面進入牛市重評。"
+    },
+    {
+      "label": "Bull",
+      "keyMetrics": {
+        "revenue": "$32.62B",
+        "eps": "$11.72",
+        "targetPE": "34x"
+      },
+      "operatingAssumption": "牛市情境下，FY2026 營收約為 $32.62B，年增 15.0%。這代表先進邏輯、HBM/DRAM 與先進封裝都維持非常強勁，AGS 仍接近紀錄水準成長，營運槓桿與回購把 non-GAAP EPS 推升到約 $11.72。",
+      "valuationAssumption": "給予 34x 前瞻 non-GAAP 本益比，反映市場願意把 AMAT 更接近 AI 基礎設施受惠者，而不是傳統 semicap 同業來定價。",
+      "fairValue": "$398 per share",
+      "whatMustBeTrue": "客戶持續把資本投入先進節點與封裝、幾乎沒有明顯消化期，中國曝險沒有再惡化，而且投資人仍願意對設備業務支付接近高點的倍數。"
+    }
+  ],
+  "currentPriceImplies": "在 $361.79 這個價位，市場其實已經在承保接近偏牛市的路徑。如果投資人只願意給 32x 前瞻獲利，股價就需要大約 $11.31 的 FY2026 EPS，換算成 27.5% 淨利率下大約是 $32.7B 的營收，也就是相對 FY2025 成長約 15.4%。如果倍數掉到 30x，市場就需要大約 $12.06 的 EPS，對應營收約 $34.9B，也就是約 23.1% 的成長。換句話說，現在的價格不是只在反映 AI 與 DRAM 依然不錯，而是在反映接近牛市的營運執行，或是市場會繼續給 AMAT 一個對 semicap 來說已經偏滿的溢價倍數。",
+  "currentPriceImpliesBrief": "市場已在反映偏牛市的 FY2026 路徑：要嘛約 15% 營收成長配上約 32x 本益比，要嘛超過 20% 成長配上約 30x。",
+  "currentPriceImpliedFacts": [
+    {
+      "label": "隱含 EPS @ 32x",
+      "value": "約 $11.31"
+    },
+    {
+      "label": "隱含營收 @ 32x",
+      "value": "約 $32.7B（+15.4% YoY）"
+    },
+    {
+      "label": "隱含 EPS @ 30x",
+      "value": "約 $12.06"
+    },
+    {
+      "label": "隱含營收 @ 30x",
+      "value": "約 $34.9B（+23.1% YoY）"
+    }
+  ],
+  "provisionalConclusion": "AMAT 現在看起來是偏貴，不是壞掉。公司本質仍然優秀，但當前價格已經折現接近我上行情境的內容，對一般 semicap 波動留下的容錯空間不多。",
+  "technicalCommentary": "技術面看起來偏伸展。22 日相對強弱指數（RSI）約 56.7，略高於其 12 日指數移動平均（EMA）約 55.4；股價則高於 50 日均線約 6.0%，高於 200 日均線約 49.0%。這不是典型失控噴出，但也絕對不是被洗乾淨的累積區。既然估值已經偏貴，圖形本身無法改善新進場的風險報酬。",
+  "technicalSignals": [
+    {
+      "label": "RSI（22）",
+      "value": "56.7"
+    },
+    {
+      "label": "RSI EMA（12）",
+      "value": "55.4"
+    },
+    {
+      "label": "50 日均線",
+      "value": "約 $341.45（+6.0%）"
+    },
+    {
+      "label": "200 日均線",
+      "value": "約 $242.79（+49.0%，z-score 約 1.8）"
+    },
+    {
+      "label": "近 3 個月支撐 / 壓力",
+      "value": "約 $255.96 / 約 $395.95"
+    }
+  ],
+  "risks": [
+    "AI/HBM 支出降溫速度快於市場預期，導致 EPS 與估值倍數同時壓縮。",
+    "中國出口限制或合規問題壓抑出貨，讓估值倍數無法擴張。",
+    "Foundry 與 logic 客戶延後專案，讓 DRAM 與封裝不足以支撐目前估值。",
+    "即使 Applied 營運持續執行良好，市場仍可能下修 semicap 估值倍數。"
+  ],
+  "catalysts": [
+    "FY2026 Q2 與 Q3 的營收及 non-GAAP EPS 落在指引中高區間以上。",
+    "DRAM/HBM 與先進封裝需求持續創高，尤其是管理層仍維持 20%+ 半導體設備成長說法。",
+    "更多證據顯示 AGS 能以更佳組合與利潤率持續複利成長，強化設備週期下方的保護墊。",
+    "BIS 和解後執行乾淨，沒有新的美國執法升級。"
+  ],
+  "monitorNext": [
+    "FY2026 Q2 的營收與 non-GAAP EPS 是否落在指引中值或高端，這將驗證 Q1 的樂觀是否轉成持續性的 FY2026 run-rate。",
+    "管理層是否持續表述 2026 日曆年半導體設備營收成長超過 20%，尤其如果 foundry 與 logic 有改善，而不是只靠 DRAM/HBM 撐場。",
+    "AGS 是否能在高 20% 利潤率附近持續維持服務與零組件營收新高，因為這是支撐溢價倍數最重要的底盤。",
+    "中國營收占比是否仍在 30% 左右，或因出口管制、出貨限制與合規摩擦而成為更大的拖累。",
+    "DRAM/HBM 與先進封裝需求是否持續廣泛且耐久，而不是收斂成一波較窄的資本支出脈衝。"
+  ],
+  "sourcesUsed": [
+    {
+      "label": "Applied Materials FY2025 Form 10-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/6951/000162828025056742/amat-20251026.htm"
+    },
+    {
+      "label": "Applied Materials FY2026 Q1 Form 10-Q",
+      "url": "https://www.sec.gov/Archives/edgar/data/6951/000162828026009694/amat-20260125.htm"
+    },
+    {
+      "label": "Applied Materials FY2026 Q1 財報新聞稿，Exhibit 99.1",
+      "url": "https://www.sec.gov/Archives/edgar/data/6951/000162828026007661/exhibit991q12026earningsre.htm"
+    },
+    {
+      "label": "Applied Materials 有關 BIS 和解與出口管制調查結案的 8-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/6951/000162828026007444/amat-20260211.htm"
+    },
+    {
+      "label": "Yahoo Finance AMAT 日線圖 API",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/AMAT?range=1y&interval=1d&includePrePost=false"
+    },
+    {
+      "label": "Stooq AMAT 日線歷史資料",
+      "url": "https://stooq.com/q/d/l/?s=amat.us&i=d"
+    }
+  ],
+  "history": [
+    "2026-03-24 @ $361.79 - 論點：intact。相對基本情境 $303 與牛市情境 $398，估值偏貴。技術面：stretched。動作：trim zone。"
+  ]
+}
