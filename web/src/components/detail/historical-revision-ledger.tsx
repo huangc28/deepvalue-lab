@@ -9,33 +9,64 @@ import type {
 } from '../../types/stocks'
 import type { LocalizedText } from '../../i18n/types'
 
+export interface HistoricalRevisionLedgerProps {
+  reports?: HistoricalReportSummary[]
+  reportDetails?: Record<string, HistoricalReportDetail>
+  legacyItems: LocalizedText[]
+  mode?: 'legacy' | 'live'
+  selectedId?: string | null
+  compareId?: string | null
+  onSelectedIdChange?: (reportId: string) => void
+  onCompareIdChange?: (reportId: string | null) => void
+  listState?: { status: 'idle' | 'loading' | 'ready' | 'error'; errorMessage?: string }
+  selectedDetailState?: { status: 'idle' | 'loading' | 'ready' | 'error'; errorMessage?: string }
+  compareDetailState?: { status: 'idle' | 'loading' | 'ready' | 'error'; errorMessage?: string }
+}
+
 export function HistoricalRevisionLedger({
   reports,
   reportDetails,
   legacyItems,
-}: {
-  reports?: HistoricalReportSummary[]
-  reportDetails?: Record<string, HistoricalReportDetail>
-  legacyItems: LocalizedText[]
-}) {
+  mode,
+  selectedId,
+  compareId,
+  onSelectedIdChange,
+  onCompareIdChange,
+  listState,
+  selectedDetailState,
+  compareDetailState,
+}: HistoricalRevisionLedgerProps) {
   const { locale, m, text } = useI18n()
-  const sortedReports = reports
-    ? [...reports].sort((left, right) => right.publishedAtMs - left.publishedAtMs)
-    : undefined
-  const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [compareId, setCompareId] = useState<string | null>(null)
+  const resolvedMode = mode ?? (reports === undefined ? 'legacy' : 'live')
+  const [internalSelectedId, setInternalSelectedId] = useState<string | null>(null)
+  const [internalCompareId, setInternalCompareId] = useState<string | null>(null)
 
-  if (!sortedReports) {
+  if (resolvedMode === 'legacy') {
     return <LegacyHistory items={legacyItems} />
   }
+
+  if (listState?.status === 'loading') {
+    return <HistoryLoadingState />
+  }
+
+  if (listState?.status === 'error') {
+    return <HistoryErrorState errorMessage={listState.errorMessage} />
+  }
+
+  const sortedReports = reports
+    ? [...reports].sort((left, right) => right.publishedAtMs - left.publishedAtMs)
+    : []
 
   if (sortedReports.length === 0) {
     return <EmptyHistoryState />
   }
 
+  const currentSelectedId = selectedId ?? internalSelectedId
+  const currentCompareId = compareId ?? internalCompareId
   const resolvedSelectedId =
-    selectedId && sortedReports.some((report) => report.reportId === selectedId)
-      ? selectedId
+    currentSelectedId &&
+    sortedReports.some((report) => report.reportId === currentSelectedId)
+      ? currentSelectedId
       : sortedReports[0].reportId
   const selectedReport =
     sortedReports.find((report) => report.reportId === resolvedSelectedId) ??
@@ -46,39 +77,59 @@ export function HistoricalRevisionLedger({
   )
 
   const resolvedCompareId =
-    compareId && sortedReports.some((r) => r.reportId === compareId) && compareId !== resolvedSelectedId
-      ? compareId
+    currentCompareId &&
+    sortedReports.some((report) => report.reportId === currentCompareId) &&
+    currentCompareId !== resolvedSelectedId
+      ? currentCompareId
       : null
   const compareDetail = resolvedCompareId ? (reportDetails?.[resolvedCompareId] ?? null) : null
 
   const inCompareMode = resolvedCompareId !== null
   const canCompare = sortedReports.length > 1
 
+  function commitSelectedId(reportId: string) {
+    if (onSelectedIdChange) {
+      onSelectedIdChange(reportId)
+      return
+    }
+
+    setInternalSelectedId(reportId)
+  }
+
+  function commitCompareId(reportId: string | null) {
+    if (onCompareIdChange) {
+      onCompareIdChange(reportId)
+      return
+    }
+
+    setInternalCompareId(reportId)
+  }
+
   function handleSelectRevision(reportId: string) {
     // If clicking the compare target while in compare mode, swap them
     if (inCompareMode && reportId === resolvedCompareId) {
-      setSelectedId(resolvedCompareId)
-      setCompareId(resolvedSelectedId)
+      commitSelectedId(resolvedCompareId)
+      commitCompareId(resolvedSelectedId)
       return
     }
     // Clear compare if the new base selection would collide
     if (inCompareMode && reportId === resolvedSelectedId) {
       return
     }
-    setSelectedId(reportId)
+    commitSelectedId(reportId)
   }
 
   function handleSetCompare(reportId: string) {
     if (reportId === resolvedSelectedId) return
-    setCompareId(reportId)
+    commitCompareId(reportId)
   }
 
   function handleClearCompare() {
-    setCompareId(null)
+    commitCompareId(null)
   }
 
   function handleExitCompare() {
-    setCompareId(null)
+    commitCompareId(null)
     // base selection is preserved — do not touch selectedId
   }
 
@@ -229,10 +280,12 @@ export function HistoricalRevisionLedger({
 
         {/* Right column: snapshot or compare panel */}
         <div className="space-y-4">
-          {inCompareMode && compareDetail && selectedDetail ? (
+          {inCompareMode ? (
             <ComparePanel
               baseReport={selectedDetail}
               compareReport={compareDetail}
+              selectedDetailState={selectedDetailState}
+              compareDetailState={compareDetailState}
               onExit={handleExitCompare}
             />
           ) : (
@@ -250,7 +303,11 @@ export function HistoricalRevisionLedger({
                 </p>
               </div>
 
-              {selectedDetail ? (
+              {selectedDetailState?.status === 'loading' ? (
+                <SelectedRevisionLoadingState />
+              ) : selectedDetailState?.status === 'error' ? (
+                <SelectedRevisionErrorState errorMessage={selectedDetailState.errorMessage} />
+              ) : selectedDetail ? (
                 <SelectedRevisionCard
                   report={selectedDetail}
                   isOldestRevision={selectedIndex === sortedReports.length - 1}
@@ -269,10 +326,14 @@ export function HistoricalRevisionLedger({
 function ComparePanel({
   baseReport,
   compareReport,
+  selectedDetailState,
+  compareDetailState,
   onExit,
 }: {
-  baseReport: HistoricalReportDetail
-  compareReport: HistoricalReportDetail
+  baseReport: HistoricalReportDetail | null
+  compareReport: HistoricalReportDetail | null
+  selectedDetailState?: { status: 'idle' | 'loading' | 'ready' | 'error'; errorMessage?: string }
+  compareDetailState?: { status: 'idle' | 'loading' | 'ready' | 'error'; errorMessage?: string }
   onExit: () => void
 }) {
   const { m } = useI18n()
@@ -298,19 +359,33 @@ function ComparePanel({
       </div>
 
       <div className="grid gap-5 md:grid-cols-2">
-        <CompareRevisionCard
-          report={baseReport}
-          roleLabel={m.detail.historyBaseRevision}
-          roleColor="var(--accent-copper)"
-        />
-        <CompareRevisionCard
-          report={compareReport}
-          roleLabel={m.detail.historyComparisonRevision}
-          roleColor="var(--signal-positive-soft)"
-        />
+        {selectedDetailState?.status === 'loading' ? (
+          <SelectedRevisionLoadingState />
+        ) : selectedDetailState?.status === 'error' ? (
+          <SelectedRevisionErrorState errorMessage={selectedDetailState.errorMessage} />
+        ) : baseReport ? (
+          <CompareRevisionCard
+            report={baseReport}
+            roleLabel={m.detail.historyBaseRevision}
+            roleColor="var(--accent-copper)"
+          />
+        ) : null}
+        {compareDetailState?.status === 'loading' ? (
+          <CompareRevisionLoadingState />
+        ) : compareDetailState?.status === 'error' ? (
+          <CompareRevisionErrorState errorMessage={compareDetailState.errorMessage} />
+        ) : compareReport ? (
+          <CompareRevisionCard
+            report={compareReport}
+            roleLabel={m.detail.historyComparisonRevision}
+            roleColor="var(--signal-positive-soft)"
+          />
+        ) : null}
       </div>
 
-      <CompareMetricDiff base={baseReport} compare={compareReport} />
+      {baseReport && compareReport ? (
+        <CompareMetricDiff base={baseReport} compare={compareReport} />
+      ) : null}
     </div>
   )
 }
@@ -744,6 +819,116 @@ function EmptyHistoryState() {
   )
 }
 
+function HistoryLoadingState() {
+  const { m } = useI18n()
+
+  return (
+    <HistoryStatePanel
+      label={detailMessage(m.detail, 'historyLoadingLabel', 'Loading History')}
+      title={detailMessage(
+        m.detail,
+        'historyLoadingTitle',
+        'Fetching structured revisions from the live report archive.',
+      )}
+      description={detailMessage(
+        m.detail,
+        'historyLoadingDescription',
+        'Latest stock detail stays available while historical summaries load.',
+      )}
+    />
+  )
+}
+
+function HistoryErrorState({ errorMessage }: { errorMessage?: string }) {
+  const { m } = useI18n()
+
+  return (
+    <HistoryStatePanel
+      label={detailMessage(m.detail, 'historyErrorLabel', 'History Unavailable')}
+      title={detailMessage(
+        m.detail,
+        'historyErrorTitle',
+        'Historical revisions could not be loaded right now.',
+      )}
+      description={detailMessage(
+        m.detail,
+        'historyErrorDescription',
+        'The latest stock detail is still available. Retry the history request when the report APIs recover.',
+      )}
+      errorMessage={errorMessage}
+      tone="error"
+    />
+  )
+}
+
+function SelectedRevisionLoadingState() {
+  const { m } = useI18n()
+
+  return (
+    <HistoryStatePanel
+      label={detailMessage(m.detail, 'historySelectedLoadingLabel', 'Loading Revision')}
+      description={detailMessage(
+        m.detail,
+        'historySelectedLoadingDescription',
+        'Fetching the selected revision snapshot from the live historical detail API.',
+      )}
+      compact
+    />
+  )
+}
+
+function SelectedRevisionErrorState({ errorMessage }: { errorMessage?: string }) {
+  const { m } = useI18n()
+
+  return (
+    <HistoryStatePanel
+      label={detailMessage(m.detail, 'historySelectedErrorLabel', 'Revision Unavailable')}
+      description={detailMessage(
+        m.detail,
+        'historySelectedErrorDescription',
+        'The selected revision summary is visible, but the structured snapshot could not be loaded.',
+      )}
+      errorMessage={errorMessage}
+      tone="error"
+      compact
+    />
+  )
+}
+
+function CompareRevisionLoadingState() {
+  const { m } = useI18n()
+
+  return (
+    <HistoryStatePanel
+      label={detailMessage(m.detail, 'historyCompareLoadingLabel', 'Loading Comparison')}
+      description={detailMessage(
+        m.detail,
+        'historyCompareLoadingDescription',
+        'Fetching the comparison revision without replacing the base selection.',
+      )}
+      compact
+    />
+  )
+}
+
+function CompareRevisionErrorState({ errorMessage }: { errorMessage?: string }) {
+  const { m } = useI18n()
+
+  return (
+    <HistoryStatePanel
+      label={detailMessage(m.detail, 'historyCompareErrorLabel', 'Comparison Unavailable')}
+      description={detailMessage(
+        m.detail,
+        'historyCompareErrorDescription',
+        'The base revision is still active. Pick another comparison target or retry this revision.',
+      )}
+      errorMessage={errorMessage}
+      tone="error"
+      compact
+    />
+  )
+}
+
 function LegacyHistory({ items }: { items: LocalizedText[] }) {
   const { text } = useI18n()
 
@@ -758,6 +943,56 @@ function LegacyHistory({ items }: { items: LocalizedText[] }) {
         </li>
       ))}
     </ul>
+  )
+}
+
+function HistoryStatePanel({
+  label,
+  title,
+  description,
+  errorMessage,
+  tone = 'neutral',
+  compact = false,
+}: {
+  label: string
+  title?: string
+  description: string
+  errorMessage?: string
+  tone?: 'neutral' | 'error'
+  compact?: boolean
+}) {
+  return (
+    <div
+      className={cx(
+        'rounded-[1.2rem] border bg-[var(--surface-muted)]',
+        compact ? 'px-5 py-5' : 'px-5 py-6',
+        tone === 'error'
+          ? 'border-[color:rgba(218,54,51,0.35)]'
+          : 'border-[var(--line-subtle)]',
+      )}
+    >
+      <p className="font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--ink-muted)]">
+        {label}
+      </p>
+      {title ? (
+        <h4 className="mt-3 font-serif text-2xl tracking-[-0.04em] text-[var(--ink-primary)]">
+          {title}
+        </h4>
+      ) : null}
+      <p
+        className={cx(
+          'text-sm leading-7 text-[var(--ink-secondary)]',
+          title ? 'mt-3' : 'mt-4',
+        )}
+      >
+        {description}
+      </p>
+      {errorMessage ? (
+        <p className="mt-4 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-[var(--signal-danger-soft)]">
+          {errorMessage}
+        </p>
+      ) : null}
+    </div>
   )
 }
 
@@ -819,6 +1054,15 @@ function LegendDot({ color, label }: { color: string; label: string }) {
       {label}
     </span>
   )
+}
+
+function detailMessage(
+  detail: object,
+  key: string,
+  fallback: string,
+) {
+  const detailMessages = detail as Record<string, string | undefined>
+  return detailMessages[key] ?? fallback
 }
 
 function formatCurrency(value: number) {
