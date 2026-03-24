@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 05-01-PLAN.md
-last_updated: "2026-03-24T10:22:49.579Z"
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-03-24T10:45:00.000Z"
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 3
-  completed_plans: 2
+  completed_plans: 3
 ---
 
 # Project State
@@ -23,8 +23,8 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 
 ## Current Position
 
-Phase: 05 (interaction-contract-and-frontend-history-data-model) — EXECUTING
-Plan: 1 of 2
+Phase: 05 (interaction-contract-and-frontend-history-data-model) — COMPLETE
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -48,6 +48,7 @@ Plan: 1 of 2
 *Updated after each plan completion*
 | Phase 04-historical-revision-ledger-mockup P04-01 | 15 | 3 tasks | 4 files |
 | Phase 05 P01 | 6 | 2 tasks | 4 files |
+| Phase 05 P02 | 15 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -68,6 +69,8 @@ Recent decisions affecting current work:
 - [Phase 04]: RevisionTrend SVG uses ring overlay circles to highlight selected/compare nodes without changing color coding
 - [Phase 05]: HistoricalReportDetail extends HistoricalReportSummary keeping single publishedAtMs; detail lookup map keyed by reportId
 - [Phase 05]: localeHasFallback boolean pre-computed at data layer: false for TSM (bilingual), true for ADBE (English-only)
+- [Phase 05-02]: CompareMetricDiff enforces delta direction internally by sorting on publishedAtMs — callers cannot accidentally flip direction
+- [Phase 05-02]: Locale fallback indicator uses font-mono text-[0.62rem] uppercase style, consistent with chip label rendering pattern
 
 ### Pending Todos
 
@@ -86,6 +89,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T10:22:49.577Z
-Stopped at: Completed 05-01-PLAN.md
+Last session: 2026-03-24T10:45:00.000Z
+Stopped at: Completed 05-02-PLAN.md
 Resume file: None

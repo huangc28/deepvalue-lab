@@ -12,7 +12,7 @@ This milestone adds historical analysis report review to the stock detail page. 
 - Decimal phases remain reserved for urgent insertions
 
 - [x] **Phase 4: Historical Revision Ledger Mockup** - Build a frontend-only historical revision ledger mockup inside the stock detail page using local mock data (completed 2026-03-24)
-- [ ] **Phase 5: Interaction Contract And Frontend History Data Model** - Lock the post-review interaction contract and move the frontend history UI onto structured summary/detail types
+- [x] **Phase 5: Interaction Contract And Frontend History Data Model** - Lock the post-review interaction contract and move the frontend history UI onto structured summary/detail types (completed 2026-03-24)
 - [ ] **Phase 6: Historical Report Read Model And Backend APIs** - Add persisted historical summary data plus historical detail read APIs
 - [ ] **Phase 7: Frontend API Integration For Historical Reports** - Connect the revision ledger and compare flows to live APIs without regressing the current stock detail path
 
@@ -80,6 +80,6 @@ Phases execute in numeric order: 4 → 5 → 6 → 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 4. Historical Revision Ledger Mockup | 1/1 | Complete   | 2026-03-24 |
-| 5. Interaction Contract And Frontend History Data Model | 1/2 | In Progress|  |
+| 5. Interaction Contract And Frontend History Data Model | 2/2 | Complete   | 2026-03-24 |
 | 6. Historical Report Read Model And Backend APIs | 0/0 | Planned | — |
 | 7. Frontend API Integration For Historical Reports | 0/0 | Planned | — |

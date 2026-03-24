@@ -16,7 +16,7 @@
 ### Frontend Data Contract
 
 - [x] **FEH-01**: Frontend history surfaces use structured historical summary/detail types with canonical `publishedAtMs`
-- [ ] **FEH-02**: Frontend labels locale fallback explicitly in single-revision and compare views
+- [x] **FEH-02**: Frontend labels locale fallback explicitly in single-revision and compare views
 
 ### Historical Report API
 
@@ -55,7 +55,7 @@
 | HIST-04 | Phase 4 | Complete |
 | HIST-05 | Phase 4 | Complete |
 | FEH-01 | Phase 5 | Complete |
-| FEH-02 | Phase 5 | Pending |
+| FEH-02 | Phase 5 | Complete |
 | APIH-01 | Phase 6 | Pending |
 | APIH-02 | Phase 6 | Pending |
 | APIH-03 | Phase 6 | Pending |
