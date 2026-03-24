@@ -40,6 +40,7 @@ acr/push:
 	docker push $(ACR_IMAGE)
 
 ## deploy/containerapp: create or update the Container App with secrets from .env.
+## Note: min-replicas=0 scales to zero when idle, saving cost when there is no traffic.
 deploy/containerapp:
 	az containerapp create \
 		--name "$(CONTAINER_APP_NAME)" \
