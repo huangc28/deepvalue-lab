@@ -325,9 +325,15 @@ function CompareRevisionCard({
   roleColor: string
 }) {
   const { locale, m, text } = useI18n()
+  const showFallbackIndicator = locale === 'zh-TW' && report.localeHasFallback
 
   return (
     <div className="rounded-[1.25rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] p-5">
+      {showFallbackIndicator ? (
+        <p className="mb-3 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">
+          {m.detail.historyLocaleFallbackIndicator}
+        </p>
+      ) : null}
       <div className="flex items-center gap-2">
         <span
           className="h-2 w-2 shrink-0 rounded-full"
@@ -398,10 +404,20 @@ function CompareMetricDiff({
 }) {
   const { m } = useI18n()
 
-  const priceDiff = base.currentPrice - compare.currentPrice
-  const baseDiff = base.baseFairValue - compare.baseFairValue
-  const bearDiff = base.bearFairValue - compare.bearFairValue
-  const bullDiff = base.bullFairValue - compare.bullFairValue
+  // CompareMetricDiff delta direction convention:
+  //   base   = the more recently published revision (higher publishedAtMs)
+  //   compare = the older revision (lower publishedAtMs)
+  //   delta   = base - compare (positive means metric rose since the previous revision)
+  // This component enforces order regardless of which argument was passed as base/compare.
+  const [newer, older] =
+    base.publishedAtMs >= compare.publishedAtMs
+      ? [base, compare]
+      : [compare, base]
+
+  const priceDiff = newer.currentPrice - older.currentPrice
+  const baseDiff = newer.baseFairValue - older.baseFairValue
+  const bearDiff = newer.bearFairValue - older.bearFairValue
+  const bullDiff = newer.bullFairValue - older.bullFairValue
 
   return (
     <div className="rounded-[1.25rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] p-5">
@@ -411,22 +427,22 @@ function CompareMetricDiff({
       <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
         <DiffMetric
           label={m.detail.currentPrice}
-          value={formatCurrency(base.currentPrice)}
+          value={formatCurrency(newer.currentPrice)}
           diff={priceDiff}
         />
         <DiffMetric
           label={m.detail.scenario.Bear}
-          value={formatCurrency(base.bearFairValue)}
+          value={formatCurrency(newer.bearFairValue)}
           diff={bearDiff}
         />
         <DiffMetric
           label={m.detail.scenario.Base}
-          value={formatCurrency(base.baseFairValue)}
+          value={formatCurrency(newer.baseFairValue)}
           diff={baseDiff}
         />
         <DiffMetric
           label={m.detail.scenario.Bull}
-          value={formatCurrency(base.bullFairValue)}
+          value={formatCurrency(newer.bullFairValue)}
           diff={bullDiff}
         />
       </div>
@@ -477,10 +493,16 @@ function SelectedRevisionCard({
   report: HistoricalReportDetail
   isOldestRevision: boolean
 }) {
-  const { m, text } = useI18n()
+  const { locale, m, text } = useI18n()
+  const showFallbackIndicator = locale === 'zh-TW' && report.localeHasFallback
 
   return (
     <div className="rounded-[1.25rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] p-5">
+      {showFallbackIndicator ? (
+        <p className="mb-3 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">
+          {m.detail.historyLocaleFallbackIndicator}
+        </p>
+      ) : null}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex flex-wrap items-center gap-2">
