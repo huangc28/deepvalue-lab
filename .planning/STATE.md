@@ -1,15 +1,15 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: historical-analysis-reports
-status: active
-stopped_at: Phase 4 planning complete
-last_updated: "2026-03-21T00:00:00.000Z"
+milestone: v1.0
+milestone_name: milestone
+status: unknown
+stopped_at: Completed 04-historical-revision-ledger-mockup/04-01-PLAN.md
+last_updated: "2026-03-24T09:41:47.715Z"
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 1
-  completed_plans: 0
+  completed_plans: 1
 ---
 
 # Project State
@@ -19,11 +19,11 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** A stock detail page should show not only the latest judgment, but how that judgment changed over time and why.
-**Current focus:** Phase 04 — historical revision ledger mockup planning complete
+**Current focus:** Phase 04 — historical-revision-ledger-mockup
 
 ## Current Position
 
-Phase: 04 (historical-revision-ledger-mockup) — READY TO EXECUTE
+Phase: 04 (historical-revision-ledger-mockup) — EXECUTING
 Plan: 1 of 1
 
 ## Performance Metrics
@@ -46,6 +46,7 @@ Plan: 1 of 1
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 04-historical-revision-ledger-mockup P04-01 | 15 | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -62,6 +63,8 @@ Recent decisions affecting current work:
 - [Phase 03]: locale read path uses exact `locale=zh-TW`; detail falls back zh-TW detail → EN detail → 404, while list falls back zh-TW summary → EN summary
 - [Milestone v1.1]: historical reports will be delivered as a single milestone with four phases, but execution stops after the Phase 4 mockup for manual UI review
 - [Milestone v1.1]: raw markdown/original report access is deferred until after revision ledger usefulness is validated
+- [Phase 04]: Compare mode uses two independent state variables (selectedId + compareId) — base preservation is structural, not conditional
+- [Phase 04]: RevisionTrend SVG uses ring overlay circles to highlight selected/compare nodes without changing color coding
 
 ### Pending Todos
 
@@ -80,6 +83,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-21T00:00:00.000Z
-Stopped at: Phase 4 planning complete
-Resume file: .planning/phases/04-historical-revision-ledger-mockup/04-01-PLAN.md
+Last session: 2026-03-24T09:41:47.712Z
+Stopped at: Completed 04-historical-revision-ledger-mockup/04-01-PLAN.md
+Resume file: None

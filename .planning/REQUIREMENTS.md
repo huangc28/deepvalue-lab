@@ -7,11 +7,11 @@
 
 ### Historical Review UX
 
-- [ ] **HIST-01**: User can browse a latest-first historical revision ledger within the stock detail page
-- [ ] **HIST-02**: User lands on the latest historical revision by default and can inspect a selected revision snapshot
-- [ ] **HIST-03**: User can compare exactly two historical revisions side by side
-- [ ] **HIST-04**: The history UI handles no-history, single-revision, and many-revision states explicitly
-- [ ] **HIST-05**: The revision ledger supports visible focus states, keyboard navigation, and clear selected/latest/compare-selected markers
+- [x] **HIST-01**: User can browse a latest-first historical revision ledger within the stock detail page
+- [x] **HIST-02**: User lands on the latest historical revision by default and can inspect a selected revision snapshot
+- [x] **HIST-03**: User can compare exactly two historical revisions side by side
+- [x] **HIST-04**: The history UI handles no-history, single-revision, and many-revision states explicitly
+- [x] **HIST-05**: The revision ledger supports visible focus states, keyboard navigation, and clear selected/latest/compare-selected markers
 
 ### Frontend Data Contract
 
@@ -49,11 +49,11 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| HIST-01 | Phase 4 | Pending |
-| HIST-02 | Phase 4 | Pending |
-| HIST-03 | Phase 4 | Pending |
-| HIST-04 | Phase 4 | Pending |
-| HIST-05 | Phase 4 | Pending |
+| HIST-01 | Phase 4 | Complete |
+| HIST-02 | Phase 4 | Complete |
+| HIST-03 | Phase 4 | Complete |
+| HIST-04 | Phase 4 | Complete |
+| HIST-05 | Phase 4 | Complete |
 | FEH-01 | Phase 5 | Pending |
 | FEH-02 | Phase 5 | Pending |
 | APIH-01 | Phase 6 | Pending |
