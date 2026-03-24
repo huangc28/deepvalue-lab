@@ -20,10 +20,13 @@ A stock detail page should show not only the latest judgment, but how that judgm
 
 - ✓ User can browse a latest-first historical revision ledger inside the stock detail page — Validated in Phase 04: historical-revision-ledger-mockup
 - ✓ User can inspect the currently selected historical revision and compare two revisions side by side — Validated in Phase 04: historical-revision-ledger-mockup
+- ✓ Historical reports are served through stable summary/detail APIs without request-time fan-out across all report artifacts — Validated in Phases 06 and 07
+- ✓ The stock detail page now consumes live historical report APIs without regressing the latest-detail reading path — Validated in Phase 07: frontend-api-integration-for-historical-reports
+- ✓ Live revision ledger fallback labeling remains explicit in zh-TW selected and compare paths — Validated in Phase 07: frontend-api-integration-for-historical-reports
 
 ### Active
 
-- [ ] Historical reports are eventually served through stable summary/detail APIs without request-time fan-out across all report artifacts
+None — milestone scope is complete.
 
 ### Out of Scope
 
@@ -36,7 +39,7 @@ A stock detail page should show not only the latest judgment, but how that judgm
 
 - The web app already has a stock detail page with a decision-first reading order and a placeholder `History` section
 - The frontend stack is React, TypeScript, Vite, TanStack Router, and Tailwind CSS
-- The backend already stores latest published stock detail plus a report metadata list, but it does not yet expose a historical detail read model
+- The backend now exposes live historical summary/detail APIs and the frontend History section consumes them without replacing the latest-detail boundary
 - `web/docs/historical-analysis-reports-prd.md` is the milestone-level product spec and source for the historical reports behavior
 - The user explicitly wants a visual-first workflow: build the Phase 4 mockup, stop, review and manually adjust the UI, then continue with later phases
 
@@ -57,6 +60,8 @@ A stock detail page should show not only the latest judgment, but how that judgm
 | Keep historical reports inside the stock detail page initially | Preserves current reading flow and reduces navigation complexity | ✓ Confirmed — all Phase 4 components live inside stock-detail-page.tsx |
 | Stop execution after Phase 4 | Prevents frontend/data/API contracts from hardening before the user reviews the mockup | ✓ Honored — Phase 4 complete, proceeding to Phase 5 after approval |
 | Defer raw markdown viewer | Revision ledger and historical compare are the milestone priority | — Pending |
+| Keep latest-detail rendering independent from historical reads | Historical API failures should not collapse the whole stock detail page | ✓ Complete — Phase 07 keeps page-level state on `useStock(...)` and degrades History locally |
+| Merge historical detail onto summary metadata in the frontend | Backend detail payloads do not include `localeHasFallback`, `latest`, or provenance | ✓ Complete — Phase 07 adds `mergeHistoricalReportDetail(...)` and section-level query wiring |
 
 ---
-*Last updated: 2026-03-24 after Phase 04 completion — revision ledger mockup approved*
+*Last updated: 2026-03-24 after Phase 07 completion — live historical API integration verified against repo-truth backend*

@@ -2,29 +2,29 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to plan
-stopped_at: Phase 7 context gathered
-last_updated: "2026-03-24T11:35:55.844Z"
+status: Milestone complete
+stopped_at: Phase 7 execution and verification complete
+last_updated: "2026-03-24T12:57:00.088Z"
 progress:
   total_phases: 4
-  completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
+  completed_phases: 4
+  total_plans: 8
+  completed_plans: 8
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-21)
+See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** A stock detail page should show not only the latest judgment, but how that judgment changed over time and why.
-**Current focus:** Phase 07 — frontend-api-integration-for-historical-reports
+**Current focus:** Milestone v1.0 complete
 
 ## Current Position
 
-Phase: 07 (frontend-api-integration-for-historical-reports)
-Plan: Not started
+Phase: complete
+Plan: complete
 
 ## Performance Metrics
 
@@ -83,15 +83,15 @@ None yet.
 
 - New milestone started: Historical Analysis Reports
 - Phase 4 added: Historical Revision Ledger Mockup
-- Phase 6 execution completed; Phase 7 is next and still unplanned on disk
+- Phase 7 execution completed with live historical report query wiring and section-level degradation
 
 ### Blockers/Concerns
 
-- Worktree is already dirty; avoid automatic doc commits until milestone files are reviewed in context
-- Phase 7 frontend integration has not started yet; no active backend blocker remains for historical report reads
+- `web/.env` still points to a stale local backend on port 9000; repo-truth verification used the current backend on port 9100 instead
+- No active implementation blocker remains for the historical reports milestone
 
 ## Session Continuity
 
 Last session: 2026-03-24T11:35:55.840Z
-Stopped at: Phase 7 context gathered
-Resume file: .planning/phases/07-frontend-api-integration-for-historical-reports/07-CONTEXT.md
+Stopped at: Phase 7 execution and verification complete
+Resume file: .planning/phases/07-frontend-api-integration-for-historical-reports/07-VERIFICATION.md

@@ -26,8 +26,8 @@
 
 ### Frontend Integration
 
-- [ ] **INTH-01**: Frontend revision ledger consumes live historical report APIs without regressing the current latest stock detail experience
-- [ ] **INTH-02**: Live revision ledger handles mixed-locale compare and explicit fallback labels correctly
+- [x] **INTH-01**: Frontend revision ledger consumes live historical report APIs without regressing the current latest stock detail experience
+- [x] **INTH-02**: Live revision ledger handles mixed-locale compare and explicit fallback labels correctly
 
 ## v1.2+ Requirements
 
@@ -59,8 +59,8 @@
 | APIH-01 | Phase 6 | Complete |
 | APIH-02 | Phase 6 | Complete |
 | APIH-03 | Phase 6 | Complete |
-| INTH-01 | Phase 7 | Pending |
-| INTH-02 | Phase 7 | Pending |
+| INTH-01 | Phase 7 | Complete |
+| INTH-02 | Phase 7 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 12 total
@@ -69,4 +69,4 @@
 
 ---
 *Requirements defined: 2026-03-21*
-*Last updated: 2026-03-24 after Phase 6 completion*
+*Last updated: 2026-03-24 after Phase 7 completion*
