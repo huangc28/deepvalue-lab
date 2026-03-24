@@ -42,7 +42,11 @@ Plans:
   2. `publishedAtMs` is the canonical historical timestamp used for sorting and display
   3. Locale fallback is surfaced clearly in both selected-revision and compare states
   4. The compare flow and delta-summary rules are fixed and no longer depend on mockup-only assumptions
-**Plans**: 0 plans yet — start only after Phase 4 review
+**Plans**: 2 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — Define HistoricalReportSummary/Detail types and migrate mock data to new shapes
+- [ ] 05-02-PLAN.md — Update all history components to new types, add locale fallback indicator, enforce delta direction convention
 
 ### Phase 6: Historical Report Read Model And Backend APIs
 **Goal**: Historical report data can be read efficiently through stable summary and detail APIs without relying on per-request fan-out across all report artifacts
@@ -76,6 +80,6 @@ Phases execute in numeric order: 4 → 5 → 6 → 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 4. Historical Revision Ledger Mockup | 1/1 | Complete   | 2026-03-24 |
-| 5. Interaction Contract And Frontend History Data Model | 0/0 | Planned | — |
+| 5. Interaction Contract And Frontend History Data Model | 0/2 | Planned | — |
 | 6. Historical Report Read Model And Backend APIs | 0/0 | Planned | — |
 | 7. Frontend API Integration For Historical Reports | 0/0 | Planned | — |
