@@ -20,8 +20,13 @@ import { TerminalLabel } from '../components/ui/terminal-label'
 import { getStockByTicker } from '../data/mock-stocks'
 import { useI18n } from '../i18n/context'
 import { ApiError } from '../lib/api'
-import { useStock } from '../lib/queries'
-import type { FactItem } from '../types/stocks'
+import {
+  mergeHistoricalReportDetail,
+  useStock,
+  useStockReportDetail,
+  useStockReports,
+} from '../lib/queries'
+import type { FactItem, HistoricalReportDetail } from '../types/stocks'
 
 interface StockDetailPageProps {
   ticker: string
@@ -31,7 +36,58 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
   const { locale, m, text } = useI18n()
   const mockStock = getStockByTicker(ticker)
   const { data: liveStock, isLoading, error } = useStock(ticker, locale)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [compareId, setCompareId] = useState<string | null>(null)
   const stock = liveStock ?? mockStock
+  const useMockHistory = !liveStock && !!mockStock
+  const reportsQuery = useStockReports(ticker, locale, Boolean(liveStock))
+  const historicalReports = reportsQuery.data ?? []
+  const reportSummaryMap = new Map(
+    historicalReports.map((report) => [report.reportId, report]),
+  )
+  const resolvedSelectedId =
+    selectedId && reportSummaryMap.has(selectedId)
+      ? selectedId
+      : historicalReports[0]?.reportId ?? null
+  const resolvedCompareId =
+    compareId &&
+    compareId !== resolvedSelectedId &&
+    reportSummaryMap.has(compareId)
+      ? compareId
+      : null
+  const selectedDetailQuery = useStockReportDetail(
+    ticker,
+    resolvedSelectedId,
+    locale,
+    Boolean(liveStock && resolvedSelectedId),
+  )
+  const compareDetailQuery = useStockReportDetail(
+    ticker,
+    resolvedCompareId,
+    locale,
+    Boolean(liveStock && resolvedCompareId),
+  )
+  const liveReportDetails: Record<string, HistoricalReportDetail> = {}
+
+  if (resolvedSelectedId && selectedDetailQuery.data) {
+    const summary = reportSummaryMap.get(resolvedSelectedId)
+    if (summary) {
+      liveReportDetails[resolvedSelectedId] = mergeHistoricalReportDetail(
+        summary,
+        selectedDetailQuery.data,
+      )
+    }
+  }
+
+  if (resolvedCompareId && compareDetailQuery.data) {
+    const summary = reportSummaryMap.get(resolvedCompareId)
+    if (summary) {
+      liveReportDetails[resolvedCompareId] = mergeHistoricalReportDetail(
+        summary,
+        compareDetailQuery.data,
+      )
+    }
+  }
 
   if (isLoading && !stock) {
     return <LoadingState label={`value-deck://stocks/${ticker}`} />
@@ -59,9 +115,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
   if (error || !stock) return <ErrorState label={`value-deck://stocks/${ticker}`} />
 
   const nearestScenario = getNearestScenario(stock)
-  const historicalReports = stock.historicalReports ?? mockStock?.historicalReports
-  const historicalReportDetails = stock.historicalReportDetails ?? mockStock?.historicalReportDetails
-  const historyItems = stock.history ?? mockStock?.history ?? []
+  const historyItems = useMockHistory ? (stock.history ?? mockStock?.history ?? []) : []
 
   return (
     <div className="flex flex-col gap-8">
@@ -360,9 +414,53 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           description={m.detail.historyDescription}
         >
           <HistoricalRevisionLedger
-            reports={historicalReports}
-            reportDetails={historicalReportDetails}
+            reports={useMockHistory ? mockStock?.historicalReports : reportsQuery.data}
+            reportDetails={
+              useMockHistory ? mockStock?.historicalReportDetails : liveReportDetails
+            }
             legacyItems={historyItems}
+            mode={useMockHistory ? 'legacy' : 'live'}
+            selectedId={useMockHistory ? undefined : selectedId}
+            compareId={useMockHistory ? undefined : compareId}
+            onSelectedIdChange={useMockHistory ? undefined : setSelectedId}
+            onCompareIdChange={useMockHistory ? undefined : setCompareId}
+            listState={{
+              status: reportsQuery.isLoading
+                ? 'loading'
+                : reportsQuery.isError
+                  ? 'error'
+                  : 'ready',
+              errorMessage:
+                reportsQuery.error instanceof Error
+                  ? reportsQuery.error.message
+                  : undefined,
+            }}
+            selectedDetailState={{
+              status: !resolvedSelectedId
+                ? 'idle'
+                : selectedDetailQuery.isLoading
+                  ? 'loading'
+                  : selectedDetailQuery.isError
+                    ? 'error'
+                    : 'ready',
+              errorMessage:
+                selectedDetailQuery.error instanceof Error
+                  ? selectedDetailQuery.error.message
+                  : undefined,
+            }}
+            compareDetailState={{
+              status: !resolvedCompareId
+                ? 'idle'
+                : compareDetailQuery.isLoading
+                  ? 'loading'
+                  : compareDetailQuery.isError
+                    ? 'error'
+                    : 'ready',
+              errorMessage:
+                compareDetailQuery.error instanceof Error
+                  ? compareDetailQuery.error.message
+                  : undefined,
+            }}
           />
         </ResearchSection>
       </div>
