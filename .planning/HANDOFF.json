@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-03-24T09:31:00.030Z",
+  "phase": "04",
+  "phase_name": "historical-revision-ledger-mockup",
+  "phase_dir": ".planning/phases/04-historical-revision-ledger-mockup",
+  "plan": 1,
+  "task": 3,
+  "total_tasks": 3,
+  "status": "paused",
+  "completed_tasks": [
+    {"id": 1, "name": "Introduce temporary structured historical mock data", "status": "done"},
+    {"id": 2, "name": "Replace History section with revision-ledger mockup + selected snapshot", "status": "done"}
+  ],
+  "remaining_tasks": [
+    {"id": 3, "name": "Add compare mode, trend view, responsive + keyboard behavior", "status": "not_started"}
+  ],
+  "blockers": [],
+  "human_actions_pending": [],
+  "decisions": [
+    {"decision": "Azure replicas set to min:1 max:1 for web and be", "rationale": "Eliminate cold starts, ~$72/month", "phase": "infra"},
+    {"decision": "Compare mode: exactly 2 revisions, base preserved on exit/clear", "rationale": "Per CONTEXT.md", "phase": "04"},
+    {"decision": "Trend view is supporting layer only, must not dominate", "rationale": "DeepValue UI guardrail — judgment before raw data", "phase": "04"}
+  ],
+  "uncommitted_files": [
+    ".planning/PROJECT.md", ".planning/REQUIREMENTS.md", ".planning/ROADMAP.md", ".planning/STATE.md",
+    "web/src/data/mock-stocks.ts", "web/src/lib/api.ts", "web/src/lib/queries.ts", "web/src/types/stocks.ts"
+  ],
+  "next_action": "Implement Task 3: compare mode (wire up existing i18n keys), fix grid-cols-4 hardcode, fix empty-state copy. Then write SUMMARY.md and run /gsd:verify-work 4.",
+  "context_notes": "Component works and looks good (18/24). Compare mode i18n keys already exist in messages.ts — just need to be wired to state. Top fix is behavioral, not visual."
+}
