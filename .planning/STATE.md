@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-stopped_at: Completed 05-02-PLAN.md
-last_updated: "2026-03-24T10:36:28.959Z"
+status: Ready to plan
+stopped_at: Completed 06-03-PLAN.md
+last_updated: "2026-03-24T11:17:21.097Z"
 progress:
   total_phases: 4
-  completed_phases: 2
-  total_plans: 3
-  completed_plans: 3
+  completed_phases: 3
+  total_plans: 6
+  completed_plans: 6
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** A stock detail page should show not only the latest judgment, but how that judgment changed over time and why.
-**Current focus:** Phase 05 — interaction-contract-and-frontend-history-data-model
+**Current focus:** Phase 07 — frontend-api-integration-for-historical-reports
 
 ## Current Position
 
-Phase: 05 (interaction-contract-and-frontend-history-data-model) — COMPLETE
-Plan: 2 of 2
+Phase: 07 (frontend-api-integration-for-historical-reports)
+Plan: Not started
 
 ## Performance Metrics
 
@@ -71,6 +71,9 @@ Recent decisions affecting current work:
 - [Phase 05]: localeHasFallback boolean pre-computed at data layer: false for TSM (bilingual), true for ADBE (English-only)
 - [Phase 05-02]: CompareMetricDiff enforces delta direction internally by sorting on publishedAtMs — callers cannot accidentally flip direction
 - [Phase 05-02]: Locale fallback indicator uses font-mono text-[0.62rem] uppercase style, consistent with chip label rendering pattern
+- [Phase 06]: stock_reports is now the historical per-report read model; published_stock_details remains latest-only
+- [Phase 06]: historical detail reads mirror repo-truth locale behavior: zh-TW detail → EN detail → 404
+- [Phase 06]: historical list responses are frontend-aligned summaries built from persisted summary_json, not metadata passthrough
 
 ### Pending Todos
 
@@ -80,15 +83,15 @@ None yet.
 
 - New milestone started: Historical Analysis Reports
 - Phase 4 added: Historical Revision Ledger Mockup
-- Later phases 5–7 remain planned but intentionally unplanned until after Phase 4 review
+- Phase 6 execution completed; Phase 7 is next and still unplanned on disk
 
 ### Blockers/Concerns
 
 - Worktree is already dirty; avoid automatic doc commits until milestone files are reviewed in context
-- Existing backend does not yet expose historical detail read APIs or persisted per-report summary rows
+- Phase 7 frontend integration has not started yet; no active backend blocker remains for historical report reads
 
 ## Session Continuity
 
-Last session: 2026-03-24T10:45:00.000Z
-Stopped at: Completed 05-02-PLAN.md
+Last session: 2026-03-24T11:16:01Z
+Stopped at: Completed 06-03-PLAN.md
 Resume file: None

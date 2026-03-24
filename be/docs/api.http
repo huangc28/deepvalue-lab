@@ -1,0 +1,257 @@
+# DeepValue Lab backend smoke-test requests for Kulala.
+# Start the backend first:
+#   cd be && make start
+#
+# Notes:
+# - Default local server: http://localhost:8080
+# - Publish first, then copy the returned `reportId` into `@reportId` below
+# - `locale=zh-TW` is the only locale-specific read path currently implemented
+
+@baseUrl = http://localhost:8080
+@ticker = TSM
+@reportId = TSM-20260324-demo
+
+### Health
+GET {{baseUrl}}/health
+Accept: application/json
+
+### Create or reactivate a subscription
+POST {{baseUrl}}/v1/subscriptions
+Content-Type: application/json
+Accept: application/json
+
+{
+  "ticker": "{{ticker}}"
+}
+
+### Publish an English-only stock report
+POST {{baseUrl}}/v1/stocks/{{ticker}}/reports
+Content-Type: application/json
+Accept: application/json
+
+{
+  "report": {
+    "markdown": "# TSM Analysis\n\n## Thesis\nTSM remains structurally advantaged in advanced-node foundry capacity.\n\n## What changed\nAI demand remains strong, but near-term expectations are already elevated.\n",
+    "provenance": "manual"
+  },
+  "stockDetail": {
+    "id": "tsm",
+    "ticker": "{{ticker}}",
+    "companyName": "Taiwan Semiconductor Manufacturing",
+    "businessType": {
+      "en": "Foundry",
+      "zh-TW": "晶圓代工"
+    },
+    "currentPrice": 185.3,
+    "valuationStatus": "cheap",
+    "newsImpactStatus": "improving",
+    "thesisStatus": "intact",
+    "technicalEntryStatus": "favorable",
+    "actionState": "strong accumulation",
+    "dashboardBucket": "now-actionable",
+    "baseFairValue": 220,
+    "bearFairValue": 160,
+    "bullFairValue": 280,
+    "discountToBase": -15.8,
+    "summary": "Advanced-node leadership remains intact and the current price still discounts a conservative base case.",
+    "lastUpdated": "2026-03-24T00:00:00Z",
+    "thesisStatement": "TSM remains the critical foundry for leading-edge compute demand.",
+    "thesisBullets": [
+      "Advanced packaging remains a bottleneck advantage.",
+      "Leading-node utilization stays structurally tight."
+    ],
+    "variantPerception": "The market is focused on AI upside, but durable execution still matters most.",
+    "valuationLens": {
+      "primary": "Base case implies attractive upside.",
+      "crossCheck": "Peer multiples still support the base range.",
+      "rationale": "Execution quality and capital intensity justify premium valuation."
+    },
+    "currentValuationSnapshot": {
+      "marketCap": "$900B",
+      "multiples": [
+        "FY2026 P/E ~21x",
+        "EV/EBITDA ~13x"
+      ],
+      "balanceSheetNote": "Net cash remains supportive."
+    },
+    "newsToModel": [
+      {
+        "event": "AI accelerator demand remains strong",
+        "modelVariableChanged": "Leading-node revenue mix",
+        "impact": "Base-case revenue confidence improves",
+        "affectedScenario": "Base"
+      }
+    ],
+    "scenarios": [
+      {
+        "label": "Bear",
+        "keyMetrics": {
+          "revenue": "$82B",
+          "eps": "$7.20",
+          "targetPE": "22x"
+        },
+        "operatingAssumption": "AI demand normalizes faster than expected.",
+        "valuationAssumption": "Multiple compresses on cyclical concerns.",
+        "fairValue": "$160",
+        "whatMustBeTrue": "Advanced-node ramps slow materially."
+      },
+      {
+        "label": "Base",
+        "keyMetrics": {
+          "revenue": "$90B",
+          "eps": "$8.60",
+          "targetPE": "26x"
+        },
+        "operatingAssumption": "AI and HPC demand remain durable through the cycle.",
+        "valuationAssumption": "Premium multiple holds on execution quality.",
+        "fairValue": "$220",
+        "whatMustBeTrue": "Packaging capacity expands without yield slippage."
+      },
+      {
+        "label": "Bull",
+        "keyMetrics": {
+          "revenue": "$98B",
+          "eps": "$10.20",
+          "targetPE": "27x"
+        },
+        "operatingAssumption": "AI demand stays supply constrained for longer.",
+        "valuationAssumption": "Market rewards sustained pricing power.",
+        "fairValue": "$280",
+        "whatMustBeTrue": "Utilization and pricing both remain elevated."
+      }
+    ],
+    "currentPriceImplies": "The current price assumes strong AI growth but still leaves room for upside if advanced packaging remains constrained.",
+    "currentPriceImpliesBrief": "The market prices strong AI demand, but not a prolonged packaging bottleneck.",
+    "currentPriceImpliedFacts": [
+      {
+        "label": "AI revenue",
+        "value": "~+30% mix shift"
+      },
+      {
+        "label": "Valuation",
+        "value": "~21x forward earnings"
+      }
+    ],
+    "provisionalConclusion": "TSM remains attractive with execution-driven upside.",
+    "technicalCommentary": "Price action is constructive after consolidation.",
+    "technicalSignals": [
+      {
+        "label": "Trend",
+        "value": "Above 50DMA"
+      }
+    ],
+    "risks": [
+      "AI demand could normalize faster than expected.",
+      "Geopolitical risk remains non-trivial."
+    ],
+    "catalysts": [
+      "Quarterly revenue beats",
+      "Packaging capacity expansion"
+    ],
+    "monitorNext": [
+      "CoWoS capacity additions",
+      "Gross margin trajectory"
+    ],
+    "sourcesUsed": [
+      "Company filings",
+      "Management commentary"
+    ],
+    "history": [
+      "Previous view was more neutral on near-term upside."
+    ]
+  }
+}
+
+### Publish a bilingual stock report
+POST {{baseUrl}}/v1/stocks/{{ticker}}/reports
+Content-Type: application/json
+Accept: application/json
+
+{
+  "report": {
+    "markdown": "# TSM Analysis (Bilingual)\n\nThis publish includes both EN and zh-TW detail payloads.\n",
+    "provenance": "earnings-refresh"
+  },
+  "stockDetail": {
+    "id": "tsm",
+    "ticker": "{{ticker}}",
+    "companyName": "Taiwan Semiconductor Manufacturing",
+    "businessType": {
+      "en": "Foundry",
+      "zh-TW": "晶圓代工"
+    },
+    "currentPrice": 188.4,
+    "valuationStatus": "fair",
+    "newsImpactStatus": "unchanged",
+    "thesisStatus": "intact",
+    "technicalEntryStatus": "neutral",
+    "actionState": "watch for confirmation",
+    "dashboardBucket": "needs-review",
+    "baseFairValue": 220,
+    "bearFairValue": 165,
+    "bullFairValue": 280,
+    "discountToBase": -14.4,
+    "summary": {
+      "en": "Execution remains strong, but the near-term setup is less asymmetric after the recent move.",
+      "zh-TW": "執行力仍然強勁，但近期股價反彈後，短期風險報酬比已不像先前那麼偏多。"
+    },
+    "lastUpdated": "2026-03-24T00:00:00Z"
+  },
+  "stockDetailZhTW": {
+    "id": "tsm",
+    "ticker": "{{ticker}}",
+    "companyName": "台灣積體電路製造",
+    "businessType": {
+      "en": "Foundry",
+      "zh-TW": "晶圓代工"
+    },
+    "currentPrice": 188.4,
+    "valuationStatus": "fair",
+    "newsImpactStatus": "unchanged",
+    "thesisStatus": "intact",
+    "technicalEntryStatus": "neutral",
+    "actionState": "watch for confirmation",
+    "dashboardBucket": "needs-review",
+    "baseFairValue": 220,
+    "bearFairValue": 165,
+    "bullFairValue": 280,
+    "discountToBase": -14.4,
+    "summary": {
+      "en": "Execution remains strong, but the near-term setup is less asymmetric after the recent move.",
+      "zh-TW": "執行力仍然強勁，但近期股價反彈後，短期風險報酬比已不像先前那麼偏多。"
+    },
+    "lastUpdated": "2026-03-24T00:00:00Z"
+  }
+}
+
+### List latest published stock summaries
+GET {{baseUrl}}/v1/stocks
+Accept: application/json
+
+### List latest published stock summaries in zh-TW
+GET {{baseUrl}}/v1/stocks?locale=zh-TW
+Accept: application/json
+
+### Get the latest published stock detail
+GET {{baseUrl}}/v1/stocks/{{ticker}}
+Accept: application/json
+
+### Get the latest published stock detail in zh-TW
+GET {{baseUrl}}/v1/stocks/{{ticker}}?locale=zh-TW
+Accept: application/json
+
+### List historical report summaries
+GET {{baseUrl}}/v1/stocks/{{ticker}}/reports
+Accept: application/json
+
+### List historical report summaries in zh-TW
+GET {{baseUrl}}/v1/stocks/{{ticker}}/reports?locale=zh-TW
+Accept: application/json
+
+### Get one historical report detail by reportId
+GET {{baseUrl}}/v1/stocks/{{ticker}}/reports/{{reportId}}
+Accept: application/json
+
+### Get one historical report detail by reportId in zh-TW
+GET {{baseUrl}}/v1/stocks/{{ticker}}/reports/{{reportId}}?locale=zh-TW
+Accept: application/json

@@ -32,6 +32,35 @@ func (q *Queries) GetPublishedStockDetail(ctx context.Context, ticker string) (P
 	return i, err
 }
 
+const getStockReportByTickerAndID = `-- name: GetStockReportByTickerAndID :one
+SELECT id, ticker, r2_key, r2_detail_key, r2_detail_zh_tw_key, summary_json, summary_json_zh_tw, provenance, published_at_ms, created_at_ms FROM stock_reports
+WHERE ticker = ? AND id = ?
+LIMIT 1
+`
+
+type GetStockReportByTickerAndIDParams struct {
+	Ticker string `json:"ticker"`
+	ID     string `json:"id"`
+}
+
+func (q *Queries) GetStockReportByTickerAndID(ctx context.Context, arg GetStockReportByTickerAndIDParams) (StockReport, error) {
+	row := q.db.QueryRowContext(ctx, getStockReportByTickerAndID, arg.Ticker, arg.ID)
+	var i StockReport
+	err := row.Scan(
+		&i.ID,
+		&i.Ticker,
+		&i.R2Key,
+		&i.R2DetailKey,
+		&i.R2DetailZhTwKey,
+		&i.SummaryJson,
+		&i.SummaryJsonZhTw,
+		&i.Provenance,
+		&i.PublishedAtMs,
+		&i.CreatedAtMs,
+	)
+	return i, err
+}
+
 const getSubscription = `-- name: GetSubscription :one
 SELECT ticker, status, created_at_ms, updated_at_ms FROM subscriptions
 WHERE ticker = ?
@@ -51,16 +80,30 @@ func (q *Queries) GetSubscription(ctx context.Context, ticker string) (Subscript
 }
 
 const insertStockReport = `-- name: InsertStockReport :exec
-INSERT INTO stock_reports (id, ticker, r2_key, provenance, published_at_ms)
-VALUES (?, ?, ?, ?, ?)
+INSERT INTO stock_reports (
+  id,
+  ticker,
+  r2_key,
+  r2_detail_key,
+  r2_detail_zh_tw_key,
+  summary_json,
+  summary_json_zh_tw,
+  provenance,
+  published_at_ms
+)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 `
 
 type InsertStockReportParams struct {
-	ID            string `json:"id"`
-	Ticker        string `json:"ticker"`
-	R2Key         string `json:"r2_key"`
-	Provenance    string `json:"provenance"`
-	PublishedAtMs int64  `json:"published_at_ms"`
+	ID              string `json:"id"`
+	Ticker          string `json:"ticker"`
+	R2Key           string `json:"r2_key"`
+	R2DetailKey     string `json:"r2_detail_key"`
+	R2DetailZhTwKey string `json:"r2_detail_zh_tw_key"`
+	SummaryJson     string `json:"summary_json"`
+	SummaryJsonZhTw string `json:"summary_json_zh_tw"`
+	Provenance      string `json:"provenance"`
+	PublishedAtMs   int64  `json:"published_at_ms"`
 }
 
 func (q *Queries) InsertStockReport(ctx context.Context, arg InsertStockReportParams) error {
@@ -68,6 +111,10 @@ func (q *Queries) InsertStockReport(ctx context.Context, arg InsertStockReportPa
 		arg.ID,
 		arg.Ticker,
 		arg.R2Key,
+		arg.R2DetailKey,
+		arg.R2DetailZhTwKey,
+		arg.SummaryJson,
+		arg.SummaryJsonZhTw,
 		arg.Provenance,
 		arg.PublishedAtMs,
 	)
@@ -147,8 +194,10 @@ func (q *Queries) ListPublishedStockDetails(ctx context.Context) ([]PublishedSto
 }
 
 const listStockReportsByTicker = `-- name: ListStockReportsByTicker :many
-SELECT id, ticker, r2_key, provenance, published_at_ms, created_at_ms FROM stock_reports
+SELECT id, ticker, r2_key, r2_detail_key, r2_detail_zh_tw_key, summary_json, summary_json_zh_tw, provenance, published_at_ms, created_at_ms FROM stock_reports
 WHERE ticker = ?
+  AND summary_json != '{}'
+  AND r2_detail_key != ''
 ORDER BY published_at_ms DESC
 `
 
@@ -165,6 +214,10 @@ func (q *Queries) ListStockReportsByTicker(ctx context.Context, ticker string) (
 			&i.ID,
 			&i.Ticker,
 			&i.R2Key,
+			&i.R2DetailKey,
+			&i.R2DetailZhTwKey,
+			&i.SummaryJson,
+			&i.SummaryJsonZhTw,
 			&i.Provenance,
 			&i.PublishedAtMs,
 			&i.CreatedAtMs,

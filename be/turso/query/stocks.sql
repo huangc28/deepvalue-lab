@@ -16,13 +16,30 @@ WHERE status = 'active'
 ORDER BY ticker ASC;
 
 -- name: InsertStockReport :exec
-INSERT INTO stock_reports (id, ticker, r2_key, provenance, published_at_ms)
-VALUES (?, ?, ?, ?, ?);
+INSERT INTO stock_reports (
+  id,
+  ticker,
+  r2_key,
+  r2_detail_key,
+  r2_detail_zh_tw_key,
+  summary_json,
+  summary_json_zh_tw,
+  provenance,
+  published_at_ms
+)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 -- name: ListStockReportsByTicker :many
 SELECT * FROM stock_reports
 WHERE ticker = ?
+  AND summary_json != '{}'
+  AND r2_detail_key != ''
 ORDER BY published_at_ms DESC;
+
+-- name: GetStockReportByTickerAndID :one
+SELECT * FROM stock_reports
+WHERE ticker = ? AND id = ?
+LIMIT 1;
 
 -- name: UpsertPublishedStockDetail :exec
 INSERT INTO published_stock_details (

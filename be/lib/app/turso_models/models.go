@@ -8,16 +8,6 @@ import (
 	"database/sql"
 )
 
-type Document struct {
-	ID          string         `json:"id"`
-	Status      string         `json:"status"`
-	Payload     string         `json:"payload"`
-	Title       sql.NullString `json:"title"`
-	CreatedAtMs int64          `json:"created_at_ms"`
-	UpdatedAtMs int64          `json:"updated_at_ms"`
-	DeletedAtMs interface{}    `json:"deleted_at_ms"`
-}
-
 type GooseDbVersion struct {
 	ID        int64        `json:"id"`
 	VersionID int64        `json:"version_id"`
@@ -38,12 +28,16 @@ type PublishedStockDetail struct {
 }
 
 type StockReport struct {
-	ID            string `json:"id"`
-	Ticker        string `json:"ticker"`
-	R2Key         string `json:"r2_key"`
-	Provenance    string `json:"provenance"`
-	PublishedAtMs int64  `json:"published_at_ms"`
-	CreatedAtMs   int64  `json:"created_at_ms"`
+	ID              string `json:"id"`
+	Ticker          string `json:"ticker"`
+	R2Key           string `json:"r2_key"`
+	R2DetailKey     string `json:"r2_detail_key"`
+	R2DetailZhTwKey string `json:"r2_detail_zh_tw_key"`
+	SummaryJson     string `json:"summary_json"`
+	SummaryJsonZhTw string `json:"summary_json_zh_tw"`
+	Provenance      string `json:"provenance"`
+	PublishedAtMs   int64  `json:"published_at_ms"`
+	CreatedAtMs     int64  `json:"created_at_ms"`
 }
 
 type Subscription struct {

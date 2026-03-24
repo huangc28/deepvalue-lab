@@ -53,28 +53,6 @@ type minStockDetail struct {
 	BullFairValue float64 `json:"bullFairValue"`
 }
 
-// summaryFields mirrors StockSummary from the frontend type system.
-// LocalizedText fields use json.RawMessage to pass through without interpretation.
-type summaryFields struct {
-	ID                   string          `json:"id"`
-	Ticker               string          `json:"ticker"`
-	CompanyName          string          `json:"companyName"`
-	BusinessType         json.RawMessage `json:"businessType"`
-	CurrentPrice         float64         `json:"currentPrice"`
-	ValuationStatus      string          `json:"valuationStatus"`
-	NewsImpactStatus     string          `json:"newsImpactStatus"`
-	ThesisStatus         string          `json:"thesisStatus"`
-	TechnicalEntryStatus string          `json:"technicalEntryStatus"`
-	ActionState          string          `json:"actionState"`
-	DashboardBucket      string          `json:"dashboardBucket"`
-	BaseFairValue        float64         `json:"baseFairValue"`
-	BearFairValue        float64         `json:"bearFairValue"`
-	BullFairValue        float64         `json:"bullFairValue"`
-	DiscountToBase       float64         `json:"discountToBase"`
-	Summary              json.RawMessage `json:"summary"`
-	LastUpdated          string          `json:"lastUpdated"`
-}
-
 type publishQueries interface {
 	InsertStockReport(ctx context.Context, arg turso_models.InsertStockReportParams) error
 	UpsertPublishedStockDetail(ctx context.Context, arg turso_models.UpsertPublishedStockDetailParams) error
@@ -160,11 +138,15 @@ func (h *PublishHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.queries.InsertStockReport(r.Context(), turso_models.InsertStockReportParams{
-		ID:            reportID,
-		Ticker:        ticker,
-		R2Key:         r2ReportKey,
-		Provenance:    req.Report.Provenance,
-		PublishedAtMs: publishedAtMs,
+		ID:              reportID,
+		Ticker:          ticker,
+		R2Key:           r2ReportKey,
+		R2DetailKey:     r2DetailKey,
+		R2DetailZhTwKey: r2DetailZhTWKey,
+		SummaryJson:     summaryJSON,
+		SummaryJsonZhTw: summaryJSONZhTW,
+		Provenance:      req.Report.Provenance,
+		PublishedAtMs:   publishedAtMs,
 	}); err != nil {
 		h.logger.Error("insert stock report", zap.String("id", reportID), zap.Error(err))
 		render.ChiErr(w, r, http.StatusInternalServerError, err)

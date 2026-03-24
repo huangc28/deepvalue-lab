@@ -13,7 +13,7 @@ This milestone adds historical analysis report review to the stock detail page. 
 
 - [x] **Phase 4: Historical Revision Ledger Mockup** - Build a frontend-only historical revision ledger mockup inside the stock detail page using local mock data (completed 2026-03-24)
 - [x] **Phase 5: Interaction Contract And Frontend History Data Model** - Lock the post-review interaction contract and move the frontend history UI onto structured summary/detail types (completed 2026-03-24)
-- [ ] **Phase 6: Historical Report Read Model And Backend APIs** - Add persisted historical summary data plus historical detail read APIs
+- [x] **Phase 6: Historical Report Read Model And Backend APIs** - Add persisted historical summary data plus historical detail read APIs (completed 2026-03-24)
 - [ ] **Phase 7: Frontend API Integration For Historical Reports** - Connect the revision ledger and compare flows to live APIs without regressing the current stock detail path
 
 ## Phase Details
@@ -57,7 +57,12 @@ Plans:
   2. `GET /v1/stocks/{ticker}/reports` returns all required summary fields in descending `publishedAtMs` order
   3. `GET /v1/stocks/{ticker}/reports/{reportId}` returns locale-aware structured historical detail for a single revision
   4. Historical list reads do not require request-time fan-out across all detail artifacts
-**Plans**: 0 plans yet — start only after Phase 4 review
+**Plans**: 3 plans
+
+Plans:
+- [x] 06-01-PLAN.md — Extend `stock_reports` into the historical read model and persist summary/detail metadata at publish time
+- [x] 06-02-PLAN.md — Replace metadata-only `/reports` responses with frontend-aligned historical summaries
+- [x] 06-03-PLAN.md — Add locale-aware `/v1/stocks/{ticker}/reports/{reportId}` detail reads and route registration
 
 ### Phase 7: Frontend API Integration For Historical Reports
 **Goal**: The stock detail page consumes live historical report APIs for revision list, selected snapshot, and compare mode while preserving the current latest detail experience
@@ -75,11 +80,11 @@ Plans:
 **Execution Order:**
 Phases execute in numeric order: 4 → 5 → 6 → 7
 
-**Execution strategy note:** Stop after Phase 4 execution and wait for manual UI review before planning or executing later phases.
+**Execution strategy note:** The Phase 4 review gate has been cleared; phases 5 and 6 are complete and phase 7 is the next planned implementation step.
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 4. Historical Revision Ledger Mockup | 1/1 | Complete   | 2026-03-24 |
 | 5. Interaction Contract And Frontend History Data Model | 2/2 | Complete   | 2026-03-24 |
-| 6. Historical Report Read Model And Backend APIs | 0/0 | Planned | — |
+| 6. Historical Report Read Model And Backend APIs | 3/3 | Complete   | 2026-03-24 |
 | 7. Frontend API Integration For Historical Reports | 0/0 | Planned | — |

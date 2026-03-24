@@ -20,9 +20,9 @@
 
 ### Historical Report API
 
-- [ ] **APIH-01**: Backend persists historical per-report summary data for performant revision list reads
-- [ ] **APIH-02**: `GET /v1/stocks/{ticker}/reports` returns summary fields sorted by `publishedAtMs` descending
-- [ ] **APIH-03**: `GET /v1/stocks/{ticker}/reports/{reportId}` returns locale-aware structured historical detail for a single revision
+- [x] **APIH-01**: Backend persists historical per-report summary data for performant revision list reads
+- [x] **APIH-02**: `GET /v1/stocks/{ticker}/reports` returns summary fields sorted by `publishedAtMs` descending
+- [x] **APIH-03**: `GET /v1/stocks/{ticker}/reports/{reportId}` returns locale-aware structured historical detail for a single revision
 
 ### Frontend Integration
 
@@ -56,9 +56,9 @@
 | HIST-05 | Phase 4 | Complete |
 | FEH-01 | Phase 5 | Complete |
 | FEH-02 | Phase 5 | Complete |
-| APIH-01 | Phase 6 | Pending |
-| APIH-02 | Phase 6 | Pending |
-| APIH-03 | Phase 6 | Pending |
+| APIH-01 | Phase 6 | Complete |
+| APIH-02 | Phase 6 | Complete |
+| APIH-03 | Phase 6 | Complete |
 | INTH-01 | Phase 7 | Pending |
 | INTH-02 | Phase 7 | Pending |
 
@@ -69,4 +69,4 @@
 
 ---
 *Requirements defined: 2026-03-21*
-*Last updated: 2026-03-21 after milestone v1.1 definition*
+*Last updated: 2026-03-24 after Phase 6 completion*

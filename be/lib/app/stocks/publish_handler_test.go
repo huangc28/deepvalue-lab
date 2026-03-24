@@ -85,13 +85,22 @@ func TestPublishHandler_ENOnlyKeepsZhTWDefaults(t *testing.T) {
 	if len(queries.upsertPublishedStockDetailCalls) != 1 {
 		t.Fatalf("expected 1 upsert call, got %d", len(queries.upsertPublishedStockDetailCalls))
 	}
-
-	arg := queries.upsertPublishedStockDetailCalls[0]
-	if arg.R2DetailZhTwKey != "" {
-		t.Fatalf("expected empty zh-TW detail key, got %q", arg.R2DetailZhTwKey)
+	if len(queries.insertStockReportCalls) != 1 {
+		t.Fatalf("expected 1 insert call, got %d", len(queries.insertStockReportCalls))
 	}
-	if arg.SummaryJsonZhTw != "{}" {
-		t.Fatalf("expected default zh-TW summary json, got %q", arg.SummaryJsonZhTw)
+
+	insertArg := queries.insertStockReportCalls[0]
+	if insertArg.R2DetailKey == "" {
+		t.Fatal("expected en detail key to be set on stock_reports insert")
+	}
+	if insertArg.R2DetailZhTwKey != "" {
+		t.Fatalf("expected empty zh-TW detail key, got %q", insertArg.R2DetailZhTwKey)
+	}
+	if insertArg.SummaryJson == "{}" {
+		t.Fatal("expected summary json to be populated on stock_reports insert")
+	}
+	if insertArg.SummaryJsonZhTw != "{}" {
+		t.Fatalf("expected default zh-TW summary json, got %q", insertArg.SummaryJsonZhTw)
 	}
 
 	var resp struct {
@@ -134,12 +143,21 @@ func TestPublishHandler_BilingualRequestPersistsZhTWArtifact(t *testing.T) {
 	if len(queries.upsertPublishedStockDetailCalls) != 1 {
 		t.Fatalf("expected 1 upsert call, got %d", len(queries.upsertPublishedStockDetailCalls))
 	}
+	if len(queries.insertStockReportCalls) != 1 {
+		t.Fatalf("expected 1 insert call, got %d", len(queries.insertStockReportCalls))
+	}
 
-	arg := queries.upsertPublishedStockDetailCalls[0]
-	if arg.R2DetailZhTwKey == "" {
+	insertArg := queries.insertStockReportCalls[0]
+	if insertArg.R2DetailKey == "" {
+		t.Fatal("expected en detail key to be set")
+	}
+	if insertArg.R2DetailZhTwKey == "" {
 		t.Fatal("expected zh-TW detail key to be set")
 	}
-	if arg.SummaryJsonZhTw == "{}" {
+	if insertArg.SummaryJson == "{}" {
+		t.Fatal("expected en summary json to be populated")
+	}
+	if insertArg.SummaryJsonZhTw == "{}" {
 		t.Fatal("expected zh-TW summary json to be populated")
 	}
 	if len(storage.jsonUploads) != 2 {
@@ -174,6 +192,9 @@ func TestPublishHandler_InvalidStockDetailZhTWReturns422(t *testing.T) {
 
 	if rec.Code != http.StatusUnprocessableEntity {
 		t.Fatalf("expected 422, got %d body=%s", rec.Code, rec.Body.String())
+	}
+	if len(queries.insertStockReportCalls) != 0 {
+		t.Fatalf("expected no report insert, got %d insert calls", len(queries.insertStockReportCalls))
 	}
 	if len(queries.upsertPublishedStockDetailCalls) != 0 {
 		t.Fatalf("expected no persistence, got %d upsert calls", len(queries.upsertPublishedStockDetailCalls))

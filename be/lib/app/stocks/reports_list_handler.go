@@ -1,6 +1,7 @@
 package stocks
 
 import (
+	"context"
 	"net/http"
 	"strings"
 
@@ -12,12 +13,16 @@ import (
 )
 
 type ReportsListHandler struct {
-	queries *turso_models.Queries
+	queries reportsListQueries
 	logger  *zap.Logger
 }
 
 func NewReportsListHandler(queries *turso_models.Queries, logger *zap.Logger) *ReportsListHandler {
 	return &ReportsListHandler{queries: queries, logger: logger}
+}
+
+type reportsListQueries interface {
+	ListStockReportsByTicker(ctx context.Context, ticker string) ([]turso_models.StockReport, error)
 }
 
 func (h *ReportsListHandler) RegisterRoute(r *chi.Mux) {
@@ -26,6 +31,7 @@ func (h *ReportsListHandler) RegisterRoute(r *chi.Mux) {
 
 func (h *ReportsListHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	ticker := strings.ToUpper(chi.URLParam(r, "ticker"))
+	useZhTW := isZhTWLocale(r)
 
 	rows, err := h.queries.ListStockReportsByTicker(r.Context(), ticker)
 	if err != nil {
@@ -34,23 +40,15 @@ func (h *ReportsListHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	type reportMeta struct {
-		ID            string `json:"id"`
-		Ticker        string `json:"ticker"`
-		R2Key         string `json:"r2Key"`
-		Provenance    string `json:"provenance"`
-		PublishedAtMs int64  `json:"publishedAtMs"`
-	}
-
-	reports := make([]reportMeta, 0, len(rows))
-	for _, row := range rows {
-		reports = append(reports, reportMeta{
-			ID:            row.ID,
-			Ticker:        row.Ticker,
-			R2Key:         row.R2Key,
-			Provenance:    row.Provenance,
-			PublishedAtMs: row.PublishedAtMs,
-		})
+	reports := make([]historicalReportSummaryResponse, 0, len(rows))
+	for i, row := range rows {
+		report, buildErr := buildHistoricalReportSummary(row, useZhTW, i == 0)
+		if buildErr != nil {
+			h.logger.Error("build historical report summary", zap.String("ticker", ticker), zap.String("report_id", row.ID), zap.Error(buildErr))
+			render.ChiErr(w, r, http.StatusInternalServerError, buildErr)
+			return
+		}
+		reports = append(reports, report)
 	}
 
 	render.ChiJSON(w, r, http.StatusOK, map[string]any{"reports": reports})
