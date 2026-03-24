@@ -217,6 +217,26 @@ export const messages = {
         'Supporting rail: current price versus base fair value across revisions.',
       historyTrendCurrentPrice: 'current price',
       historyTrendBaseValue: 'base fair value',
+      historyLoadingLabel: 'Loading History',
+      historyLoadingTitle: 'Fetching structured revisions from the live report archive.',
+      historyLoadingDescription:
+        'Latest stock detail stays available while historical summaries load.',
+      historyErrorLabel: 'History Unavailable',
+      historyErrorTitle: 'Historical revisions could not be loaded right now.',
+      historyErrorDescription:
+        'The latest stock detail is still available. Retry the history request when the report APIs recover.',
+      historySelectedLoadingLabel: 'Loading Revision',
+      historySelectedLoadingDescription:
+        'Fetching the selected revision snapshot from the live historical detail API.',
+      historySelectedErrorLabel: 'Revision Unavailable',
+      historySelectedErrorDescription:
+        'The selected revision summary is visible, but the structured snapshot could not be loaded.',
+      historyCompareLoadingLabel: 'Loading Comparison',
+      historyCompareLoadingDescription:
+        'Fetching the comparison revision without replacing the base selection.',
+      historyCompareErrorLabel: 'Comparison Unavailable',
+      historyCompareErrorDescription:
+        'The base revision is still active. Pick another comparison target or retry this revision.',
       historyEmptyLabel: 'No Structured History',
       historyEmptyTitle: 'Historical reports have not been mocked for this name yet.',
       historyEmptyDescription:
@@ -478,6 +498,26 @@ export const messages = {
         '支援判讀用的輔助軌道：比較各次 revision 的 current price 與 base fair value。',
       historyTrendCurrentPrice: '目前價格',
       historyTrendBaseValue: '基準合理價值',
+      historyLoadingLabel: '正在載入歷史版本',
+      historyLoadingTitle: '正在從 live report archive 讀取結構化版本。',
+      historyLoadingDescription:
+        '歷史摘要載入時，最新 stock detail 仍保持可讀。',
+      historyErrorLabel: '歷史版本暫時無法使用',
+      historyErrorTitle: '目前無法載入 historical revisions。',
+      historyErrorDescription:
+        '最新 stock detail 仍可使用；等 report API 恢復後再重試歷史區塊。',
+      historySelectedLoadingLabel: '正在載入選取版本',
+      historySelectedLoadingDescription:
+        '正在從 live historical detail API 讀取選取版本快照。',
+      historySelectedErrorLabel: '選取版本暫時無法使用',
+      historySelectedErrorDescription:
+        '選取版本摘要仍可見，但結構化快照目前無法載入。',
+      historyCompareLoadingLabel: '正在載入比較版本',
+      historyCompareLoadingDescription:
+        '正在讀取比較版本，同時保留基準版本不變。',
+      historyCompareErrorLabel: '比較版本暫時無法使用',
+      historyCompareErrorDescription:
+        '基準版本仍保持作用中；可改選其他比較版本或稍後重試。',
       historyEmptyLabel: '尚無結構化歷史',
       historyEmptyTitle: '這個標的還沒有 historical reports mockup。',
       historyEmptyDescription:

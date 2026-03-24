@@ -824,17 +824,9 @@ function HistoryLoadingState() {
 
   return (
     <HistoryStatePanel
-      label={detailMessage(m.detail, 'historyLoadingLabel', 'Loading History')}
-      title={detailMessage(
-        m.detail,
-        'historyLoadingTitle',
-        'Fetching structured revisions from the live report archive.',
-      )}
-      description={detailMessage(
-        m.detail,
-        'historyLoadingDescription',
-        'Latest stock detail stays available while historical summaries load.',
-      )}
+      label={m.detail.historyLoadingLabel}
+      title={m.detail.historyLoadingTitle}
+      description={m.detail.historyLoadingDescription}
     />
   )
 }
@@ -844,17 +836,9 @@ function HistoryErrorState({ errorMessage }: { errorMessage?: string }) {
 
   return (
     <HistoryStatePanel
-      label={detailMessage(m.detail, 'historyErrorLabel', 'History Unavailable')}
-      title={detailMessage(
-        m.detail,
-        'historyErrorTitle',
-        'Historical revisions could not be loaded right now.',
-      )}
-      description={detailMessage(
-        m.detail,
-        'historyErrorDescription',
-        'The latest stock detail is still available. Retry the history request when the report APIs recover.',
-      )}
+      label={m.detail.historyErrorLabel}
+      title={m.detail.historyErrorTitle}
+      description={m.detail.historyErrorDescription}
       errorMessage={errorMessage}
       tone="error"
     />
@@ -866,12 +850,8 @@ function SelectedRevisionLoadingState() {
 
   return (
     <HistoryStatePanel
-      label={detailMessage(m.detail, 'historySelectedLoadingLabel', 'Loading Revision')}
-      description={detailMessage(
-        m.detail,
-        'historySelectedLoadingDescription',
-        'Fetching the selected revision snapshot from the live historical detail API.',
-      )}
+      label={m.detail.historySelectedLoadingLabel}
+      description={m.detail.historySelectedLoadingDescription}
       compact
     />
   )
@@ -882,12 +862,8 @@ function SelectedRevisionErrorState({ errorMessage }: { errorMessage?: string })
 
   return (
     <HistoryStatePanel
-      label={detailMessage(m.detail, 'historySelectedErrorLabel', 'Revision Unavailable')}
-      description={detailMessage(
-        m.detail,
-        'historySelectedErrorDescription',
-        'The selected revision summary is visible, but the structured snapshot could not be loaded.',
-      )}
+      label={m.detail.historySelectedErrorLabel}
+      description={m.detail.historySelectedErrorDescription}
       errorMessage={errorMessage}
       tone="error"
       compact
@@ -900,12 +876,8 @@ function CompareRevisionLoadingState() {
 
   return (
     <HistoryStatePanel
-      label={detailMessage(m.detail, 'historyCompareLoadingLabel', 'Loading Comparison')}
-      description={detailMessage(
-        m.detail,
-        'historyCompareLoadingDescription',
-        'Fetching the comparison revision without replacing the base selection.',
-      )}
+      label={m.detail.historyCompareLoadingLabel}
+      description={m.detail.historyCompareLoadingDescription}
       compact
     />
   )
@@ -916,12 +888,8 @@ function CompareRevisionErrorState({ errorMessage }: { errorMessage?: string }) 
 
   return (
     <HistoryStatePanel
-      label={detailMessage(m.detail, 'historyCompareErrorLabel', 'Comparison Unavailable')}
-      description={detailMessage(
-        m.detail,
-        'historyCompareErrorDescription',
-        'The base revision is still active. Pick another comparison target or retry this revision.',
-      )}
+      label={m.detail.historyCompareErrorLabel}
+      description={m.detail.historyCompareErrorDescription}
       errorMessage={errorMessage}
       tone="error"
       compact
@@ -1054,15 +1022,6 @@ function LegendDot({ color, label }: { color: string; label: string }) {
       {label}
     </span>
   )
-}
-
-function detailMessage(
-  detail: object,
-  key: string,
-  fallback: string,
-) {
-  const detailMessages = detail as Record<string, string | undefined>
-  return detailMessages[key] ?? fallback
 }
 
 function formatCurrency(value: number) {
