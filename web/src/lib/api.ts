@@ -1,4 +1,8 @@
-import type { StockDetail, StockSummary } from '../types/stocks'
+import type {
+  HistoricalReportSummary,
+  StockDetail,
+  StockSummary,
+} from '../types/stocks'
 import type { Locale } from '../i18n/types'
 
 const API_URL = import.meta.env.VITE_API_URL ?? ''
@@ -39,6 +43,31 @@ function buildStockDetailUrl(ticker: string, locale: Locale) {
   return `${API_URL}/v1/stocks/${encodedTicker}`
 }
 
+function buildStockReportsUrl(ticker: string, locale: Locale) {
+  const encodedTicker = encodeURIComponent(ticker)
+
+  if (locale === 'zh-TW') {
+    return `${API_URL}/v1/stocks/${encodedTicker}/reports?locale=zh-TW`
+  }
+
+  return `${API_URL}/v1/stocks/${encodedTicker}/reports`
+}
+
+function buildStockReportDetailUrl(
+  ticker: string,
+  reportId: string,
+  locale: Locale,
+) {
+  const encodedTicker = encodeURIComponent(ticker)
+  const encodedReportId = encodeURIComponent(reportId)
+
+  if (locale === 'zh-TW') {
+    return `${API_URL}/v1/stocks/${encodedTicker}/reports/${encodedReportId}?locale=zh-TW`
+  }
+
+  return `${API_URL}/v1/stocks/${encodedTicker}/reports/${encodedReportId}`
+}
+
 export async function fetchStocks(locale: Locale): Promise<StockSummary[]> {
   const data = await fetchJson<{ stocks: StockSummary[] }>(buildStocksUrl(locale))
   return data.stocks
@@ -46,4 +75,22 @@ export async function fetchStocks(locale: Locale): Promise<StockSummary[]> {
 
 export async function fetchStock(ticker: string, locale: Locale): Promise<StockDetail> {
   return fetchJson<StockDetail>(buildStockDetailUrl(ticker, locale))
+}
+
+export async function fetchStockReports(
+  ticker: string,
+  locale: Locale,
+): Promise<HistoricalReportSummary[]> {
+  const data = await fetchJson<{ reports: HistoricalReportSummary[] }>(
+    buildStockReportsUrl(ticker, locale),
+  )
+  return data.reports
+}
+
+export async function fetchStockReportDetail(
+  ticker: string,
+  reportId: string,
+  locale: Locale,
+): Promise<StockDetail> {
+  return fetchJson<StockDetail>(buildStockReportDetailUrl(ticker, reportId, locale))
 }
