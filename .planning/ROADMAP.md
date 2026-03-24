@@ -73,7 +73,11 @@ Plans:
   2. Compare mode loads two historical detail payloads reliably
   3. Mixed-locale fallback behavior is clearly labeled and usable
   4. Current stock detail latest path does not regress
-**Plans**: 0 plans yet — start only after Phase 4 review
+**Plans**: 2 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — Add an async-aware historical ledger contract with explicit live-vs-legacy mode and local loading/error states
+- [ ] 07-02-PLAN.md — Add live historical report API/query wiring and drive the stock detail History section from live data without regressing the latest path
 
 ## Progress
 
