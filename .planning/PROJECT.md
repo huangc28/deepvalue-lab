@@ -16,10 +16,13 @@ A stock detail page should show not only the latest judgment, but how that judgm
 - ✓ StockDetail JSON is bilingual with `LocalizedText` fields for user-facing content — Phase 2
 - ✓ Backend publish/list/detail flows support exact `locale=zh-TW` with English fallback where implemented — Phase 3
 
+### Validated
+
+- ✓ User can browse a latest-first historical revision ledger inside the stock detail page — Validated in Phase 04: historical-revision-ledger-mockup
+- ✓ User can inspect the currently selected historical revision and compare two revisions side by side — Validated in Phase 04: historical-revision-ledger-mockup
+
 ### Active
 
-- [ ] User can browse a latest-first historical revision ledger inside the stock detail page
-- [ ] User can inspect the currently selected historical revision and compare two revisions side by side
 - [ ] Historical reports are eventually served through stable summary/detail APIs without request-time fan-out across all report artifacts
 
 ### Out of Scope
@@ -50,10 +53,10 @@ A stock detail page should show not only the latest judgment, but how that judgm
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
 | Start this as a new milestone instead of extending the old zh-TW milestone | The historical reports feature has a different product goal and different delivery path | — Pending |
-| Build a frontend-only mockup first | The user wants to see and manually tune the visual before locking data/API decisions | — Pending |
-| Keep historical reports inside the stock detail page initially | Preserves current reading flow and reduces navigation complexity | — Pending |
-| Stop execution after Phase 4 | Prevents frontend/data/API contracts from hardening before the user reviews the mockup | — Pending |
+| Build a frontend-only mockup first | The user wants to see and manually tune the visual before locking data/API decisions | ✓ Complete — mockup approved after visual review |
+| Keep historical reports inside the stock detail page initially | Preserves current reading flow and reduces navigation complexity | ✓ Confirmed — all Phase 4 components live inside stock-detail-page.tsx |
+| Stop execution after Phase 4 | Prevents frontend/data/API contracts from hardening before the user reviews the mockup | ✓ Honored — Phase 4 complete, proceeding to Phase 5 after approval |
 | Defer raw markdown viewer | Revision ledger and historical compare are the milestone priority | — Pending |
 
 ---
-*Last updated: 2026-03-21 after starting milestone v1.1 Historical Analysis Reports*
+*Last updated: 2026-03-24 after Phase 04 completion — revision ledger mockup approved*
