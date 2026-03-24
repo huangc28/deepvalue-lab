@@ -221,6 +221,7 @@ export const messages = {
       historyEmptyTitle: 'Historical reports have not been mocked for this name yet.',
       historyEmptyDescription:
         'Phase 4 keeps the empty state explicit so layout, spacing, and fallback behavior can be reviewed before API work starts.',
+      historyLocaleFallbackIndicator: 'Shown in English',
       panelLabels: {
         scenarioModel: 'Scenario Model',
         pricingContext: 'Pricing Context',
@@ -481,6 +482,7 @@ export const messages = {
       historyEmptyTitle: '這個標的還沒有 historical reports mockup。',
       historyEmptyDescription:
         'Phase 4 先把 empty state 明確做出來，讓版面、密度與 fallback 行為可以在 API work 之前先被 review。',
+      historyLocaleFallbackIndicator: '部分內容以英文顯示',
       panelLabels: {
         scenarioModel: '情境模型',
         pricingContext: '價格脈絡',
