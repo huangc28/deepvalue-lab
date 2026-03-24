@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Phase 5 context gathered
-last_updated: "2026-03-24T10:01:29.326Z"
+stopped_at: Completed 05-01-PLAN.md
+last_updated: "2026-03-24T10:22:49.579Z"
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 1
-  completed_plans: 1
+  total_plans: 3
+  completed_plans: 2
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** A stock detail page should show not only the latest judgment, but how that judgment changed over time and why.
-**Current focus:** Phase 04 — historical-revision-ledger-mockup
+**Current focus:** Phase 05 — interaction-contract-and-frontend-history-data-model
 
 ## Current Position
 
-Phase: 04 (historical-revision-ledger-mockup) — EXECUTING
-Plan: 1 of 1
+Phase: 05 (interaction-contract-and-frontend-history-data-model) — EXECUTING
+Plan: 1 of 2
 
 ## Performance Metrics
 
@@ -47,6 +47,7 @@ Plan: 1 of 1
 
 *Updated after each plan completion*
 | Phase 04-historical-revision-ledger-mockup P04-01 | 15 | 3 tasks | 4 files |
+| Phase 05 P01 | 6 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -65,6 +66,8 @@ Recent decisions affecting current work:
 - [Milestone v1.1]: raw markdown/original report access is deferred until after revision ledger usefulness is validated
 - [Phase 04]: Compare mode uses two independent state variables (selectedId + compareId) — base preservation is structural, not conditional
 - [Phase 04]: RevisionTrend SVG uses ring overlay circles to highlight selected/compare nodes without changing color coding
+- [Phase 05]: HistoricalReportDetail extends HistoricalReportSummary keeping single publishedAtMs; detail lookup map keyed by reportId
+- [Phase 05]: localeHasFallback boolean pre-computed at data layer: false for TSM (bilingual), true for ADBE (English-only)
 
 ### Pending Todos
 
@@ -83,6 +86,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T10:01:29.323Z
-Stopped at: Phase 5 context gathered
-Resume file: .planning/phases/05-interaction-contract-and-frontend-history-data-model/05-CONTEXT.md
+Last session: 2026-03-24T10:22:49.577Z
+Stopped at: Completed 05-01-PLAN.md
+Resume file: None

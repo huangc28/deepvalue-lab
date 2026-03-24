@@ -80,6 +80,6 @@ Phases execute in numeric order: 4 → 5 → 6 → 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 4. Historical Revision Ledger Mockup | 1/1 | Complete   | 2026-03-24 |
-| 5. Interaction Contract And Frontend History Data Model | 0/2 | Planned | — |
+| 5. Interaction Contract And Frontend History Data Model | 1/2 | In Progress|  |
 | 6. Historical Report Read Model And Backend APIs | 0/0 | Planned | — |
 | 7. Frontend API Integration For Historical Reports | 0/0 | Planned | — |
