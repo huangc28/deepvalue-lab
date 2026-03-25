@@ -66,6 +66,12 @@ Do not:
 
 Keep internal enums stable in English and localize only at render time.
 
+## Coding Conventions & Project Structure
+
+Before writing any code, read `CONVENTIONS.md` in the repo root.
+
+It covers folder structure, Go backend patterns, React frontend patterns, shared conventions, and the validation checklist to run before marking any task done.
+
 ## Practical Notes
 
 ```bash

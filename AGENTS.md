@@ -67,3 +67,9 @@ Suggested NotebookLM queries before non-trivial work:
 - What is the current architecture and purpose of this project?
 - Are there prior decisions or constraints relevant to this task?
 - Are there known operational, security, or integration risks?
+
+## Coding Conventions & Project Structure
+
+Before writing any code, read `CONVENTIONS.md` in the repo root.
+
+It covers folder structure, Go backend patterns, React frontend patterns, shared conventions, and the validation checklist to run before marking any task done.
