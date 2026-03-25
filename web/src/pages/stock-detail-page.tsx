@@ -5,6 +5,7 @@ import { Link } from '@tanstack/react-router'
 import { ExpectationBridge } from '../components/detail/expectation-bridge'
 import { HistoricalRevisionLedger } from '../components/detail/historical-revision-ledger'
 import { ScenarioCard } from '../components/detail/scenario-card'
+import { TechnicalPriceChart } from '../components/detail/technical-price-chart'
 import { ErrorState } from '../components/ui/error-state'
 import { LoadingState } from '../components/ui/loading-state'
 import { MetricBlock } from '../components/ui/metric-block'
@@ -20,6 +21,7 @@ import { TerminalLabel } from '../components/ui/terminal-label'
 import { getStockByTicker } from '../data/mock-stocks'
 import { useI18n } from '../i18n/context'
 import { ApiError } from '../lib/api'
+import { cx } from '../lib/cx'
 import {
   mergeHistoricalReportDetail,
   useStock,
@@ -38,7 +40,14 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
   const { data: liveStock, isLoading, error } = useStock(ticker, locale)
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [compareId, setCompareId] = useState<string | null>(null)
-  const stock = liveStock ?? mockStock
+  const stock = liveStock
+    ? {
+        ...mockStock,
+        ...liveStock,
+        technicalPriceChart:
+          liveStock.technicalPriceChart ?? mockStock?.technicalPriceChart,
+      }
+    : mockStock
   const useMockHistory = !liveStock && !!mockStock
   const reportsQuery = useStockReports(ticker, locale, Boolean(liveStock))
   const historicalReports = reportsQuery.data ?? []
@@ -262,24 +271,26 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           description={m.detail.technicalEntryStatusDescription}
         >
           <div className="space-y-4">
-            <InfoList
-              items={[
-                [
-                  m.detail.entryStatus,
-                  m.status.entryValue[stock.technicalEntryStatus],
-                ],
-                [
-                  m.detail.timingNote,
-                  text(stock.technicalCommentary ?? stock.summary),
-                ],
-                [
-                  m.detail.framework,
-                  'RSI + EMA + MRC-compatible stretch logic',
-                ],
-              ]}
+            {stock.technicalPriceChart ? (
+              <TechnicalPriceChart
+                chart={stock.technicalPriceChart}
+                ticker={stock.ticker}
+                companyName={stock.companyName}
+                entryStatus={stock.technicalEntryStatus}
+                entryLabel={m.status.entryValue[stock.technicalEntryStatus]}
+                timingNote={text(stock.technicalCommentary ?? stock.summary)}
+              />
+            ) : null}
+            <TechnicalSummaryRail
+              statusLabel={m.detail.entryStatus}
+              statusValue={m.status.entryValue[stock.technicalEntryStatus]}
+              noteLabel={m.detail.timingNote}
+              noteValue={text(stock.technicalCommentary ?? stock.summary)}
+              frameworkLabel={m.detail.framework}
+              frameworkValue="RSI + EMA + MRC-compatible stretch logic"
             />
             {stock.technicalSignals?.length ? (
-              <InfoList items={toInfoItems(stock.technicalSignals, text)} />
+              <SignalStrip items={toInfoItems(stock.technicalSignals, text)} />
             ) : null}
           </div>
         </ResearchSection>
@@ -568,6 +579,82 @@ function InfoList({ items }: { items: Array<[string, string]> }) {
         </div>
       ))}
     </dl>
+  )
+}
+
+function TechnicalSummaryRail({
+  statusLabel,
+  statusValue,
+  noteLabel,
+  noteValue,
+  frameworkLabel,
+  frameworkValue,
+}: {
+  statusLabel: string
+  statusValue: string
+  noteLabel: string
+  noteValue: string
+  frameworkLabel: string
+  frameworkValue: string
+}) {
+  return (
+    <div className="rounded-[1.15rem] border border-[rgba(240,246,252,0.06)] bg-[linear-gradient(180deg,rgba(12,17,24,0.88),rgba(10,14,20,0.96))]">
+      <div className="grid gap-0 border-b border-[rgba(240,246,252,0.05)] lg:grid-cols-[15rem_minmax(0,1fr)_18rem]">
+        <RailCell label={statusLabel} value={statusValue} accent />
+        <RailCell label={noteLabel} value={noteValue} />
+        <RailCell label={frameworkLabel} value={frameworkValue} />
+      </div>
+    </div>
+  )
+}
+
+function RailCell({
+  label,
+  value,
+  accent = false,
+}: {
+  label: string
+  value: string
+  accent?: boolean
+}) {
+  return (
+    <div className="border-b border-[rgba(240,246,252,0.05)] px-4 py-4 last:border-b-0 lg:border-b-0 lg:border-r lg:border-[rgba(240,246,252,0.05)] last:lg:border-r-0">
+      <p className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[var(--ink-faint)]">
+        {label}
+      </p>
+      <p
+        className={cx(
+          'mt-2 text-sm leading-7',
+          accent
+            ? 'font-semibold uppercase tracking-[0.08em] text-[var(--ink-primary)]'
+            : 'text-[var(--ink-secondary)]',
+        )}
+      >
+        {value}
+      </p>
+    </div>
+  )
+}
+
+function SignalStrip({ items }: { items: Array<[string, string]> }) {
+  return (
+    <div className="rounded-[1.05rem] border border-[rgba(240,246,252,0.05)] bg-[rgba(12,17,24,0.82)] px-4 py-3">
+      <div className="flex flex-wrap gap-2.5">
+        {items.map(([label, value]) => (
+          <div
+            key={`${label}-${value}`}
+            className="rounded-md border border-[rgba(240,246,252,0.06)] bg-[rgba(240,246,252,0.025)] px-3 py-2"
+          >
+            <p className="font-mono text-[0.56rem] uppercase tracking-[0.18em] text-[var(--ink-faint)]">
+              {label}
+            </p>
+            <p className="mt-1 text-[0.8rem] leading-6 text-[var(--ink-secondary)]">
+              {value}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
 

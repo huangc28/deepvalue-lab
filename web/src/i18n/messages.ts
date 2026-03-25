@@ -166,6 +166,15 @@ export const messages = {
       entryStatus: 'Entry Status',
       timingNote: 'Timing Note',
       framework: 'Framework',
+      technicalChartTitle: 'Price Chart',
+      technicalChartDescription:
+        'Mock price path for UI validation. Indicator overlays can layer onto this chart once the time-series API contract exists.',
+      technicalChartSourceMock: 'mock price path',
+      technicalChartCurrent: 'Current',
+      technicalChartChange: 'Period Move',
+      technicalChartHigh: 'Period High',
+      technicalChartLow: 'Period Low',
+      technicalChartRangeLabel: 'Range',
       risksAndCatalystsTitle: 'Risks And Catalysts',
       risksAndCatalystsDescription:
         'Keep the key downside variables and potential unlocks visible in the same frame.',
@@ -448,6 +457,15 @@ export const messages = {
       entryStatus: '進場狀態',
       timingNote: '時機說明',
       framework: '框架',
+      technicalChartTitle: '價格走勢圖',
+      technicalChartDescription:
+        '這是用來驗證 UI 的 mock price path。等 time-series API contract 補上後，再把 indicator overlays 疊上來。',
+      technicalChartSourceMock: 'mock 價格路徑',
+      technicalChartCurrent: '目前價格',
+      technicalChartChange: '區間變動',
+      technicalChartHigh: '區間高點',
+      technicalChartLow: '區間低點',
+      technicalChartRangeLabel: '區間',
       risksAndCatalystsTitle: '風險與催化劑',
       risksAndCatalystsDescription:
         '把主要 downside 變數與潛在 unlock 放在同一個畫面中。',

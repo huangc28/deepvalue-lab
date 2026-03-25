@@ -4,6 +4,7 @@ export type ValuationStatus = 'cheap' | 'fair' | 'rich'
 export type NewsImpactStatus = 'improving' | 'unchanged' | 'deteriorating'
 export type ThesisStatus = 'intact' | 'watch' | 'broken'
 export type TechnicalEntryStatus = 'favorable' | 'neutral' | 'stretched'
+export type TechnicalChartRange = '1M' | '3M' | '6M' | '1Y'
 export type DashboardBucket = 'now-actionable' | 'needs-review' | 'at-risk'
 export type HistoricalReportProvenance =
   | 'manual'
@@ -62,6 +63,21 @@ export interface FactItem {
 export interface SourceReference {
   label: LocalizedText
   url?: string
+}
+
+export interface TechnicalChartPoint {
+  date: string
+  close: number
+}
+
+export interface TechnicalChartSeries {
+  range: TechnicalChartRange
+  points: TechnicalChartPoint[]
+}
+
+export interface TechnicalPriceChart {
+  source: 'mock'
+  series: TechnicalChartSeries[]
 }
 
 export interface HistoricalReportSummary {
@@ -123,6 +139,7 @@ export interface StockDetail extends StockSummary {
   provisionalConclusion?: LocalizedText
   technicalCommentary?: LocalizedText
   technicalSignals?: FactItem[]
+  technicalPriceChart?: TechnicalPriceChart
   risks: LocalizedText[]
   catalysts: LocalizedText[]
   monitorNext: LocalizedText[]

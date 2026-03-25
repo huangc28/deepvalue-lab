@@ -5,6 +5,7 @@ import type {
   StockDetail,
 } from '../types/stocks'
 import type { LocalizedText } from '../i18n/types'
+import { buildMockTechnicalPriceChart } from './mock-technical-price-chart'
 
 function computeLocaleHasFallback(fields: LocalizedText[]): boolean {
   return fields.some((field) => typeof field === 'string')
@@ -237,7 +238,7 @@ const adbeHistoricalDetails: Record<string, HistoricalReportDetail> = {
 const sofiHistoricalSummaries: HistoricalReportSummary[] = []
 const sofiHistoricalDetails: Record<string, HistoricalReportDetail> = {}
 
-export const mockStocks: StockDetail[] = [
+const baseMockStocks: StockDetail[] = [
   {
     id: 'tsm',
     ticker: 'TSM',
@@ -1986,6 +1987,11 @@ export const mockStocks: StockDetail[] = [
     historicalReportDetails: sofiHistoricalDetails,
   },
 ]
+
+export const mockStocks: StockDetail[] = baseMockStocks.map((stock) => ({
+  ...stock,
+  technicalPriceChart: buildMockTechnicalPriceChart(stock),
+}))
 
 export function getStockByTicker(ticker: string) {
   return mockStocks.find(
