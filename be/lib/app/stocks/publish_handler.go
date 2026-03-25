@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-playground/validator/v10"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 
@@ -19,6 +20,8 @@ import (
 	"github.com/huangchihan/deepvalue-lab-be/lib/pkg/rabbitmq"
 	"github.com/huangchihan/deepvalue-lab-be/lib/pkg/render"
 )
+
+var validate = validator.New()
 
 type snapshotJobPublisher interface {
 	Publish(ctx context.Context, queue string, body []byte) error
@@ -60,18 +63,18 @@ type publishRequest struct {
 }
 
 type reportInput struct {
-	Markdown   string `json:"markdown"`
+	Markdown   string `json:"markdown"   validate:"required"`
 	Provenance string `json:"provenance"`
 }
 
 // minStockDetail contains only the fields we validate are present.
 type minStockDetail struct {
-	Ticker        string  `json:"ticker"`
-	CompanyName   string  `json:"companyName"`
-	CurrentPrice  float64 `json:"currentPrice"`
-	BaseFairValue float64 `json:"baseFairValue"`
-	BearFairValue float64 `json:"bearFairValue"`
-	BullFairValue float64 `json:"bullFairValue"`
+	Ticker        string  `json:"ticker"        validate:"required"`
+	CompanyName   string  `json:"companyName"   validate:"required"`
+	CurrentPrice  float64 `json:"currentPrice"  validate:"required,gt=0"`
+	BaseFairValue float64 `json:"baseFairValue" validate:"required,gt=0"`
+	BearFairValue float64 `json:"bearFairValue" validate:"required,gt=0"`
+	BullFairValue float64 `json:"bullFairValue" validate:"required,gt=0"`
 }
 
 type publishQueries interface {
@@ -95,7 +98,7 @@ func (h *PublishHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if strings.TrimSpace(req.Report.Markdown) == "" {
+	if err := validate.Struct(req.Report); err != nil {
 		render.ChiErr(w, r, http.StatusUnprocessableEntity, fmt.Errorf("report.markdown is required"))
 		return
 	}
@@ -246,8 +249,8 @@ func validateStockDetailPayload(raw json.RawMessage, field string) error {
 	if err := json.Unmarshal(raw, &detail); err != nil {
 		return fmt.Errorf("%s is invalid JSON: %w", field, err)
 	}
-	if detail.Ticker == "" || detail.CompanyName == "" || detail.CurrentPrice == 0 {
-		return fmt.Errorf("%s missing required fields: ticker, companyName, currentPrice", field)
+	if err := validate.Struct(detail); err != nil {
+		return fmt.Errorf("%s missing required fields: %w", field, err)
 	}
 	return nil
 }
