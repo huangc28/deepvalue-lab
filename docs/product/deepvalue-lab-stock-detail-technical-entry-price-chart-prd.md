@@ -382,13 +382,13 @@ Definition of done:
 
 ### 2. Frontend Prototype Cleanup
 
-- [ ] Keep the stock detail page rendering correctly when chart data is missing.
-- [ ] Remove any remaining chart-local status label that competes with the plot.
-- [ ] Keep the technical summary rail compact and readable beneath the chart.
+- [x] Keep the stock detail page rendering correctly when chart data is missing.
+- [x] Remove any remaining chart-local status label that competes with the plot.
+- [x] Keep the technical summary rail compact and readable beneath the chart.
 - [ ] Ensure the chart shell still reads as a trading-style panel on desktop and mobile.
 - [ ] Verify the chart does not dominate the page above valuation sections.
-- [ ] Keep mock chart data isolated from live read-path logic.
-- [ ] Confirm the technical signals presentation stays secondary to the chart.
+- [x] Keep mock chart data isolated from live read-path logic.
+- [x] Confirm the technical signals presentation stays secondary to the chart.
 
 Definition of done:
 - the current UI prototype is visually aligned with the target direction and no longer leaks mock assumptions into the live data path.

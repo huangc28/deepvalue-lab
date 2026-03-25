@@ -166,10 +166,15 @@ export const messages = {
       entryStatus: 'Entry Status',
       timingNote: 'Timing Note',
       framework: 'Framework',
+      technicalChartFrameworkValue:
+        'RSI(22) + EMA(12) on RSI + MRC-compatible stretch logic',
       technicalChartTitle: 'Price Chart',
       technicalChartDescription:
         'Mock price path for UI validation. Indicator overlays can layer onto this chart once the time-series API contract exists.',
-      technicalChartSourceMock: 'mock price path',
+      technicalChartFallbackTitle: 'Chart unavailable',
+      technicalChartFallbackDescription:
+        'This report snapshot does not include price-chart data yet. Entry status and timing commentary remain available below.',
+      technicalChartSourceMock: 'Mock Price Path',
       technicalChartCurrent: 'Current',
       technicalChartChange: 'Period Move',
       technicalChartHigh: 'Period High',
@@ -453,14 +458,19 @@ export const messages = {
       whatNeedsWatching: '需要持續追蹤的是',
       technicalEntryStatusTitle: '技術面進場狀態',
       technicalEntryStatusDescription:
-        '技術面只應存在於估值與 thesis 之後，作為執行層。',
+        '技術面只存在於估值與 thesis 之後，作為執行層。',
       entryStatus: '進場狀態',
       timingNote: '時機說明',
       framework: '框架',
+      technicalChartFrameworkValue:
+        'RSI(22) + RSI 上的 EMA(12) + MRC 相容 stretch 判讀',
       technicalChartTitle: '價格走勢圖',
       technicalChartDescription:
         '這是用來驗證 UI 的 mock price path。等 time-series API contract 補上後，再把 indicator overlays 疊上來。',
-      technicalChartSourceMock: 'mock 價格路徑',
+      technicalChartFallbackTitle: '暫無價格圖',
+      technicalChartFallbackDescription:
+        '這份 report snapshot 目前沒有圖表資料；下方仍保留進場狀態與時機說明。',
+      technicalChartSourceMock: 'Mock 價格路徑',
       technicalChartCurrent: '目前價格',
       technicalChartChange: '區間變動',
       technicalChartHigh: '區間高點',

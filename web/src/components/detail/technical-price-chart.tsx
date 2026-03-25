@@ -25,15 +25,11 @@ export function TechnicalPriceChart({
   ticker,
   companyName,
   entryStatus,
-  entryLabel,
-  timingNote,
 }: {
   chart: TechnicalPriceChart
   ticker: string
   companyName: string
   entryStatus: TechnicalEntryStatus
-  entryLabel: string
-  timingNote: string
 }) {
   const { locale, m } = useI18n()
   const [selectedRange, setSelectedRange] = useState<TechnicalChartRange>('1Y')
@@ -60,7 +56,6 @@ export function TechnicalPriceChart({
   const candleSlot = plotWidth / Math.max(candles.length, 1)
   const candleWidth = clamp(candleSlot * 0.6, 3, 8)
   const currentY = mapPriceToY(lastPrice, yMin, yMax, chartBottom)
-  const lastX = mapIndexToX(candles.length - 1, candles.length, chartRight)
 
   return (
     <div className="overflow-hidden rounded-[1.15rem] border border-[rgba(94,110,138,0.26)] bg-[linear-gradient(180deg,rgba(15,19,28,0.98),rgba(10,13,20,1))] shadow-[0_14px_34px_rgba(0,0,0,0.28)]">
@@ -92,16 +87,6 @@ export function TechnicalPriceChart({
           </div>
 
           <div className="flex items-center gap-2">
-            <span
-              className="rounded-md px-2.5 py-1 font-mono text-[0.62rem] uppercase tracking-[0.16em]"
-              style={{
-                color: accent.label,
-                backgroundColor: accent.soft,
-                border: `1px solid ${accent.border}`,
-              }}
-            >
-              {entryLabel}
-            </span>
             {TIMEFRAMES.map((range) => (
               <button
                 key={range}
@@ -132,9 +117,6 @@ export function TechnicalPriceChart({
           <InlineMetric label={m.detail.technicalChartLow} value={formatCurrency(periodLow)} />
         </div>
 
-        <p className="mt-3 text-sm leading-7 text-[var(--ink-secondary)]">
-          {timingNote}
-        </p>
       </div>
 
       <div className="relative px-3 pb-4 pt-3">
@@ -259,19 +241,6 @@ export function TechnicalPriceChart({
               fill="none"
               stroke="rgba(240,246,252,0.05)"
             />
-
-            {candles.length ? (
-              <text
-                x={lastX - 14}
-                y={Math.max(PLOT.top + 12, currentY - 14)}
-                textAnchor="end"
-                fill={accent.label}
-                fontSize="12"
-                fontFamily="JetBrains Mono, monospace"
-              >
-                {entryLabel}
-              </text>
-            ) : null}
           </svg>
         </div>
 

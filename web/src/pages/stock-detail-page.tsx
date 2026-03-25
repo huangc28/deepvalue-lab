@@ -44,8 +44,9 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
     ? {
         ...mockStock,
         ...liveStock,
-        technicalPriceChart:
-          liveStock.technicalPriceChart ?? mockStock?.technicalPriceChart,
+        // Keep mock charts out of the live read path so missing live data shows
+        // the intended fallback state instead of synthetic UI-only price action.
+        technicalPriceChart: liveStock.technicalPriceChart,
       }
     : mockStock
   const useMockHistory = !liveStock && !!mockStock
@@ -277,17 +278,21 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
                 ticker={stock.ticker}
                 companyName={stock.companyName}
                 entryStatus={stock.technicalEntryStatus}
-                entryLabel={m.status.entryValue[stock.technicalEntryStatus]}
-                timingNote={text(stock.technicalCommentary ?? stock.summary)}
               />
-            ) : null}
+            ) : (
+              <TechnicalChartFallback
+                eyebrow={m.detail.technicalChartTitle}
+                title={m.detail.technicalChartFallbackTitle}
+                description={m.detail.technicalChartFallbackDescription}
+              />
+            )}
             <TechnicalSummaryRail
               statusLabel={m.detail.entryStatus}
               statusValue={m.status.entryValue[stock.technicalEntryStatus]}
               noteLabel={m.detail.timingNote}
               noteValue={text(stock.technicalCommentary ?? stock.summary)}
               frameworkLabel={m.detail.framework}
-              frameworkValue="RSI + EMA + MRC-compatible stretch logic"
+              frameworkValue={m.detail.technicalChartFrameworkValue}
             />
             {stock.technicalSignals?.length ? (
               <SignalStrip items={toInfoItems(stock.technicalSignals, text)} />
@@ -603,6 +608,47 @@ function TechnicalSummaryRail({
         <RailCell label={statusLabel} value={statusValue} accent />
         <RailCell label={noteLabel} value={noteValue} />
         <RailCell label={frameworkLabel} value={frameworkValue} />
+      </div>
+    </div>
+  )
+}
+
+function TechnicalChartFallback({
+  eyebrow,
+  title,
+  description,
+}: {
+  eyebrow: string
+  title: string
+  description: string
+}) {
+  return (
+    <div className="overflow-hidden rounded-[1.15rem] border border-[rgba(94,110,138,0.22)] bg-[linear-gradient(180deg,rgba(15,19,28,0.94),rgba(10,13,20,0.98))] shadow-[0_14px_34px_rgba(0,0,0,0.24)]">
+      <div className="border-b border-[rgba(240,246,252,0.06)] px-4 py-3">
+        <p className="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">
+          {eyebrow}
+        </p>
+        <h4 className="mt-3 font-mono text-[1.1rem] font-semibold tracking-[-0.03em] text-[var(--ink-primary)]">
+          {title}
+        </h4>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--ink-secondary)]">
+          {description}
+        </p>
+      </div>
+      <div className="grid min-h-[17rem] place-items-center px-4 py-6">
+        <div className="w-full rounded-[0.95rem] border border-dashed border-[rgba(240,246,252,0.12)] bg-[rgba(240,246,252,0.02)] px-5 py-8">
+          <div className="grid gap-3 sm:grid-cols-4">
+            {['1M', '3M', '6M', '1Y'].map((range) => (
+              <div
+                key={range}
+                className="rounded-md border border-[rgba(240,246,252,0.06)] bg-[rgba(240,246,252,0.02)] px-3 py-2 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-[var(--ink-faint)]"
+              >
+                {range}
+              </div>
+            ))}
+          </div>
+          <div className="mt-6 h-40 rounded-[0.9rem] border border-[rgba(240,246,252,0.05)] bg-[linear-gradient(180deg,rgba(19,23,34,0.94),rgba(14,17,26,1))]" />
+        </div>
       </div>
     </div>
   )
