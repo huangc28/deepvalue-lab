@@ -342,13 +342,20 @@ As of 2026-03-25:
   - locale fallback rules are implemented for snapshot artifacts
   - `pending -> ready -> failed` backend lifecycle is fully implemented
 
+- Phase 4 `Indicator Calculation Pipeline` is complete:
+  - RSI(22) via Wilder smoothing, EMA(12) on RSI, HLC3, MRC (SMA centerline ± 2σ) implemented in `be/lib/pkg/indicators/`
+  - Indicators computed in-memory from the same bars fetched from Massive — no frontend recomputation
+  - Per-point values rounded to 2dp; warmup positions serialized as omitempty (nil pointer)
+  - RSI classified as `oversold` / `neutral` / `overbought` in `TechnicalIndicatorSummary`
+  - Full `TechnicalPriceChartPayload` built and stored to R2; snapshot marked `ready` in one worker pass
+  - NaN serialization bug fixed: EMA seeds from first non-NaN RSI value; summary fields default to 0 if no valid value found
+
 Still not started:
-- Phase 4 `Indicator Calculation Pipeline`
 - frontend integration that renders from the technical snapshot endpoint
 
 Handoff note for the next implementation pass:
-- continue from Phase 4 (RSI, EMA on RSI, HLC3, MRC) — the worker skeleton exists and OHLC data is flowing
-- do not redo Phase 1, 2 cleanup items, or Phase 3
+- Phase 5 remaining items: frontend consumption of the real snapshot endpoint, read-path preference for report-linked snapshot
+- do not redo Phase 1–4
 
 ## Task Breakdown
 
@@ -435,21 +442,21 @@ Definition of done:
 
 ### 4. Indicator Calculation Pipeline
 
-- [ ] Implement RSI with length `22`.
-- [ ] Implement EMA on RSI with length `12`.
-- [ ] Implement HLC3 from OHLC data.
-- [ ] Implement the MRC-compatible centerline and band calculation using the approved approximation.
-- [ ] Confirm the indicator pipeline computes on the same historical series used by the chart.
-- [ ] Confirm rounding and formatting rules for indicator values.
-- [ ] Confirm indicator output includes a readable zone/status classification for the technical section.
-- [ ] Confirm the indicator pipeline does not rely on the frontend to recompute live data.
+- [x] Implement RSI with length `22`.
+- [x] Implement EMA on RSI with length `12`.
+- [x] Implement HLC3 from OHLC data.
+- [x] Implement the MRC-compatible centerline and band calculation using the approved approximation.
+- [x] Confirm the indicator pipeline computes on the same historical series used by the chart.
+- [x] Confirm rounding and formatting rules for indicator values.
+- [x] Confirm indicator output includes a readable zone/status classification for the technical section.
+- [x] Confirm the indicator pipeline does not rely on the frontend to recompute live data.
 
 Definition of done:
 - a single backend or pipeline step can produce the chart indicators deterministically from the historical bars.
 
 ### 5. Publish / Read Contract
 
-- [ ] Define the structured payload shape for the stored technical snapshot and chart series.
+- [x] Define the structured payload shape for the stored technical snapshot and chart series.
 - [x] Key the technical snapshot by `reportId` so each published report has its own chart payload.
 - [x] Keep the published stock detail contract separate from the technical snapshot contract.
 - [ ] Confirm the frontend can render from the stored snapshot without vendor-specific parsing.
