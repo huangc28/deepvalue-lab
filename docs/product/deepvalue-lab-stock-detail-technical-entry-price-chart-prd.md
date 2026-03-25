@@ -328,21 +328,27 @@ The feature is complete when:
 As of 2026-03-25:
 - Phase 1 `Product / UX Contract` is complete.
 - Phase 2 `Frontend Prototype Cleanup` is partially complete and the checklist reflects the implemented cleanup work.
+- Phase 3 `Provider / Ingestion Path` is complete:
+  - Massive selected as the raw OHLC provider (`adjusted=true`, 1Y daily bars)
+  - RabbitMQ job queue wired from scratch (Publisher, Consumer, retry/manual ack)
+  - `TechnicalSnapshotWorker` fetches OHLC on job receipt and stores normalized bars to R2 (`stocks/{ticker}/ohlc/{reportID}.json`)
+  - Publish handler enqueues a job automatically after creating the pending snapshot row
+  - Failure marks snapshot as `failed` with error message; non-critical publish failures are warn-only
+  - Standalone worker binary at `cmd/worker`
 - Phase 5 `Publish / Read Contract` is partially complete on the backend:
   - a separate `technical_snapshots` persistence layer exists
   - publish now creates a `pending` technical snapshot row per report
   - separate report-linked technical snapshot read/write endpoints exist
   - locale fallback rules are implemented for snapshot artifacts
+  - `pending -> ready -> failed` backend lifecycle is fully implemented
 
 Still not started:
-- Phase 3 `Provider / Ingestion Path`
 - Phase 4 `Indicator Calculation Pipeline`
 - frontend integration that renders from the technical snapshot endpoint
-- production market-data provider integration
 
 Handoff note for the next implementation pass:
-- continue from Phase 3 unless there is a specific reason to revisit unfinished Phase 5 frontend consumption work
-- do not redo Phase 1 or the completed Phase 2 cleanup items
+- continue from Phase 4 (RSI, EMA on RSI, HLC3, MRC) — the worker skeleton exists and OHLC data is flowing
+- do not redo Phase 1, 2 cleanup items, or Phase 3
 
 ## Task Breakdown
 
@@ -416,13 +422,13 @@ Definition of done:
 
 ### 3. Provider / Ingestion Path
 
-- [ ] Select the raw market-data source for v1 and document the choice in the implementation notes.
-- [ ] Confirm the raw provider delivers historical OHLC data for the intended time range.
-- [ ] Confirm the provider supports adjusted or unadjusted bars as needed.
-- [ ] Confirm the provider plan chosen for v1 satisfies the expected request rate and historical depth.
-- [ ] Define the fetch cadence for chart data refresh.
-- [ ] Define cache behavior for repeated views of the same ticker and range.
-- [ ] Define the fallback behavior when provider data is stale or unavailable.
+- [x] Select the raw market-data source for v1 and document the choice in the implementation notes.
+- [x] Confirm the raw provider delivers historical OHLC data for the intended time range.
+- [x] Confirm the provider supports adjusted or unadjusted bars as needed.
+- [x] Confirm the provider plan chosen for v1 satisfies the expected request rate and historical depth.
+- [x] Define the fetch cadence for chart data refresh.
+- [x] Define cache behavior for repeated views of the same ticker and range.
+- [x] Define the fallback behavior when provider data is stale or unavailable.
 
 Definition of done:
 - engineering has a documented path from provider to normalized historical bars with clear cache and fallback rules.
@@ -451,7 +457,7 @@ Definition of done:
 - [x] Confirm locale behavior for the chart section does not require separate data semantics.
 - [x] Confirm the read path treats report prose and technical snapshot data as separate sources.
 - [ ] Confirm the read path always prefers the technical snapshot linked to the same report when rendering the chart.
-- [ ] Define the `pending -> ready -> failed` snapshot lifecycle and the FE state for each status.
+- [x] Define the `pending -> ready -> failed` snapshot lifecycle and the FE state for each status.
 - [x] Define the separate snapshot endpoint shape keyed by `ticker + reportId`.
 
 Definition of done:
