@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"go.uber.org/fx"
 	"go.uber.org/zap"
 
 	"github.com/huangchihan/deepvalue-lab-be/lib/app/turso_models"
@@ -23,7 +24,6 @@ type snapshotJobPublisher interface {
 	Publish(ctx context.Context, queue string, body []byte) error
 }
 
-
 type PublishHandler struct {
 	queries   publishQueries
 	r2Client  publishStorage
@@ -31,8 +31,22 @@ type PublishHandler struct {
 	logger    *zap.Logger
 }
 
-func NewPublishHandler(queries *turso_models.Queries, r2Client *r2.Client, publisher *rabbitmq.Publisher, logger *zap.Logger) *PublishHandler {
-	return &PublishHandler{queries: queries, r2Client: r2Client, publisher: publisher, logger: logger}
+type NewPublishHandlerParams struct {
+	fx.In
+
+	Queries   *turso_models.Queries
+	R2Client  *r2.Client
+	Publisher *rabbitmq.Publisher
+	Logger    *zap.Logger
+}
+
+func NewPublishHandler(p NewPublishHandlerParams) *PublishHandler {
+	return &PublishHandler{
+		queries:   p.Queries,
+		r2Client:  p.R2Client,
+		publisher: p.Publisher,
+		logger:    p.Logger,
+	}
 }
 
 func (h *PublishHandler) RegisterRoute(r *chi.Mux) {
