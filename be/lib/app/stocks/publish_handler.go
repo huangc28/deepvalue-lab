@@ -15,17 +15,24 @@ import (
 
 	"github.com/huangchihan/deepvalue-lab-be/lib/app/turso_models"
 	"github.com/huangchihan/deepvalue-lab-be/lib/pkg/r2"
+	"github.com/huangchihan/deepvalue-lab-be/lib/pkg/rabbitmq"
 	"github.com/huangchihan/deepvalue-lab-be/lib/pkg/render"
 )
 
-type PublishHandler struct {
-	queries  publishQueries
-	r2Client publishStorage
-	logger   *zap.Logger
+type snapshotJobPublisher interface {
+	Publish(ctx context.Context, queue string, body []byte) error
 }
 
-func NewPublishHandler(queries *turso_models.Queries, r2Client *r2.Client, logger *zap.Logger) *PublishHandler {
-	return &PublishHandler{queries: queries, r2Client: r2Client, logger: logger}
+
+type PublishHandler struct {
+	queries   publishQueries
+	r2Client  publishStorage
+	publisher snapshotJobPublisher
+	logger    *zap.Logger
+}
+
+func NewPublishHandler(queries *turso_models.Queries, r2Client *r2.Client, publisher *rabbitmq.Publisher, logger *zap.Logger) *PublishHandler {
+	return &PublishHandler{queries: queries, r2Client: r2Client, publisher: publisher, logger: logger}
 }
 
 func (h *PublishHandler) RegisterRoute(r *chi.Mux) {
@@ -56,6 +63,7 @@ type minStockDetail struct {
 type publishQueries interface {
 	InsertStockReport(ctx context.Context, arg turso_models.InsertStockReportParams) error
 	UpsertPublishedStockDetail(ctx context.Context, arg turso_models.UpsertPublishedStockDetailParams) error
+	UpsertTechnicalSnapshot(ctx context.Context, arg turso_models.UpsertTechnicalSnapshotParams) error
 	UpsertSubscription(ctx context.Context, arg turso_models.UpsertSubscriptionParams) error
 }
 
@@ -166,6 +174,33 @@ func (h *PublishHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		h.logger.Error("upsert published stock detail", zap.String("ticker", ticker), zap.Error(err))
 		render.ChiErr(w, r, http.StatusInternalServerError, err)
 		return
+	}
+
+	if err := h.queries.UpsertTechnicalSnapshot(r.Context(), turso_models.UpsertTechnicalSnapshotParams{
+		Ticker:            ticker,
+		ReportID:          reportID,
+		Status:            "pending",
+		Source:            "",
+		Provider:          "",
+		R2SnapshotKey:     "",
+		R2SnapshotZhTwKey: "",
+		ErrorMessage:      "",
+		PublishedAtMs:     publishedAtMs,
+	}); err != nil {
+		h.logger.Error("upsert pending technical snapshot", zap.String("ticker", ticker), zap.String("report_id", reportID), zap.Error(err))
+		render.ChiErr(w, r, http.StatusInternalServerError, err)
+		return
+	}
+
+	jobBody, err := json.Marshal(TechnicalSnapshotJob{
+		Ticker:        ticker,
+		ReportID:      reportID,
+		PublishedAtMs: publishedAtMs,
+	})
+	if err != nil {
+		h.logger.Error("marshal technical snapshot job", zap.String("ticker", ticker), zap.String("report_id", reportID), zap.Error(err))
+	} else if err := h.publisher.Publish(r.Context(), TechnicalSnapshotJobQueue, jobBody); err != nil {
+		h.logger.Warn("enqueue technical snapshot job", zap.String("ticker", ticker), zap.String("report_id", reportID), zap.Error(err))
 	}
 
 	if err := h.queries.UpsertSubscription(r.Context(), turso_models.UpsertSubscriptionParams{

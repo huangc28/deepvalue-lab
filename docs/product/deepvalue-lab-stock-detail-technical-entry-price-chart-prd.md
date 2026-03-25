@@ -323,6 +323,27 @@ The feature is complete when:
 - verify that chart state and technical status stay aligned for that report
 - defer any continuously refreshed monitoring system to a later, separate feature
 
+## Current Implementation Status
+
+As of 2026-03-25:
+- Phase 1 `Product / UX Contract` is complete.
+- Phase 2 `Frontend Prototype Cleanup` is partially complete and the checklist reflects the implemented cleanup work.
+- Phase 5 `Publish / Read Contract` is partially complete on the backend:
+  - a separate `technical_snapshots` persistence layer exists
+  - publish now creates a `pending` technical snapshot row per report
+  - separate report-linked technical snapshot read/write endpoints exist
+  - locale fallback rules are implemented for snapshot artifacts
+
+Still not started:
+- Phase 3 `Provider / Ingestion Path`
+- Phase 4 `Indicator Calculation Pipeline`
+- frontend integration that renders from the technical snapshot endpoint
+- production market-data provider integration
+
+Handoff note for the next implementation pass:
+- continue from Phase 3 unless there is a specific reason to revisit unfinished Phase 5 frontend consumption work
+- do not redo Phase 1 or the completed Phase 2 cleanup items
+
 ## Task Breakdown
 
 ### Product / UX
@@ -423,15 +444,15 @@ Definition of done:
 ### 5. Publish / Read Contract
 
 - [ ] Define the structured payload shape for the stored technical snapshot and chart series.
-- [ ] Key the technical snapshot by `reportId` so each published report has its own chart payload.
-- [ ] Keep the published stock detail contract separate from the technical snapshot contract.
+- [x] Key the technical snapshot by `reportId` so each published report has its own chart payload.
+- [x] Keep the published stock detail contract separate from the technical snapshot contract.
 - [ ] Confirm the frontend can render from the stored snapshot without vendor-specific parsing.
-- [ ] Preserve backward compatibility for stock detail payloads that do not yet include chart data.
-- [ ] Confirm locale behavior for the chart section does not require separate data semantics.
-- [ ] Confirm the read path treats report prose and technical snapshot data as separate sources.
+- [x] Preserve backward compatibility for stock detail payloads that do not yet include chart data.
+- [x] Confirm locale behavior for the chart section does not require separate data semantics.
+- [x] Confirm the read path treats report prose and technical snapshot data as separate sources.
 - [ ] Confirm the read path always prefers the technical snapshot linked to the same report when rendering the chart.
 - [ ] Define the `pending -> ready -> failed` snapshot lifecycle and the FE state for each status.
-- [ ] Define the separate snapshot endpoint shape keyed by `ticker + reportId`.
+- [x] Define the separate snapshot endpoint shape keyed by `ticker + reportId`.
 
 Definition of done:
 - the frontend can consume a stored technical snapshot as a stable contract while report prose remains unchanged and report-linked.

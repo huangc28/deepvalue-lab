@@ -79,6 +79,35 @@ func (q *Queries) GetSubscription(ctx context.Context, ticker string) (Subscript
 	return i, err
 }
 
+const getTechnicalSnapshotByTickerAndReportID = `-- name: GetTechnicalSnapshotByTickerAndReportID :one
+SELECT ticker, report_id, status, source, provider, r2_snapshot_key, r2_snapshot_zh_tw_key, error_message, published_at_ms, updated_at_ms FROM technical_snapshots
+WHERE ticker = ? AND report_id = ?
+LIMIT 1
+`
+
+type GetTechnicalSnapshotByTickerAndReportIDParams struct {
+	Ticker   string `json:"ticker"`
+	ReportID string `json:"report_id"`
+}
+
+func (q *Queries) GetTechnicalSnapshotByTickerAndReportID(ctx context.Context, arg GetTechnicalSnapshotByTickerAndReportIDParams) (TechnicalSnapshot, error) {
+	row := q.db.QueryRowContext(ctx, getTechnicalSnapshotByTickerAndReportID, arg.Ticker, arg.ReportID)
+	var i TechnicalSnapshot
+	err := row.Scan(
+		&i.Ticker,
+		&i.ReportID,
+		&i.Status,
+		&i.Source,
+		&i.Provider,
+		&i.R2SnapshotKey,
+		&i.R2SnapshotZhTwKey,
+		&i.ErrorMessage,
+		&i.PublishedAtMs,
+		&i.UpdatedAtMs,
+	)
+	return i, err
+}
+
 const insertStockReport = `-- name: InsertStockReport :exec
 INSERT INTO stock_reports (
   id,
@@ -298,5 +327,56 @@ type UpsertSubscriptionParams struct {
 
 func (q *Queries) UpsertSubscription(ctx context.Context, arg UpsertSubscriptionParams) error {
 	_, err := q.db.ExecContext(ctx, upsertSubscription, arg.Ticker, arg.Status)
+	return err
+}
+
+const upsertTechnicalSnapshot = `-- name: UpsertTechnicalSnapshot :exec
+INSERT INTO technical_snapshots (
+  ticker,
+  report_id,
+  status,
+  source,
+  provider,
+  r2_snapshot_key,
+  r2_snapshot_zh_tw_key,
+  error_message,
+  published_at_ms
+)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT(ticker, report_id) DO UPDATE SET
+  status                = excluded.status,
+  source                = excluded.source,
+  provider              = excluded.provider,
+  r2_snapshot_key       = excluded.r2_snapshot_key,
+  r2_snapshot_zh_tw_key = excluded.r2_snapshot_zh_tw_key,
+  error_message         = excluded.error_message,
+  published_at_ms       = excluded.published_at_ms,
+  updated_at_ms         = (unixepoch('now') * 1000)
+`
+
+type UpsertTechnicalSnapshotParams struct {
+	Ticker            string `json:"ticker"`
+	ReportID          string `json:"report_id"`
+	Status            string `json:"status"`
+	Source            string `json:"source"`
+	Provider          string `json:"provider"`
+	R2SnapshotKey     string `json:"r2_snapshot_key"`
+	R2SnapshotZhTwKey string `json:"r2_snapshot_zh_tw_key"`
+	ErrorMessage      string `json:"error_message"`
+	PublishedAtMs     int64  `json:"published_at_ms"`
+}
+
+func (q *Queries) UpsertTechnicalSnapshot(ctx context.Context, arg UpsertTechnicalSnapshotParams) error {
+	_, err := q.db.ExecContext(ctx, upsertTechnicalSnapshot,
+		arg.Ticker,
+		arg.ReportID,
+		arg.Status,
+		arg.Source,
+		arg.Provider,
+		arg.R2SnapshotKey,
+		arg.R2SnapshotZhTwKey,
+		arg.ErrorMessage,
+		arg.PublishedAtMs,
+	)
 	return err
 }

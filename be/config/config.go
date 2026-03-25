@@ -28,6 +28,14 @@ type Config struct {
 		SecretAccessKey string `mapstructure:"secret_access_key"`
 		PublicBaseURL   string `mapstructure:"public_base_url"`
 	} `mapstructure:"r2"`
+
+	Massive struct {
+		APIKey string `mapstructure:"api_key"`
+	} `mapstructure:"massive"`
+
+	RabbitMQ struct {
+		URL string `mapstructure:"url"`
+	} `mapstructure:"rabbitmq"`
 }
 
 func NewViper() *viper.Viper {
@@ -51,6 +59,8 @@ func NewViper() *viper.Viper {
 	v.SetDefault("r2.access_key_id", "")
 	v.SetDefault("r2.secret_access_key", "")
 	v.SetDefault("r2.public_base_url", "")
+	v.SetDefault("massive.api_key", "")
+	v.SetDefault("rabbitmq.url", "")
 
 	return v
 }

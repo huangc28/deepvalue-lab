@@ -10,6 +10,7 @@ import (
 	httpserver "github.com/huangchihan/deepvalue-lab-be/lib/http"
 	"github.com/huangchihan/deepvalue-lab-be/lib/logs"
 	"github.com/huangchihan/deepvalue-lab-be/lib/pkg/r2"
+	"github.com/huangchihan/deepvalue-lab-be/lib/pkg/rabbitmq"
 	"github.com/huangchihan/deepvalue-lab-be/lib/pkg/sqlite"
 )
 
@@ -24,6 +25,7 @@ var CoreAppOptions = fx.Options(
 		provideTursoQueries,
 	),
 	r2.Module,
+	rabbitmq.Module,
 	httpserver.Module,
 )
 

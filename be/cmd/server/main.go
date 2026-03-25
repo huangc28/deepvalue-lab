@@ -22,6 +22,8 @@ func main() {
 		router.AsRoute(stocks.NewDetailHandler),
 		router.AsRoute(stocks.NewReportsListHandler),
 		router.AsRoute(stocks.NewReportDetailHandler),
+		router.AsRoute(stocks.NewTechnicalSnapshotHandler),
+		router.AsRoute(stocks.NewUpsertTechnicalSnapshotHandler),
 		router.AsRoute(stocks.NewPublishHandler),
 		router.AsRoute(subscriptions.NewCreateHandler),
 		fx.Invoke(func(*http.Server) {}),

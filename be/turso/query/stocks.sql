@@ -41,6 +41,34 @@ SELECT * FROM stock_reports
 WHERE ticker = ? AND id = ?
 LIMIT 1;
 
+-- name: UpsertTechnicalSnapshot :exec
+INSERT INTO technical_snapshots (
+  ticker,
+  report_id,
+  status,
+  source,
+  provider,
+  r2_snapshot_key,
+  r2_snapshot_zh_tw_key,
+  error_message,
+  published_at_ms
+)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT(ticker, report_id) DO UPDATE SET
+  status                = excluded.status,
+  source                = excluded.source,
+  provider              = excluded.provider,
+  r2_snapshot_key       = excluded.r2_snapshot_key,
+  r2_snapshot_zh_tw_key = excluded.r2_snapshot_zh_tw_key,
+  error_message         = excluded.error_message,
+  published_at_ms       = excluded.published_at_ms,
+  updated_at_ms         = (unixepoch('now') * 1000);
+
+-- name: GetTechnicalSnapshotByTickerAndReportID :one
+SELECT * FROM technical_snapshots
+WHERE ticker = ? AND report_id = ?
+LIMIT 1;
+
 -- name: UpsertPublishedStockDetail :exec
 INSERT INTO published_stock_details (
   ticker,

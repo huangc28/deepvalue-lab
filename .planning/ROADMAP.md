@@ -79,6 +79,19 @@ Plans:
 - [x] 07-01-PLAN.md — Add an async-aware historical ledger contract with explicit live-vs-legacy mode and local loading/error states
 - [x] 07-02-PLAN.md — Add live historical report API/query wiring and drive the stock detail History section from live data without regressing the latest path
 
+- [ ] **Phase 8: Price Chart With Technical Indicators** - Add an interactive price chart with overlaid technical indicators (MA, RSI, MACD, Bollinger Bands) to each stock analysis report as a "Technical Entry" section
+
+### Phase 8: Price Chart With Technical Indicators
+**Goal**: Each stock report page renders an interactive price chart with technical indicators so readers can assess the technical picture without leaving DeepValue
+**Depends on**: Phase 7
+**Requirements**: TBD
+**Success Criteria** (what must be TRUE):
+  1. Stock detail page includes a Technical Entry section with a price chart
+  2. Chart supports at least MA20/50/200, RSI, and volume bars
+  3. Chart is interactive (zoom/pan) and works on desktop and mobile
+  4. Price data is fetched from a reliable source (Yahoo Finance / Polygon.io)
+**Plans**: TBD
+
 ## Progress
 
 **Execution Order:**
@@ -92,3 +105,4 @@ Phases execute in numeric order: 4 → 5 → 6 → 7
 | 5. Interaction Contract And Frontend History Data Model | 2/2 | Complete   | 2026-03-24 |
 | 6. Historical Report Read Model And Backend APIs | 3/3 | Complete   | 2026-03-24 |
 | 7. Frontend API Integration For Historical Reports | 2/2 | Complete | 2026-03-24 |
+| 8. Price Chart With Technical Indicators | 0/? | Not Started | — |

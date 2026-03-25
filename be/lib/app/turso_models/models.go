@@ -46,3 +46,16 @@ type Subscription struct {
 	CreatedAtMs int64  `json:"created_at_ms"`
 	UpdatedAtMs int64  `json:"updated_at_ms"`
 }
+
+type TechnicalSnapshot struct {
+	Ticker            string `json:"ticker"`
+	ReportID          string `json:"report_id"`
+	Status            string `json:"status"`
+	Source            string `json:"source"`
+	Provider          string `json:"provider"`
+	R2SnapshotKey     string `json:"r2_snapshot_key"`
+	R2SnapshotZhTwKey string `json:"r2_snapshot_zh_tw_key"`
+	ErrorMessage      string `json:"error_message"`
+	PublishedAtMs     int64  `json:"published_at_ms"`
+	UpdatedAtMs       int64  `json:"updated_at_ms"`
+}

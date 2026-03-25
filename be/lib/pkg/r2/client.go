@@ -107,4 +107,23 @@ func DetailKeyZhTW(ticker, date, reportID string) string {
 	return fmt.Sprintf("reports/%s/%s/%s.zh-TW.json", ticker, date, reportID)
 }
 
+// TechnicalSnapshotKey returns the canonical R2 key for a technical snapshot JSON artifact.
+// Format: reports/{ticker}/{YYYYMMDD}/{reportID}.technical-snapshot.json
+func TechnicalSnapshotKey(ticker, date, reportID string) string {
+	return fmt.Sprintf("reports/%s/%s/%s.technical-snapshot.json", ticker, date, reportID)
+}
+
+// TechnicalSnapshotKeyZhTW returns the canonical R2 key for a zh-TW technical snapshot artifact.
+// Format: reports/{ticker}/{YYYYMMDD}/{reportID}.technical-snapshot.zh-TW.json
+func TechnicalSnapshotKeyZhTW(ticker, date, reportID string) string {
+	return fmt.Sprintf("reports/%s/%s/%s.technical-snapshot.zh-TW.json", ticker, date, reportID)
+}
+
+// OHLCKey returns the R2 key for the raw normalized OHLC bars for a report.
+// This is an intermediate artifact produced by the ingestion pipeline and consumed by the indicator pipeline.
+// Format: stocks/{ticker}/ohlc/{reportID}.json
+func OHLCKey(ticker, reportID string) string {
+	return fmt.Sprintf("stocks/%s/ohlc/%s.json", ticker, reportID)
+}
+
 var Module = fx.Provide(NewClient)

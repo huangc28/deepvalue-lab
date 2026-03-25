@@ -17,6 +17,7 @@ import (
 type fakePublishQueries struct {
 	insertStockReportCalls          []turso_models.InsertStockReportParams
 	upsertPublishedStockDetailCalls []turso_models.UpsertPublishedStockDetailParams
+	upsertTechnicalSnapshotCalls    []turso_models.UpsertTechnicalSnapshotParams
 	upsertSubscriptionCalls         []turso_models.UpsertSubscriptionParams
 }
 
@@ -27,6 +28,11 @@ func (f *fakePublishQueries) InsertStockReport(_ context.Context, arg turso_mode
 
 func (f *fakePublishQueries) UpsertPublishedStockDetail(_ context.Context, arg turso_models.UpsertPublishedStockDetailParams) error {
 	f.upsertPublishedStockDetailCalls = append(f.upsertPublishedStockDetailCalls, arg)
+	return nil
+}
+
+func (f *fakePublishQueries) UpsertTechnicalSnapshot(_ context.Context, arg turso_models.UpsertTechnicalSnapshotParams) error {
+	f.upsertTechnicalSnapshotCalls = append(f.upsertTechnicalSnapshotCalls, arg)
 	return nil
 }
 
@@ -57,13 +63,18 @@ func (f *fakePublishStorage) UploadJSON(_ context.Context, key string, data []by
 	return nil
 }
 
+type nopPublisher struct{}
+
+func (nopPublisher) Publish(_ context.Context, _ string, _ []byte) error { return nil }
+
 func TestPublishHandler_ENOnlyKeepsZhTWDefaults(t *testing.T) {
 	queries := &fakePublishQueries{}
 	storage := newFakePublishStorage()
 	handler := &PublishHandler{
-		queries:  queries,
-		r2Client: storage,
-		logger:   zap.NewNop(),
+		queries:   queries,
+		r2Client:  storage,
+		publisher: nopPublisher{},
+		logger:    zap.NewNop(),
 	}
 
 	body := map[string]any{
@@ -87,6 +98,9 @@ func TestPublishHandler_ENOnlyKeepsZhTWDefaults(t *testing.T) {
 	}
 	if len(queries.insertStockReportCalls) != 1 {
 		t.Fatalf("expected 1 insert call, got %d", len(queries.insertStockReportCalls))
+	}
+	if len(queries.upsertTechnicalSnapshotCalls) != 1 {
+		t.Fatalf("expected 1 technical snapshot upsert call, got %d", len(queries.upsertTechnicalSnapshotCalls))
 	}
 
 	insertArg := queries.insertStockReportCalls[0]
@@ -112,15 +126,21 @@ func TestPublishHandler_ENOnlyKeepsZhTWDefaults(t *testing.T) {
 	if resp.R2DetailZhTWKey != "" {
 		t.Fatalf("expected empty response zh-TW detail key, got %q", resp.R2DetailZhTWKey)
 	}
+
+	technicalArg := queries.upsertTechnicalSnapshotCalls[0]
+	if technicalArg.Status != "pending" {
+		t.Fatalf("expected pending technical snapshot status, got %q", technicalArg.Status)
+	}
 }
 
 func TestPublishHandler_BilingualRequestPersistsZhTWArtifact(t *testing.T) {
 	queries := &fakePublishQueries{}
 	storage := newFakePublishStorage()
 	handler := &PublishHandler{
-		queries:  queries,
-		r2Client: storage,
-		logger:   zap.NewNop(),
+		queries:   queries,
+		r2Client:  storage,
+		publisher: nopPublisher{},
+		logger:    zap.NewNop(),
 	}
 
 	body := map[string]any{
@@ -145,6 +165,9 @@ func TestPublishHandler_BilingualRequestPersistsZhTWArtifact(t *testing.T) {
 	}
 	if len(queries.insertStockReportCalls) != 1 {
 		t.Fatalf("expected 1 insert call, got %d", len(queries.insertStockReportCalls))
+	}
+	if len(queries.upsertTechnicalSnapshotCalls) != 1 {
+		t.Fatalf("expected 1 technical snapshot upsert call, got %d", len(queries.upsertTechnicalSnapshotCalls))
 	}
 
 	insertArg := queries.insertStockReportCalls[0]
@@ -179,9 +202,10 @@ func TestPublishHandler_InvalidStockDetailZhTWReturns422(t *testing.T) {
 	queries := &fakePublishQueries{}
 	storage := newFakePublishStorage()
 	handler := &PublishHandler{
-		queries:  queries,
-		r2Client: storage,
-		logger:   zap.NewNop(),
+		queries:   queries,
+		r2Client:  storage,
+		publisher: nopPublisher{},
+		logger:    zap.NewNop(),
 	}
 
 	reqBody := []byte(`{"report":{"markdown":"# report","provenance":"unit-test"},"stockDetail":{"id":"amd","ticker":"AMD","companyName":"AMD","businessType":"Chip designer","currentPrice":100,"baseFairValue":120,"bearFairValue":80,"bullFairValue":150,"summary":"Strong outlook"},"stockDetailZhTW":"bad"}`)
