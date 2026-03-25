@@ -9,3 +9,5 @@
 __pycache__/
 *.pyc
 research/archive/2026/03/16/amzn-analysis.md
+
+.codex/tmp
