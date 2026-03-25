@@ -11,7 +11,7 @@ AZURE_CONTAINERAPPS_ENV ?= value-deck-env
 ACR_NAME ?= valuedeckacr
 ACR_IMAGE ?= $(ACR_NAME).azurecr.io/$(IMAGE_NAME):$(IMAGE_TAG)
 
-.PHONY: build test start docker/build docker/run deploy/containerapp
+.PHONY: build test start start/worker docker/build docker/run deploy/containerapp
 
 build:
 	go build ./...
@@ -21,6 +21,9 @@ test:
 
 start:
 	APP_PORT=$(APP_PORT) go run ./cmd/server
+
+start/worker:
+	go run ./cmd/worker
 
 docker/build:
 	docker build -t $(IMAGE_NAME):$(IMAGE_TAG) .

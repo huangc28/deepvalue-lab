@@ -178,9 +178,18 @@ func (w *TechnicalSnapshotWorker) buildAndMarkReady(ctx context.Context, job Tec
 		}
 	}
 
+	safeRSI := 0.0
+	if !math.IsNaN(latestRSI) {
+		safeRSI = round2(latestRSI)
+	}
+	safeEMAOnRSI := 0.0
+	if !math.IsNaN(latestEMAOnRSI) {
+		safeEMAOnRSI = round2(latestEMAOnRSI)
+	}
+
 	summary := TechnicalIndicatorSummary{
-		RSI:       round2(latestRSI),
-		EMAOnRSI:  round2(latestEMAOnRSI),
+		RSI:       safeRSI,
+		EMAOnRSI:  safeEMAOnRSI,
 		RSIStatus: rsiStatus,
 	}
 

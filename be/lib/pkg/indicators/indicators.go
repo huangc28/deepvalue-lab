@@ -88,16 +88,32 @@ func EMA(values []float64, period int) []float64 {
 		return out
 	}
 
-	// Seed with SMA of first `period` elements.
+	// Find the first non-NaN index to start seeding from.
+	// This handles cases where the input slice begins with NaN warmup values
+	// (e.g., when computing EMA on RSI output).
+	firstValid := -1
+	for i := range n {
+		if !math.IsNaN(values[i]) {
+			firstValid = i
+			break
+		}
+	}
+	// Not enough non-NaN values to form a seed.
+	if firstValid < 0 || n-firstValid < period {
+		return out
+	}
+
+	// Seed with SMA of `period` non-NaN elements starting at firstValid.
 	var sum float64
-	for i := range period {
+	for i := firstValid; i < firstValid+period; i++ {
 		sum += values[i]
 	}
 	ema := sum / float64(period)
-	out[period-1] = ema
+	seedIdx := firstValid + period - 1
+	out[seedIdx] = ema
 
 	k := 2.0 / float64(period+1)
-	for i := period; i < n; i++ {
+	for i := seedIdx + 1; i < n; i++ {
 		ema = values[i]*k + ema*(1-k)
 		out[i] = ema
 	}
