@@ -1,6 +1,9 @@
 import type { LocalizedText, Locale } from './types'
 
 export function resolveLocalizedText(value: LocalizedText, locale: Locale) {
+  if (!value) {
+    return ''
+  }
   if (typeof value === 'string') {
     return value
   }
@@ -9,6 +12,9 @@ export function resolveLocalizedText(value: LocalizedText, locale: Locale) {
 }
 
 export function flattenLocalizedText(value: LocalizedText) {
+  if (!value) {
+    return ''
+  }
   if (typeof value === 'string') {
     return value
   }
