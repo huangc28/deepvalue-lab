@@ -22,7 +22,6 @@ Two-layer model:
 
 Paths:
 - Archive root: `research/archive/`
-- Report template: `research/templates/stock-analysis-report-template.md`
 
 When a stock analysis is substantial:
 1. Save the full report under `research/archive/YYYY/MM/DD/<ticker>-analysis.md`.

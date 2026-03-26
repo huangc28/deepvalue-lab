@@ -42,7 +42,6 @@ The repo research archive stores:
 Paths:
 - Policy: `docs/research/stock-analysis-persistence.md`
 - Archive root: `research/archive/`
-- Report template: `research/templates/stock-analysis-report-template.md`
 
 When a stock analysis is substantial:
 1. Save the full report in the research archive.
