@@ -1,4 +1,6 @@
-research/
+research/*
+!research/cases/
+!research/cases/**
 
 .claude/skills/*
 !.claude/skills/deepvalue-stock-analysis/

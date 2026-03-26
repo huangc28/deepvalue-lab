@@ -26,20 +26,22 @@ Before doing substantive company analysis, read these methodology documents:
 Follow this workflow in order:
 
 1. Read the methodology docs in .agents/skills/deepvalue-stock-analysis/docs/ first.
-2. Classify the business before choosing valuation metrics.
-3. Verify fresh current facts from official and current sources.
-4. Build the economic picture: revenue drivers, margin drivers, cash flow drivers, valuation drivers, and key risks.
-5. Translate recent news into model changes.
-6. Build bear / base / bull scenarios.
-7. Explain what the current price implies.
-8. Determine thesis status.
-9. Determine technical entry status.
-10. Write the report using the required contract.
-11. Generate the EN `StockDetail` JSON from the report.
-12. Generate the zh-TW `StockDetail` JSON by translating prose fields from the EN JSON.
-13. Save all three artifacts to the research archive.
-14. Perform a completion check before finishing.
-15. Perform a benchmark quality check before finishing.
+2. Read `research/cases/_index.md` to find prior cases with similar business type. Read the relevant case files for modeling context.
+3. Classify the business before choosing valuation metrics.
+4. Verify fresh current facts from official and current sources.
+5. Build the economic picture: revenue drivers, margin drivers, cash flow drivers, valuation drivers, and key risks.
+6. Translate recent news into model changes.
+7. Build bear / base / bull scenarios.
+8. Explain what the current price implies.
+9. Determine thesis status.
+10. Determine technical entry status.
+11. Write the report using the required contract.
+12. Generate the EN `StockDetail` JSON from the report.
+13. Generate the zh-TW `StockDetail` JSON by translating prose fields from the EN JSON.
+14. Save all three artifacts to the research archive.
+15. Write a case entry to `research/cases/<TICKER>.md` using the template in `research/cases/_TEMPLATE.md`. Update the index table in `research/cases/_index.md`.
+16. Perform a completion check before finishing.
+17. Perform a benchmark quality check before finishing.
 
 ## Source Rule
 
