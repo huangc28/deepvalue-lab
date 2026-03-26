@@ -7,12 +7,14 @@ import type {
   HistoricalReportSummary,
   StockDetail,
   StockSummary,
+  TechnicalSnapshotResponse,
 } from '../types/stocks'
 import {
   fetchStock,
   fetchStockReportDetail,
   fetchStockReports,
   fetchStocks,
+  fetchTechnicalSnapshot,
 } from './api'
 
 export function useStocks(locale: Locale) {
@@ -51,6 +53,22 @@ export function useStockReportDetail(
     queryFn: () => fetchStockReportDetail(ticker, reportId!, locale),
     enabled: enabled && Boolean(reportId),
     staleTime: 5 * 60 * 1000,
+  })
+}
+
+export function useTechnicalSnapshot(
+  ticker: string,
+  reportId: string | null,
+  locale: Locale,
+  enabled = true,
+) {
+  return useQuery<TechnicalSnapshotResponse>({
+    queryKey: ['technical-snapshot', ticker, reportId, locale],
+    queryFn: () => fetchTechnicalSnapshot(ticker, reportId!, locale),
+    enabled: enabled && Boolean(reportId),
+    staleTime: 5 * 60 * 1000,
+    refetchInterval: (query) =>
+      query.state.data?.status === 'pending' ? 5000 : false,
   })
 }
 

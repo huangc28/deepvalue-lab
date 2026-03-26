@@ -6,7 +6,7 @@ This document defines the quality standard for a DeepValue Lab stock analysis re
 
 Its purpose is to make a new AI agent capable of producing reports with consistent structure, reasoning quality, and decision usefulness by:
 
-- using NotebookLM / second brain as a stable methodology layer
+- using the local DeepValue methodology docs as the stable methodology layer
 - verifying all current facts with fresh official or current sources
 - following a fixed analytical order
 - producing a report that is useful for real investment decisions rather than generic summary
@@ -29,7 +29,7 @@ If a report cannot answer these four questions clearly, it does not meet the sta
 
 DeepValue Lab uses this high-level method:
 
-1. Query second brain for framework, prior cases, and relevant rules.
+1. Load local methodology docs for framework and relevant rules.
 2. Classify the business correctly.
 3. Select the valuation lens based on business type.
 4. Gather fresh price, financial, and news data from current sources.
@@ -222,19 +222,16 @@ Invalid use:
 
 - RSI or MRC alone used as proof that a stock is fundamentally cheap
 
-## 7. Second Brain Rule
+## 7. Local-First Method Rule
 
-The agent must use second brain before beginning substantive analysis.
+The agent must use the local methodology docs before beginning substantive analysis.
 
-Second brain should be used to retrieve:
+The local docs should be used to retrieve:
 
 - analysis framework
 - valuation rules
 - news-to-model rules
 - technical entry rules
-- relevant prior cases
-
-Second brain is a methodology layer, not a substitute for fresh facts.
 
 The agent must still verify:
 
@@ -243,7 +240,7 @@ The agent must still verify:
 - latest guidance
 - recent material news
 
-If second brain and current evidence disagree, current verified evidence wins.
+If archived notes and current evidence disagree, current verified evidence wins.
 
 ## 8. Report Must Feel Decision-Useful
 
@@ -351,7 +348,7 @@ Producing a valid report does not automatically mean it should be written into s
 Default behavior:
 
 - full report goes to archive
-- only durable methodology, representative lessons, or explicitly requested summaries go to second brain
+- only durable methodology, representative lessons, or explicitly requested summaries should be promoted into reusable notes
 
 ## 13. Standard Summary
 

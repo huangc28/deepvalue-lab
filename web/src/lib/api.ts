@@ -2,6 +2,7 @@ import type {
   HistoricalReportSummary,
   StockDetail,
   StockSummary,
+  TechnicalSnapshotResponse,
 } from '../types/stocks'
 import type { Locale } from '../i18n/types'
 
@@ -93,4 +94,21 @@ export async function fetchStockReportDetail(
   locale: Locale,
 ): Promise<StockDetail> {
   return fetchJson<StockDetail>(buildStockReportDetailUrl(ticker, reportId, locale))
+}
+
+function buildTechnicalSnapshotUrl(ticker: string, reportId: string, locale: Locale) {
+  const encodedTicker = encodeURIComponent(ticker)
+  const encodedReportId = encodeURIComponent(reportId)
+  const base = `${API_URL}/v1/stocks/${encodedTicker}/reports/${encodedReportId}/technical-snapshot`
+  return locale === 'zh-TW' ? `${base}?locale=zh-TW` : base
+}
+
+export async function fetchTechnicalSnapshot(
+  ticker: string,
+  reportId: string,
+  locale: Locale,
+): Promise<TechnicalSnapshotResponse> {
+  return fetchJson<TechnicalSnapshotResponse>(
+    buildTechnicalSnapshotUrl(ticker, reportId, locale),
+  )
 }

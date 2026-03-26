@@ -325,7 +325,7 @@ The feature is complete when:
 
 ## Current Implementation Status
 
-As of 2026-03-25:
+As of 2026-03-26:
 - Phase 1 `Product / UX Contract` is complete.
 - Phase 2 `Frontend Prototype Cleanup` is partially complete and the checklist reflects the implemented cleanup work.
 - Phase 3 `Provider / Ingestion Path` is complete:
@@ -335,12 +335,16 @@ As of 2026-03-25:
   - Publish handler enqueues a job automatically after creating the pending snapshot row
   - Failure marks snapshot as `failed` with error message; non-critical publish failures are warn-only
   - Standalone worker binary at `cmd/worker`
-- Phase 5 `Publish / Read Contract` is partially complete on the backend:
+- Phase 5 `Publish / Read Contract` is complete:
   - a separate `technical_snapshots` persistence layer exists
   - publish now creates a `pending` technical snapshot row per report
   - separate report-linked technical snapshot read/write endpoints exist
   - locale fallback rules are implemented for snapshot artifacts
   - `pending -> ready -> failed` backend lifecycle is fully implemented
+  - frontend consumes the real snapshot endpoint via `useTechnicalSnapshot` hook (polls every 5s while `pending`, stops on `ready` or `failed`)
+  - `snapshotToChart()` transforms `TechnicalPriceChartPayload` into range-specific series (1M=22, 3M=66, 6M=132, 1Y=all)
+  - stock-detail page renders in priority order: live snapshot chart (ready) → pending fallback → failed fallback → mock chart → no-data fallback
+  - i18n messages added for pending/failed states in both `en` and `zh-TW`
 
 - Phase 4 `Indicator Calculation Pipeline` is complete:
   - RSI(22) via Wilder smoothing, EMA(12) on RSI, HLC3, MRC (SMA centerline ± 2σ) implemented in `be/lib/pkg/indicators/`
@@ -350,12 +354,7 @@ As of 2026-03-25:
   - Full `TechnicalPriceChartPayload` built and stored to R2; snapshot marked `ready` in one worker pass
   - NaN serialization bug fixed: EMA seeds from first non-NaN RSI value; summary fields default to 0 if no valid value found
 
-Still not started:
-- frontend integration that renders from the technical snapshot endpoint
-
-Handoff note for the next implementation pass:
-- Phase 5 remaining items: frontend consumption of the real snapshot endpoint, read-path preference for report-linked snapshot
-- do not redo Phase 1–4
+No remaining frontend integration work from the previous pass. All phases are complete.
 
 ## Task Breakdown
 
@@ -459,11 +458,11 @@ Definition of done:
 - [x] Define the structured payload shape for the stored technical snapshot and chart series.
 - [x] Key the technical snapshot by `reportId` so each published report has its own chart payload.
 - [x] Keep the published stock detail contract separate from the technical snapshot contract.
-- [ ] Confirm the frontend can render from the stored snapshot without vendor-specific parsing.
+- [x] Confirm the frontend can render from the stored snapshot without vendor-specific parsing.
 - [x] Preserve backward compatibility for stock detail payloads that do not yet include chart data.
 - [x] Confirm locale behavior for the chart section does not require separate data semantics.
 - [x] Confirm the read path treats report prose and technical snapshot data as separate sources.
-- [ ] Confirm the read path always prefers the technical snapshot linked to the same report when rendering the chart.
+- [x] Confirm the read path always prefers the technical snapshot linked to the same report when rendering the chart.
 - [x] Define the `pending -> ready -> failed` snapshot lifecycle and the FE state for each status.
 - [x] Define the separate snapshot endpoint shape keyed by `ticker + reportId`.
 

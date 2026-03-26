@@ -76,8 +76,51 @@ export interface TechnicalChartSeries {
 }
 
 export interface TechnicalPriceChart {
-  source: 'mock'
+  source: 'mock' | 'live'
   series: TechnicalChartSeries[]
+}
+
+export type TechnicalSnapshotStatus = 'pending' | 'ready' | 'failed'
+
+export interface TechnicalPricePoint {
+  date: string
+  open: number
+  high: number
+  low: number
+  close: number
+  volume?: number
+  hlc3?: number
+  rsi?: number
+  emaOnRsi?: number
+  mrcCenter?: number
+  mrcUpper?: number
+  mrcLower?: number
+}
+
+export interface TechnicalIndicatorSummary {
+  rsi: number
+  emaOnRsi: number
+  rsiStatus: 'oversold' | 'neutral' | 'overbought'
+}
+
+export interface TechnicalPriceChartPayload {
+  source: string
+  ticker: string
+  reportId: string
+  points: TechnicalPricePoint[]
+  latest: TechnicalIndicatorSummary
+}
+
+export interface TechnicalSnapshotResponse {
+  ticker: string
+  reportId: string
+  status: TechnicalSnapshotStatus
+  source?: string
+  provider?: string
+  updatedAtMs: number
+  localeHasFallback?: boolean
+  error?: string
+  snapshot?: TechnicalPriceChartPayload
 }
 
 export interface HistoricalReportSummary {

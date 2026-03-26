@@ -16,24 +16,21 @@ Do not begin by writing the report from memory.
 
 The agent must:
 
-1. query second brain first
+1. load the local DeepValue methodology first
 2. gather fresh current evidence second
 3. generate the report using the required contract third
 4. check completeness before finishing
 
 ## 3. Step-By-Step Workflow
 
-### Step 1: Query Second Brain First
+### Step 1: Load Local Method First
 
-Before substantive analysis, query NotebookLM / second brain for:
+Before substantive analysis, refresh on the local DeepValue method from the repo docs, including:
 
 - the DeepValue Lab analysis framework
 - the report contract
 - the valuation-first, technicals-second rule
 - the news-to-model rule
-- any relevant prior cases by company type
-
-The purpose of this step is to retrieve method, not to copy an old conclusion.
 
 Minimum requirement:
 
@@ -79,9 +76,9 @@ Required categories:
 - latest management guidance
 - recent material company or industry news
 
-Second brain is not sufficient for this step.
+Archived notes or memory are not sufficient for this step.
 
-If current evidence conflicts with second brain, current verified evidence wins.
+If archived notes conflict with current evidence, current verified evidence wins.
 
 ### Step 5: Build The Economic Picture
 
@@ -254,9 +251,9 @@ The final report should not:
 Default behavior:
 
 - save the full report to the archive if the workflow requires persistence
-- do not automatically write each report into second brain
+- do not automatically promote each report into reusable notes
 
-Write into second brain only if:
+Promote distilled lessons only if:
 
 - the user explicitly requests it
 - the analysis creates a durable reusable lesson
@@ -267,7 +264,7 @@ Write into second brain only if:
 
 A compliant DeepValue Lab agent should:
 
-- use second brain early
+- use local methodology first
 - use fresh evidence
 - keep the reasoning auditable
 - separate business quality from valuation
@@ -278,7 +275,7 @@ A compliant DeepValue Lab agent should:
 
 The agent failed the SOP if it:
 
-- did not query second brain first
+- did not load the local methodology first
 - used stale or unsupported facts
 - skipped required sections
 - selected an obviously mismatched valuation method
@@ -292,7 +289,7 @@ The agent failed the SOP if it:
 
 DeepValue Lab agent workflow is:
 
-1. method from second brain
+1. method from local docs
 2. facts from current sources
 3. valuation and scenario reasoning
 4. technicals as timing support
@@ -301,4 +298,4 @@ DeepValue Lab agent workflow is:
 7. completion check
 8. benchmark quality check
 
-This sequence is mandatory for consistent quality.
+This local-first sequence is mandatory for consistent quality.

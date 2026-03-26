@@ -27,8 +27,36 @@ import {
   useStock,
   useStockReportDetail,
   useStockReports,
+  useTechnicalSnapshot,
 } from '../lib/queries'
-import type { FactItem, HistoricalReportDetail } from '../types/stocks'
+import type {
+  FactItem,
+  HistoricalReportDetail,
+  TechnicalPriceChart as TechnicalPriceChartData,
+  TechnicalPriceChartPayload,
+  TechnicalChartRange,
+} from '../types/stocks'
+
+const RANGE_SIZES: Record<TechnicalChartRange, number> = {
+  '1M': 22,
+  '3M': 66,
+  '6M': 132,
+  '1Y': Infinity,
+}
+
+const CHART_RANGES: TechnicalChartRange[] = ['1M', '3M', '6M', '1Y']
+
+function snapshotToChart(payload: TechnicalPriceChartPayload): TechnicalPriceChartData {
+  const series = CHART_RANGES.map((range) => {
+    const size = RANGE_SIZES[range]
+    const points = payload.points.slice(-Math.min(size, payload.points.length))
+    return {
+      range,
+      points: points.map((p) => ({ date: p.date, close: p.close })),
+    }
+  })
+  return { source: 'live', series }
+}
 
 interface StockDetailPageProps {
   ticker: string
@@ -52,6 +80,18 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
   const useMockHistory = !liveStock && !!mockStock
   const reportsQuery = useStockReports(ticker, locale, Boolean(liveStock))
   const historicalReports = reportsQuery.data ?? []
+  const latestReportId =
+    historicalReports.find((r) => r.latest)?.reportId ?? historicalReports[0]?.reportId ?? null
+  const snapshotQuery = useTechnicalSnapshot(
+    ticker,
+    latestReportId,
+    locale,
+    Boolean(liveStock && latestReportId),
+  )
+  const snapshotChart =
+    snapshotQuery.data?.status === 'ready' && snapshotQuery.data.snapshot
+      ? snapshotToChart(snapshotQuery.data.snapshot)
+      : null
   const reportSummaryMap = new Map(
     historicalReports.map((report) => [report.reportId, report]),
   )
@@ -272,7 +312,26 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           description={m.detail.technicalEntryStatusDescription}
         >
           <div className="space-y-4">
-            {stock.technicalPriceChart ? (
+            {snapshotChart ? (
+              <TechnicalPriceChart
+                chart={snapshotChart}
+                ticker={stock.ticker}
+                companyName={stock.companyName}
+                entryStatus={stock.technicalEntryStatus}
+              />
+            ) : snapshotQuery.data?.status === 'pending' ? (
+              <TechnicalChartFallback
+                eyebrow={m.detail.technicalChartTitle}
+                title={m.detail.technicalChartPendingTitle}
+                description={m.detail.technicalChartPendingDescription}
+              />
+            ) : snapshotQuery.data?.status === 'failed' ? (
+              <TechnicalChartFallback
+                eyebrow={m.detail.technicalChartTitle}
+                title={m.detail.technicalChartFailedTitle}
+                description={m.detail.technicalChartFailedDescription}
+              />
+            ) : stock.technicalPriceChart ? (
               <TechnicalPriceChart
                 chart={stock.technicalPriceChart}
                 ticker={stock.ticker}

@@ -174,6 +174,12 @@ export const messages = {
       technicalChartFallbackTitle: 'Chart unavailable',
       technicalChartFallbackDescription:
         'This report snapshot does not include price-chart data yet. Entry status and timing commentary remain available below.',
+      technicalChartPendingTitle: 'Drawing chart…',
+      technicalChartPendingDescription:
+        'The technical snapshot is being prepared. It will appear shortly.',
+      technicalChartFailedTitle: 'Chart failed to load',
+      technicalChartFailedDescription:
+        'The technical snapshot could not be generated for this report. Entry status and timing commentary remain available below.',
       technicalChartSourceMock: 'Mock Price Path',
       technicalChartCurrent: 'Current',
       technicalChartChange: 'Period Move',
@@ -470,6 +476,11 @@ export const messages = {
       technicalChartFallbackTitle: '暫無價格圖',
       technicalChartFallbackDescription:
         '這份 report snapshot 目前沒有圖表資料；下方仍保留進場狀態與時機說明。',
+      technicalChartPendingTitle: '圖表準備中…',
+      technicalChartPendingDescription: '技術快照正在生成，請稍候。',
+      technicalChartFailedTitle: '圖表載入失敗',
+      technicalChartFailedDescription:
+        '此報告的技術快照無法生成；下方仍保留進場狀態與時機說明。',
       technicalChartSourceMock: 'Mock 價格路徑',
       technicalChartCurrent: '目前價格',
       technicalChartChange: '區間變動',

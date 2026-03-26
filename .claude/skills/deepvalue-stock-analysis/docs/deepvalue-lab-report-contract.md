@@ -398,7 +398,7 @@ A zh-TW structured artifact is incomplete if:
 Default behavior:
 
 - a full report should be saved in the archive
-- second brain writeback is selective, not automatic
+- promotion into reusable notes is selective, not automatic
 
 The report contract defines the output structure.
-It does not decide whether the result should be written into second brain.
+It does not decide whether the result should be promoted into reusable notes.

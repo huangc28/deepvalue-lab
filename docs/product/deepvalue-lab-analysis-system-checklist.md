@@ -47,19 +47,19 @@ Template requirements:
 ## Phase 3: Turn The Process Into Agent Operating Rules
 
 - [ ] Create `DeepValue Lab Agent Execution SOP`
-- [ ] Require the agent to query NotebookLM / second brain first
-- [ ] Require the agent to use fresh official data after querying NotebookLM
+- [ ] Require the agent to load local methodology docs first
+- [ ] Require the agent to use fresh official data after loading local methodology docs
 - [ ] Require the agent to select valuation method based on business type
 - [ ] Require the agent to apply the valuation-first, technicals-second rule
 - [ ] Require the agent to complete all mandatory sections before treating the task as done
-- [ ] Define default writeback behavior for second brain and archive
+- [ ] Define default promotion behavior for reusable notes and archive
 
 Execution rules to include:
-- [ ] query second brain for framework, prior cases, and entry timing rules
+- [ ] load local methodology docs for framework and entry timing rules
 - [ ] verify current facts using official and current sources
 - [ ] produce the report in the required order
-- [ ] do not auto-write each report into second brain by default
-- [ ] write to second brain only when the user asks or when durable reusable insight is added
+- [ ] do not auto-promote each report into reusable notes by default
+- [ ] promote into reusable notes only when the user asks or when durable reusable insight is added
 
 ## Phase 4: Package The Process As A Skill
 
@@ -68,8 +68,8 @@ Execution rules to include:
 - [ ] Encode the required workflow into the skill
 - [ ] Encode the report contract into the skill
 - [ ] Encode the guardrails into the skill
-- [ ] Ensure the skill explicitly uses NotebookLM as the first context source
-- [ ] Ensure the skill defaults to archive-first and selective second-brain writeback
+- [ ] Ensure the skill explicitly uses local docs as the first context source
+- [ ] Ensure the skill defaults to archive-first and selective reusable-notes promotion
 
 Skill requirements:
 - [ ] skill name decided
@@ -77,7 +77,7 @@ Skill requirements:
 - [ ] required workflow documented
 - [ ] output contract documented
 - [ ] guardrails documented
-- [ ] references to relevant repo files and second-brain rules documented
+- [ ] references to relevant repo files and reusable-notes rules documented
 
 ## Phase 5: Validation And Review
 
@@ -88,7 +88,7 @@ Skill requirements:
 - [ ] Refine the standard, template, SOP, or skill based on findings
 
 Validation questions:
-- [ ] did the agent query second brain first?
+- [ ] did the agent load local methodology docs first?
 - [ ] did the report include all mandatory sections?
 - [ ] did the report clearly separate valuation, thesis, news-to-model, and technical entry?
 - [ ] did the conclusion reflect price versus value rather than business quality alone?
@@ -97,7 +97,7 @@ Validation questions:
 ## Current Alignment
 
 Agreed direction:
-- [x] use second brain as stable context, not the only execution mechanism
+- [x] use local methodology docs as stable context, not the only execution mechanism
 - [x] formalize the quality standard
 - [x] formalize the output template
 - [x] formalize the agent workflow
