@@ -21,10 +21,6 @@ Before doing substantive company analysis, read these methodology documents:
 - `./docs/deepvalue-lab-report-to-ui-transform.md`
 - `./docs/deepvalue-lab-persistence-policy.md`
 
-Also read these if persistence or archive behavior is relevant:
-
-- `research/templates/stock-analysis-report-template.md`
-
 ## Required Workflow
 
 Follow this workflow in order:
