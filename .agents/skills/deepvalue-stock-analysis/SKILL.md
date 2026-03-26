@@ -13,19 +13,19 @@ This skill is for analysis quality and execution consistency. It is not a generi
 
 Before doing substantive company analysis, read these methodology documents:
 
-- `./docs/deepvalue-lab-stock-analysis-standard.md`
-- `./docs/deepvalue-lab-report-contract.md`
-- `./docs/deepvalue-lab-agent-execution-sop.md`
-- `./docs/deepvalue-lab-valuation-framework.md`
-- `./docs/deepvalue-lab-technicals-guide.md`
-- `./docs/deepvalue-lab-report-to-ui-transform.md`
-- `./docs/deepvalue-lab-persistence-policy.md`
+- `.agents/skills/deepvalue-stock-analysis/docs/deepvalue-lab-stock-analysis-standard.md`
+- `.agents/skills/deepvalue-stock-analysis/docs/deepvalue-lab-report-contract.md`
+- `.agents/skills/deepvalue-stock-analysis/docs/deepvalue-lab-agent-execution-sop.md`
+- `.agents/skills/deepvalue-stock-analysis/docs/deepvalue-lab-valuation-framework.md`
+- `.agents/skills/deepvalue-stock-analysis/docs/deepvalue-lab-technicals-guide.md`
+- `.agents/skills/deepvalue-stock-analysis/docs/deepvalue-lab-report-to-ui-transform.md`
+- `.agents/skills/deepvalue-stock-analysis/docs/deepvalue-lab-persistence-policy.md`
 
 ## Required Workflow
 
 Follow this workflow in order:
 
-1. Read the methodology docs in ./docs/ first.
+1. Read the methodology docs in .agents/skills/deepvalue-stock-analysis/docs/ first.
 2. Classify the business before choosing valuation metrics.
 3. Verify fresh current facts from official and current sources.
 4. Build the economic picture: revenue drivers, margin drivers, cash flow drivers, valuation drivers, and key risks.
