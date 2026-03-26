@@ -27,34 +27,21 @@ Follow this workflow in order:
 
 1. Read the methodology docs in .claude/skills/deepvalue-stock-analysis/docs/ first.
 2. Read `research/cases/_index.md` to find prior cases with similar business type. Read the relevant case files for modeling context.
-3. Query NotebookLM for any additional prior cases by business type not covered locally.
-4. Classify the business before choosing valuation metrics.
-5. Verify fresh current facts from official and current sources.
-6. Build the economic picture: revenue drivers, margin drivers, cash flow drivers, valuation drivers, and key risks.
-7. Translate recent news into model changes.
-8. Build bear / base / bull scenarios.
-9. Explain what the current price implies.
-10. Determine thesis status.
-11. Determine technical entry status.
-12. Write the report using the required contract.
-13. Generate the EN `StockDetail` JSON from the report.
-14. Generate the zh-TW `StockDetail` JSON by translating prose fields from the EN JSON.
-15. Save all three artifacts to the research archive.
-16. Write a case entry to `research/cases/<TICKER>.md` using the template in `research/cases/_TEMPLATE.md`. Update the index table in `research/cases/_index.md`.
-17. Perform a completion check before finishing.
-18. Perform a benchmark quality check before finishing.
-
-## NotebookLM Rule
-
-Use NotebookLM as the prior-case layer only. Methodology is now in .claude/skills/deepvalue-stock-analysis/docs/.
-
-Query for:
-
-- relevant prior company cases by business type
-
-Do not use NotebookLM as a substitute for fresh facts.
-
-If NotebookLM and current verified evidence disagree, current verified evidence wins.
+3. Classify the business before choosing valuation metrics.
+4. Verify fresh current facts from official and current sources.
+5. Build the economic picture: revenue drivers, margin drivers, cash flow drivers, valuation drivers, and key risks.
+6. Translate recent news into model changes.
+7. Build bear / base / bull scenarios.
+8. Explain what the current price implies.
+9. Determine thesis status.
+10. Determine technical entry status.
+11. Write the report using the required contract.
+12. Generate the EN `StockDetail` JSON from the report.
+13. Generate the zh-TW `StockDetail` JSON by translating prose fields from the EN JSON.
+14. Save all three artifacts to the research archive.
+15. Write a case entry to `research/cases/<TICKER>.md` using the template in `research/cases/_TEMPLATE.md`. Update the index table in `research/cases/_index.md`.
+16. Perform a completion check before finishing.
+17. Perform a benchmark quality check before finishing.
 
 ## Source Rule
 
