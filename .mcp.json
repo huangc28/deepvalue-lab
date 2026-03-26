@@ -7,9 +7,6 @@
     "obsidian": {
       "command": "npx",
       "args": ["-y", "@mauricio.wolff/mcp-obsidian@latest", "/Users/huangchihan/Documents/markdowns"]
-    },
-    "notebooklm-mcp": {
-      "command": "notebooklm-mcp"
     }
   }
 }

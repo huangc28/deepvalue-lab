@@ -2,25 +2,22 @@
 
 Project: `DeepValue Lab`
 
-## NotebookLM Second Brain
+## Obsidian Second Brain
 
-Notebook ID: `afa6678d-0ae5-4070-bd5f-7ec2365c6310`
-Metadata file: `.codex/notebooklm.json`
+Use the Obsidian vault for long-term project context before non-trivial work.
 
-Execution logic:
-1. **Plan:** Before non-trivial work, query NotebookLM for architecture, prior decisions, and constraints.
-2. **Build:** Use the repository as the source of truth. If NotebookLM and code disagree, code wins.
-3. **Update:** After a validated non-trivial change, write a concise durable update back to NotebookLM.
+Vault project path: `~/Documents/markdowns/projects/value-deck/`
 
 Rules:
-- Do not store secrets, credentials, cookies, or tokens in NotebookLM.
-- Prefer focused queries over broad prompts.
-- Write back concise curated outcomes, not raw dumps.
+- Read vault context for background; read the local repo for current implementation truth.
+- If vault context and repo disagree, trust the repo.
+- After non-trivial validated work, update the relevant vault file with new decisions or architectural changes.
+- Do not store secrets, credentials, or tokens in the vault.
 
 ## Stock Research Persistence
 
 Two-layer model:
-- **NotebookLM:** reusable frameworks, distilled reasoning, concise company summaries, validated lessons.
+- **Vault (`context.md`):** reusable frameworks, distilled reasoning, concise company summaries, validated lessons.
 - **Repo archive:** full time-stamped reports, point-in-time prices, detailed news interpretation, bear/base/bull outputs.
 
 Paths:
@@ -29,7 +26,7 @@ Paths:
 
 When a stock analysis is substantial:
 1. Save the full report under `research/archive/YYYY/MM/DD/<ticker>-analysis.md`.
-2. Save only durable reasoning and reusable takeaways to NotebookLM.
+2. Save only durable reasoning and reusable takeaways to vault `context.md` under "Valuation Frameworks & Lessons Learned".
 
 ## DeepValue Analysis Constraints
 
@@ -45,7 +42,6 @@ When a stock analysis is substantial:
 Claude skill files live under `.claude/skills/`. Codex skill files live under `.agents/skills/`. Keep the Claude and Codex versions aligned when a workflow is shared.
 
 - **Stock analysis:** `.claude/skills/deepvalue-stock-analysis/SKILL.md`
-- **NotebookLM workflow:** `.agents/skills/nlm-skill/SKILL.md`
 
 Rules:
 - If the skill and current repository disagree, the repository wins.
@@ -83,4 +79,4 @@ pnpm lint && pnpm build   # validate after changes
 cd be && go build ./... && go test ./...
 ```
 
-After non-trivial changes: validate, then update NotebookLM.
+After non-trivial changes: validate, then update the relevant vault file.

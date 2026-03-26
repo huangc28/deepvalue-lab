@@ -1,47 +1,33 @@
 # Agent Instructions
 
-## NotebookLM Second Brain
+## Obsidian Second Brain
 
-This project uses NotebookLM as a long-term knowledge base for Codex and other agents.
+This project uses the Obsidian vault as a long-term knowledge base.
 
-Project name:
-- `DeepValue Lab`
+Vault project path: `~/Documents/markdowns/projects/value-deck/`
 
-Notebook metadata:
-- Alias: `profound-stock`
-- Notebook ID: `afa6678d-0ae5-4070-bd5f-7ec2365c6310`
-- Metadata file: `.codex/notebooklm.json`
-- Debug notebook: not initialized yet
+Files:
+- `overview.md` — project purpose, goals, and background
+- `context.md` — architecture, stack, key decisions, and constraints
+- `decisions/` — architecture decision records
 
-Use NotebookLM before coding when the task involves:
-- architecture understanding
-- project onboarding
+Use the vault project dir before non-trivial work when the task involves:
+- understanding project architecture or history
 - prior decisions or constraints
-- external API, vendor, or product documentation
-- debugging background, runbooks, or known gotchas
-- security review context
-
-Workflow:
-1. Query NotebookLM for stable, curated context.
-2. Inspect the local repository to verify the current implementation.
-3. If NotebookLM and the repository disagree, treat the repository as the source of truth.
-4. Mention important mismatches briefly.
-5. After implementing a non-trivial feature or workflow change, update the project notebook if validation succeeds.
-6. For bugs, check the debugging notebook first once it exists, then fall back to web or local investigation.
+- onboarding to an unfamiliar area
+- debugging background or known gotchas
 
 Rules:
-- Do not treat NotebookLM as the source of truth for the current working tree.
-- Do not store secrets, credentials, auth cookies, or tokens in NotebookLM.
-- Prefer focused NotebookLM queries over broad open-ended prompts.
-- Use NotebookLM for curated knowledge; use local files for exact current code and config.
-- Only write back to the project notebook after a non-trivial change and successful validation such as tests, build, or another task-appropriate verification.
-- Write back concise summaries: feature outcome, key decisions, new architecture or operational context, and important follow-up constraints.
+- Read vault context for background; read the local repo for current implementation truth.
+- If vault context and repo disagree, trust the repo.
+- After non-trivial validated work, update the relevant vault file with new decisions or architectural changes.
+- Do not store secrets, credentials, or tokens in the vault.
 
 ## Stock Research Persistence
 
 Use a two-layer persistence model for equity analysis.
 
-NotebookLM stores:
+Vault stores:
 - reusable valuation frameworks
 - distilled reasoning patterns
 - concise company summaries
@@ -60,13 +46,8 @@ Paths:
 
 When a stock analysis is substantial:
 1. Save the full report in the research archive.
-2. Save only the distilled reasoning and durable takeaways to NotebookLM.
-3. Do not dump every full report verbatim into NotebookLM.
-
-Suggested NotebookLM queries before non-trivial work:
-- What is the current architecture and purpose of this project?
-- Are there prior decisions or constraints relevant to this task?
-- Are there known operational, security, or integration risks?
+2. Save only the distilled reasoning and durable takeaways to `context.md` under "Valuation Frameworks & Lessons Learned".
+3. Do not dump every full report verbatim into the vault.
 
 ## Coding Conventions & Project Structure
 
