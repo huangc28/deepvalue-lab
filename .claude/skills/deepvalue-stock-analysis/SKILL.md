@@ -11,23 +11,26 @@ This skill is for analysis quality and execution consistency. It is not a generi
 
 ## Load The Method First
 
-Before doing substantive company analysis, read these repo documents:
+Before doing substantive company analysis, read these methodology documents:
 
-- `docs/analysis/deepvalue-lab-stock-analysis-standard.md`
-- `docs/analysis/deepvalue-lab-report-contract.md`
-- `docs/analysis/deepvalue-lab-agent-execution-sop.md`
+- `./docs/deepvalue-lab-stock-analysis-standard.md`
+- `./docs/deepvalue-lab-report-contract.md`
+- `./docs/deepvalue-lab-agent-execution-sop.md`
+- `./docs/deepvalue-lab-valuation-framework.md`
+- `./docs/deepvalue-lab-technicals-guide.md`
+- `./docs/deepvalue-lab-report-to-ui-transform.md`
+- `./docs/deepvalue-lab-persistence-policy.md`
 
 Also read these if persistence or archive behavior is relevant:
 
-- `docs/research/stock-analysis-persistence.md`
 - `research/templates/stock-analysis-report-template.md`
 
 ## Required Workflow
 
 Follow this workflow in order:
 
-1. Query NotebookLM / second brain first.
-2. Retrieve the DeepValue Lab framework, report contract, execution SOP, and relevant prior cases.
+1. Read the methodology docs in ./docs/ first. Then query the second brain for prior company cases.
+2. Retrieve relevant prior cases from the second brain.
 3. Classify the business before choosing valuation metrics.
 4. Verify fresh current facts from official and current sources.
 5. Build the economic picture: revenue drivers, margin drivers, cash flow drivers, valuation drivers, and key risks.
@@ -45,15 +48,10 @@ Follow this workflow in order:
 
 ## NotebookLM Rule
 
-Use NotebookLM as the methodology and prior-case layer.
+Use NotebookLM as the prior-case layer only. Methodology is now in ./docs/.
 
 Query for:
 
-- DeepValue Lab framework
-- report contract
-- execution SOP
-- valuation-first, technicals-second rule
-- news-to-model rule
 - relevant prior company cases by business type
 
 Do not use NotebookLM as a substitute for fresh facts.
