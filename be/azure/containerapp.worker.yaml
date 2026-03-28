@@ -1,0 +1,36 @@
+type: Microsoft.App/containerApps
+apiVersion: 2024-03-01
+name: worker
+location: <location>
+properties:
+  managedEnvironmentId: /subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.App/managedEnvironments/<environment-name>
+  configuration:
+    secrets:
+      - name: rabbitmq-management-url
+        value: <rabbitmq-management-url>
+  template:
+    containers:
+      - name: worker
+        image: <registry>/<image>:<tag>
+        env:
+          - name: APP_NAME
+            value: worker
+          - name: APP_ENV
+            value: production
+          - name: LOG_LEVEL
+            value: info
+    scale:
+      minReplicas: 0
+      maxReplicas: 3
+      rules:
+        - name: rabbitmq-scaler
+          custom:
+            type: rabbitmq
+            metadata:
+              queueName: technical_snapshot_jobs
+              mode: QueueLength
+              value: "5"
+              protocol: http
+            auth:
+              - secretRef: rabbitmq-management-url
+                triggerParameter: host

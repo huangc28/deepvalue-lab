@@ -11,7 +11,12 @@ AZURE_CONTAINERAPPS_ENV ?= value-deck-env
 ACR_NAME ?= valuedeckacr
 ACR_IMAGE ?= $(ACR_NAME).azurecr.io/$(IMAGE_NAME):$(IMAGE_TAG)
 
-.PHONY: build test start start/worker docker/build docker/run deploy/containerapp
+WORKER_IMAGE_NAME ?= worker
+WORKER_ACR_IMAGE ?= $(ACR_NAME).azurecr.io/$(WORKER_IMAGE_NAME):$(IMAGE_TAG)
+WORKER_CONTAINER_APP_NAME ?= value-deck-worker
+
+.PHONY: build test start start/worker docker/build docker/run deploy/containerapp \
+	acr/push/worker deploy/worker deploy/update/worker
 
 build:
 	go build ./...
@@ -76,6 +81,58 @@ deploy/containerapp:
 			R2_ACCESS_KEY_ID=secretref:r2-access-key-id \
 			R2_SECRET_ACCESS_KEY=secretref:r2-secret-access-key \
 			RABBITMQ_URL=secretref:rabbitmq-url
+
+## acr/push/worker: build and push worker image to ACR.
+acr/push/worker:
+	docker build --no-cache --platform linux/amd64 -f Dockerfile.worker -t $(WORKER_ACR_IMAGE) .
+	docker push $(WORKER_ACR_IMAGE)
+
+## deploy/worker: create the worker Container App with KEDA RabbitMQ scale-to-zero.
+## Requires RABBITMQ_MANAGEMENT_URL in .env (format: https://user:pass@raccoon.lmq.cloudamqp.com/api/).
+deploy/worker:
+	az containerapp create \
+		--name "$(WORKER_CONTAINER_APP_NAME)" \
+		--resource-group "$(AZURE_RESOURCE_GROUP)" \
+		--environment "$(AZURE_CONTAINERAPPS_ENV)" \
+		--image "$(WORKER_ACR_IMAGE)" \
+		--registry-server "$(ACR_NAME).azurecr.io" \
+		--min-replicas 0 \
+		--max-replicas 3 \
+		--secrets \
+			turso-dsn="$(TURSO_SQLITE_DSN)" \
+			turso-token="$(TURSO_SQLITE_TOKEN)" \
+			r2-account-id="$(R2_ACCOUNT_ID)" \
+			r2-bucket="$(R2_BUCKET)" \
+			r2-access-key-id="$(R2_ACCESS_KEY_ID)" \
+			r2-secret-access-key="$(R2_SECRET_ACCESS_KEY)" \
+			rabbitmq-url="$(RABBITMQ_URL)" \
+			massive-api-key="$(MASSIVE_API_KEY)" \
+			rabbitmq-management-url="$(RABBITMQ_MANAGEMENT_URL)" \
+		--env-vars \
+			APP_NAME=worker \
+			APP_ENV=production \
+			LOG_LEVEL=info \
+			TURSO_SQLITE_DSN=secretref:turso-dsn \
+			TURSO_SQLITE_TOKEN=secretref:turso-token \
+			TURSO_SQLITE_DRIVER=libsql \
+			R2_ACCOUNT_ID=secretref:r2-account-id \
+			R2_BUCKET=secretref:r2-bucket \
+			R2_ACCESS_KEY_ID=secretref:r2-access-key-id \
+			R2_SECRET_ACCESS_KEY=secretref:r2-secret-access-key \
+			RABBITMQ_URL=secretref:rabbitmq-url \
+			MASSIVE_API_KEY=secretref:massive-api-key \
+		--scale-rule-name "rabbitmq-scaler" \
+		--scale-rule-type "rabbitmq" \
+		--scale-rule-metadata "queueName=technical_snapshot_jobs" "mode=QueueLength" "value=5" "protocol=http" \
+		--scale-rule-auth "host=rabbitmq-management-url"
+
+## deploy/update/worker: push new worker image and update the running container app.
+deploy/update/worker: acr/push/worker
+	az containerapp update \
+		--name "$(WORKER_CONTAINER_APP_NAME)" \
+		--resource-group "$(AZURE_RESOURCE_GROUP)" \
+		--image "$(WORKER_ACR_IMAGE)" \
+		--revision-suffix "$(shell date +%Y%m%d%H%M%S)"
 
 ## deploy/update: push new image and update the running container app.
 .PHONY: deploy/update
