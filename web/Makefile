@@ -21,7 +21,7 @@ acr/login:
 ## acr/push: build and push image to ACR.
 .PHONY: acr/push
 acr/push:
-	docker buildx build --platform linux/amd64 -t $(ACR_IMAGE) .
+	docker buildx build --no-cache --platform linux/amd64 -t $(ACR_IMAGE) .
 	docker push $(ACR_IMAGE)
 
 ## deploy/update: push new image and update the running container app.
