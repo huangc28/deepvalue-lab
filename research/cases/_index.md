@@ -5,6 +5,7 @@ Each case is a distilled reference for future analysis of similar companies.
 
 | Ticker | Company | Sector | Business Type | Verdict | Analyzed |
 |--------|---------|--------|---------------|---------|----------|
+| [TMDX](./TMDX.md) | TransMedics Group, Inc. | Healthcare / Medical Device | `#medical_device` `#high_growth` `#logistics_services` `#monopoly_position` | Fair to modestly cheap — Watch gross margin trend | 2026-03-27 |
 
 ## Business Type Tags
 
