@@ -26,7 +26,7 @@ start/worker:
 	go run ./cmd/worker
 
 docker/build:
-	docker build -t $(IMAGE_NAME):$(IMAGE_TAG) .
+	docker build --no-cache -t $(IMAGE_NAME):$(IMAGE_TAG) .
 
 docker/run:
 	docker run --rm -p $(APP_PORT):$(APP_PORT) -e APP_PORT=$(APP_PORT) $(IMAGE_NAME):$(IMAGE_TAG)
@@ -39,7 +39,7 @@ acr/login:
 ## acr/push: build and push image to ACR.
 .PHONY: acr/push
 acr/push:
-	docker build --platform linux/amd64 -t $(ACR_IMAGE) .
+	docker build --no-cache --platform linux/amd64 -t $(ACR_IMAGE) .
 	docker push $(ACR_IMAGE)
 
 ## deploy/containerapp: create or update the Container App with secrets from .env.
@@ -62,6 +62,7 @@ deploy/containerapp:
 			r2-bucket="$(R2_BUCKET)" \
 			r2-access-key-id="$(R2_ACCESS_KEY_ID)" \
 			r2-secret-access-key="$(R2_SECRET_ACCESS_KEY)" \
+			rabbitmq-url="$(RABBITMQ_URL)" \
 		--env-vars \
 			APP_NAME=be \
 			APP_ENV=production \
@@ -73,7 +74,8 @@ deploy/containerapp:
 			R2_ACCOUNT_ID=secretref:r2-account-id \
 			R2_BUCKET=secretref:r2-bucket \
 			R2_ACCESS_KEY_ID=secretref:r2-access-key-id \
-			R2_SECRET_ACCESS_KEY=secretref:r2-secret-access-key
+			R2_SECRET_ACCESS_KEY=secretref:r2-secret-access-key \
+			RABBITMQ_URL=secretref:rabbitmq-url
 
 ## deploy/update: push new image and update the running container app.
 .PHONY: deploy/update
