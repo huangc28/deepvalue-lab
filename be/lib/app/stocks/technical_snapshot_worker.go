@@ -16,6 +16,13 @@ import (
 	"github.com/huangchihan/deepvalue-lab-be/lib/pkg/rabbitmq"
 )
 
+const (
+	technicalChartTimezone = "America/New_York"
+	technicalChartLookback = "1D"
+)
+
+var technicalChartLocation = loadTechnicalChartLocation()
+
 type workerQueries interface {
 	UpsertTechnicalSnapshot(ctx context.Context, arg turso_models.UpsertTechnicalSnapshotParams) error
 }
@@ -23,6 +30,8 @@ type workerQueries interface {
 type workerStorage interface {
 	UploadJSON(ctx context.Context, key string, data []byte) error
 }
+
+const phase1DailyFetchLookbackMonths = 15
 
 // TechnicalSnapshotWorker consumes published-report jobs, fetches OHLC data from
 // Massive, stores normalized bars to R2, computes technical indicators, and marks
@@ -69,7 +78,7 @@ func (w *TechnicalSnapshotWorker) process(ctx context.Context, body []byte) erro
 	log.Info("processing technical snapshot job")
 
 	publishedAt := time.UnixMilli(job.PublishedAtMs).UTC()
-	from := publishedAt.AddDate(-1, 0, 0)
+	from := publishedAt.AddDate(0, -phase1DailyFetchLookbackMonths, 0)
 	to := publishedAt
 
 	bars, err := w.massive.FetchDailyBars(ctx, job.Ticker, from, to)
@@ -107,99 +116,7 @@ func (w *TechnicalSnapshotWorker) process(ctx context.Context, body []byte) erro
 
 func (w *TechnicalSnapshotWorker) buildAndMarkReady(ctx context.Context, job TechnicalSnapshotJob, bars []massive.Bar) error {
 	log := w.logger.With(zap.String("ticker", job.Ticker), zap.String("report_id", job.ReportID))
-
-	n := len(bars)
-	closes := make([]float64, n)
-	highs := make([]float64, n)
-	lows := make([]float64, n)
-	for i, b := range bars {
-		closes[i] = b.Close
-		highs[i] = b.High
-		lows[i] = b.Low
-	}
-
-	hlc3 := indicators.HLC3(highs, lows, closes)
-	rsi := indicators.RSI(closes, 22)
-	emaOnRsi := indicators.EMA(rsi, 12)
-	mrcCenter, mrcUpper, mrcLower := indicators.MRC(hlc3, 20)
-
-	round2 := func(v float64) float64 {
-		return math.Round(v*100) / 100
-	}
-	toPtr := func(v float64) *float64 {
-		if math.IsNaN(v) {
-			return nil
-		}
-		rounded := round2(v)
-		return &rounded
-	}
-
-	points := make([]TechnicalPricePoint, n)
-	for i, b := range bars {
-		points[i] = TechnicalPricePoint{
-			Date:      b.Date,
-			Open:      b.Open,
-			High:      b.High,
-			Low:       b.Low,
-			Close:     b.Close,
-			Volume:    b.Volume,
-			HLC3:      round2(hlc3[i]),
-			RSI:       toPtr(rsi[i]),
-			EMAOnRSI:  toPtr(emaOnRsi[i]),
-			MRCCenter: toPtr(mrcCenter[i]),
-			MRCUpper:  toPtr(mrcUpper[i]),
-			MRCLower:  toPtr(mrcLower[i]),
-		}
-	}
-
-	// Find latest non-NaN RSI and EMAOnRSI values for the summary.
-	var latestRSI, latestEMAOnRSI float64
-	latestRSI = math.NaN()
-	latestEMAOnRSI = math.NaN()
-	for i := n - 1; i >= 0; i-- {
-		if math.IsNaN(latestRSI) && !math.IsNaN(rsi[i]) {
-			latestRSI = rsi[i]
-		}
-		if math.IsNaN(latestEMAOnRSI) && !math.IsNaN(emaOnRsi[i]) {
-			latestEMAOnRSI = emaOnRsi[i]
-		}
-		if !math.IsNaN(latestRSI) && !math.IsNaN(latestEMAOnRSI) {
-			break
-		}
-	}
-
-	rsiStatus := "neutral"
-	if !math.IsNaN(latestRSI) {
-		switch {
-		case latestRSI < 30:
-			rsiStatus = "oversold"
-		case latestRSI > 70:
-			rsiStatus = "overbought"
-		}
-	}
-
-	safeRSI := 0.0
-	if !math.IsNaN(latestRSI) {
-		safeRSI = round2(latestRSI)
-	}
-	safeEMAOnRSI := 0.0
-	if !math.IsNaN(latestEMAOnRSI) {
-		safeEMAOnRSI = round2(latestEMAOnRSI)
-	}
-
-	summary := TechnicalIndicatorSummary{
-		RSI:       safeRSI,
-		EMAOnRSI:  safeEMAOnRSI,
-		RSIStatus: rsiStatus,
-	}
-
-	payload := TechnicalPriceChartPayload{
-		Source:   "massive",
-		Ticker:   job.Ticker,
-		ReportID: job.ReportID,
-		Points:   points,
-		Latest:   summary,
-	}
+	payload := buildTechnicalPriceChartPayload(job, bars)
 
 	payloadData, err := json.Marshal(payload)
 	if err != nil {
@@ -240,6 +157,153 @@ func (w *TechnicalSnapshotWorker) buildAndMarkReady(ctx context.Context, job Tec
 
 	log.Info("technical snapshot marked ready")
 	return nil
+}
+
+func buildTechnicalPriceChartPayload(job TechnicalSnapshotJob, bars []massive.Bar) TechnicalPriceChartPayload {
+	n := len(bars)
+	closes := make([]float64, n)
+	highs := make([]float64, n)
+	lows := make([]float64, n)
+	for i, b := range bars {
+		closes[i] = b.Close
+		highs[i] = b.High
+		lows[i] = b.Low
+	}
+
+	hlc3 := indicators.HLC3(highs, lows, closes)
+	rsi := indicators.RSI(closes, 22)
+	emaOnRsi := indicators.EMA(rsi, 12)
+	mrcCenter, mrcUpper, mrcLower := indicators.MRC(hlc3, 20)
+
+	round2 := func(v float64) float64 {
+		return math.Round(v*100) / 100
+	}
+	toPtr := func(v float64) *float64 {
+		if math.IsNaN(v) {
+			return nil
+		}
+		rounded := round2(v)
+		return &rounded
+	}
+
+	legacyPoints := make([]TechnicalPricePoint, n)
+	seriesPoints := make([]OhlcPoint, n)
+	for i, b := range bars {
+		legacyPoints[i] = TechnicalPricePoint{
+			Date:      b.Date,
+			Open:      b.Open,
+			High:      b.High,
+			Low:       b.Low,
+			Close:     b.Close,
+			Volume:    b.Volume,
+			HLC3:      round2(hlc3[i]),
+			RSI:       toPtr(rsi[i]),
+			EMAOnRSI:  toPtr(emaOnRsi[i]),
+			MRCCenter: toPtr(mrcCenter[i]),
+			MRCUpper:  toPtr(mrcUpper[i]),
+			MRCLower:  toPtr(mrcLower[i]),
+		}
+		timestampUtc, exchangeTimestamp := buildDailyBarTimestamps(b.Date)
+		seriesPoints[i] = OhlcPoint{
+			TimestampUtc:      timestampUtc,
+			ExchangeTimestamp: exchangeTimestamp,
+			Open:              b.Open,
+			High:              b.High,
+			Low:               b.Low,
+			Close:             b.Close,
+			Volume:            b.Volume,
+		}
+	}
+
+	indicatorSnapshot, summary := buildIndicatorSnapshots(rsi, emaOnRsi, round2)
+
+	seriesByTimeframe := map[ChartTimeframe]TimeframeSeries{
+		ChartTimeframe1D: {
+			Timeframe:     ChartTimeframe1D,
+			Timezone:      technicalChartTimezone,
+			SessionMode:   SessionModeMarketHours,
+			LookbackLabel: technicalChartLookback,
+			Points:        seriesPoints,
+		},
+	}
+
+	return TechnicalPriceChartPayload{
+		Source:              "massive",
+		Ticker:              job.Ticker,
+		ReportID:            job.ReportID,
+		DefaultTimeframe:    ChartTimeframe1D,
+		AvailableTimeframes: []ChartTimeframe{ChartTimeframe1D},
+		SeriesByTimeframe:   seriesByTimeframe,
+		Indicators:          indicatorSnapshot,
+		Points:              legacyPoints,
+		Latest:              summary,
+	}
+}
+
+func buildIndicatorSnapshots(rsi []float64, emaOnRsi []float64, round2 func(float64) float64) (IndicatorSnapshot, TechnicalIndicatorSummary) {
+	var latestRSI, latestEMAOnRSI float64
+	latestRSI = math.NaN()
+	latestEMAOnRSI = math.NaN()
+	for i := len(rsi) - 1; i >= 0; i-- {
+		if math.IsNaN(latestRSI) && !math.IsNaN(rsi[i]) {
+			latestRSI = rsi[i]
+		}
+		if math.IsNaN(latestEMAOnRSI) && !math.IsNaN(emaOnRsi[i]) {
+			latestEMAOnRSI = emaOnRsi[i]
+		}
+		if !math.IsNaN(latestRSI) && !math.IsNaN(latestEMAOnRSI) {
+			break
+		}
+	}
+
+	rsiStatus := "neutral"
+	if !math.IsNaN(latestRSI) {
+		switch {
+		case latestRSI < 30:
+			rsiStatus = "oversold"
+		case latestRSI > 70:
+			rsiStatus = "overbought"
+		}
+	}
+
+	indicatorSnapshot := IndicatorSnapshot{}
+	if !math.IsNaN(latestRSI) {
+		indicatorSnapshot.RSI = round2(latestRSI)
+	}
+	if !math.IsNaN(latestEMAOnRSI) {
+		indicatorSnapshot.EMAOnRSI = round2(latestEMAOnRSI)
+	}
+	indicatorSnapshot.RSIStatus = rsiStatus
+
+	return indicatorSnapshot, indicatorSnapshot
+}
+
+func buildDailyBarTimestamps(date string) (string, string) {
+	tradingDay, err := time.ParseInLocation("2006-01-02", date, technicalChartLocation)
+	if err != nil {
+		return date + "T20:00:00Z", date + "T16:00:00-04:00"
+	}
+
+	exchangeClose := time.Date(
+		tradingDay.Year(),
+		tradingDay.Month(),
+		tradingDay.Day(),
+		16,
+		0,
+		0,
+		0,
+		technicalChartLocation,
+	)
+
+	return exchangeClose.UTC().Format(time.RFC3339), exchangeClose.Format(time.RFC3339)
+}
+
+func loadTechnicalChartLocation() *time.Location {
+	location, err := time.LoadLocation(technicalChartTimezone)
+	if err != nil {
+		return time.FixedZone("EDT", -4*60*60)
+	}
+	return location
 }
 
 func (w *TechnicalSnapshotWorker) markFailed(ctx context.Context, job TechnicalSnapshotJob, errMsg string) {

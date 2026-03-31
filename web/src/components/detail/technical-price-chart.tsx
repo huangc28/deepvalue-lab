@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useI18n } from '../../i18n/context'
 import { cx } from '../../lib/cx'
 import type {
   TechnicalChartPoint,
-  TechnicalChartRange,
+  TechnicalChartTimeframe,
   TechnicalEntryStatus,
   TechnicalPriceChart,
 } from '../../types/stocks'
@@ -18,8 +18,6 @@ const PLOT = {
   left: 10,
 }
 
-const TIMEFRAMES: TechnicalChartRange[] = ['1M', '3M', '6M', '1Y']
-
 export function TechnicalPriceChart({
   chart,
   ticker,
@@ -32,33 +30,66 @@ export function TechnicalPriceChart({
   entryStatus: TechnicalEntryStatus
 }) {
   const { locale, m } = useI18n()
-  const [selectedRange, setSelectedRange] = useState<TechnicalChartRange>('1Y')
+  const [selectedTimeframe, setSelectedTimeframe] = useState<TechnicalChartTimeframe>(
+    chart.defaultTimeframe,
+  )
+  const availableTimeframes = chart.availableTimeframes.filter(
+    (timeframe) => chart.seriesByTimeframe[timeframe],
+  )
+  const activeTimeframe = availableTimeframes.includes(selectedTimeframe)
+    ? selectedTimeframe
+    : chart.defaultTimeframe
   const activeSeries =
-    chart.series.find((series) => series.range === selectedRange) ?? chart.series[0]
+    chart.seriesByTimeframe[activeTimeframe] ??
+    chart.seriesByTimeframe[chart.defaultTimeframe] ??
+    availableTimeframes
+      .map((timeframe) => chart.seriesByTimeframe[timeframe])
+      .find(Boolean)
 
-  if (!activeSeries) return null
+  useEffect(() => {
+    if (availableTimeframes.length === 0) {
+      return
+    }
+    if (!availableTimeframes.includes(selectedTimeframe)) {
+      setSelectedTimeframe(
+        availableTimeframes.includes(chart.defaultTimeframe)
+          ? chart.defaultTimeframe
+          : availableTimeframes[0],
+      )
+    }
+  }, [availableTimeframes, chart.defaultTimeframe, selectedTimeframe])
 
-  const prices = activeSeries.points.map((point) => point.close)
-  const periodHigh = Math.max(...prices)
-  const periodLow = Math.min(...prices)
-  const lastPrice = prices[prices.length - 1] ?? 0
-  const startPrice = prices[0] ?? lastPrice
+  if (!activeSeries || activeSeries.points.length === 0) return null
+
+  const closes = activeSeries.points.map((point) => point.close)
+  const highs = activeSeries.points.map((point) => point.high)
+  const lows = activeSeries.points.map((point) => point.low)
+  const periodHigh = Math.max(...highs)
+  const periodLow = Math.min(...lows)
+  const lastPrice = closes[closes.length - 1] ?? 0
+  const startPrice = activeSeries.points[0]?.open ?? lastPrice
   const periodMove = ((lastPrice - startPrice) / startPrice) * 100
   const chartBottom = CHART_HEIGHT - PLOT.bottom
   const chartRight = CHART_WIDTH - PLOT.right
   const yMin = periodLow * 0.94
   const yMax = periodHigh * 1.06
-  const candles = buildCandles(activeSeries.points)
+  const candles = activeSeries.points
   const yTicks = buildYTicks(yMin, yMax)
-  const xLabels = getXAxisLabels(activeSeries.points, locale)
+  const xLabels = getXAxisLabels(
+    activeSeries.points,
+    locale,
+    activeSeries.timeframe,
+    activeSeries.timezone,
+  )
   const accent = getAccent(entryStatus, periodMove)
   const plotWidth = chartRight - PLOT.left
   const candleSlot = plotWidth / Math.max(candles.length, 1)
-  const candleWidth = clamp(candleSlot * 0.6, 3, 8)
+  const candleWidth = clamp(candleSlot * 0.28, 1.5, 4)
   const currentY = mapPriceToY(lastPrice, yMin, yMax, chartBottom)
+  const latestPoint = activeSeries.points[activeSeries.points.length - 1]
 
   return (
-    <div className="overflow-hidden rounded-[1.15rem] border border-[rgba(94,110,138,0.26)] bg-[linear-gradient(180deg,rgba(15,19,28,0.98),rgba(10,13,20,1))] shadow-[0_14px_34px_rgba(0,0,0,0.28)]">
+    <div className="overflow-hidden rounded-[1.15rem] border border-[rgba(94,110,138,0.26)] bg-[#0d0f18] shadow-[0_14px_34px_rgba(0,0,0,0.28)]">
       <div className="border-b border-[rgba(240,246,252,0.06)] px-4 py-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-3">
@@ -68,7 +99,7 @@ export function TechnicalPriceChart({
             />
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">
-                <span>[2026/03/25]</span>
+                <span>[{formatHeaderDate(latestPoint, locale, activeSeries.timezone)}]</span>
                 {chart.source === 'mock' ? (
                   <span className="rounded-md border border-[rgba(88,166,255,0.18)] bg-[rgba(88,166,255,0.08)] px-2 py-1 text-[var(--accent-copper)]">
                     {m.detail.technicalChartSourceMock}
@@ -87,20 +118,20 @@ export function TechnicalPriceChart({
           </div>
 
           <div className="flex items-center gap-2">
-            {TIMEFRAMES.map((range) => (
+            {availableTimeframes.map((timeframe) => (
               <button
-                key={range}
+                key={timeframe}
                 type="button"
-                onClick={() => setSelectedRange(range)}
-                aria-pressed={range === selectedRange}
+                onClick={() => setSelectedTimeframe(timeframe)}
+                aria-pressed={timeframe === activeSeries.timeframe}
                 className={cx(
                   'rounded-md border px-2.5 py-1 font-mono text-[0.62rem] uppercase tracking-[0.14em] transition',
-                  range === selectedRange
+                  timeframe === activeSeries.timeframe
                     ? 'border-[rgba(88,166,255,0.36)] bg-[rgba(88,166,255,0.14)] text-[var(--ink-primary)]'
                     : 'border-[rgba(240,246,252,0.07)] bg-[rgba(240,246,252,0.02)] text-[var(--ink-faint)] hover:border-[rgba(240,246,252,0.14)] hover:text-[var(--ink-primary)]',
                 )}
               >
-                {range}
+                {timeframe}
               </button>
             ))}
           </div>
@@ -121,7 +152,7 @@ export function TechnicalPriceChart({
 
       <div className="relative px-3 pb-4 pt-3">
         <div className="absolute inset-x-3 top-3 h-12 rounded-t-[0.9rem] bg-[linear-gradient(180deg,rgba(88,166,255,0.06),transparent)]" />
-        <div className="overflow-hidden rounded-[0.95rem] border border-[rgba(240,246,252,0.05)] bg-[linear-gradient(180deg,rgba(19,23,34,0.98),rgba(14,17,26,1))]">
+        <div className="overflow-hidden rounded-[0.95rem] border border-[rgba(240,246,252,0.05)] bg-[#0a0c12]">
           <svg viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`} className="block w-full">
             {yTicks.map((tick) => (
               <g key={`y-${tick.value}`}>
@@ -176,14 +207,14 @@ export function TechnicalPriceChart({
               const bodyHeight = Math.max(Math.abs(closeY - openY), 1.8)
 
               return (
-                <g key={candle.date}>
+                <g key={`${candle.timestampUtc}-${index}`}>
                   <line
                     x1={x}
                     x2={x}
                     y1={highY}
                     y2={lowY}
-                    stroke={candle.rise ? 'rgba(101, 222, 164, 0.92)' : 'rgba(255, 109, 117, 0.92)'}
-                    strokeWidth="1.4"
+                    stroke={candle.close >= candle.open ? 'rgba(101, 222, 164, 0.7)' : 'rgba(255, 109, 117, 0.7)'}
+                    strokeWidth="1.2"
                   />
                   <rect
                     x={x - candleWidth / 2}
@@ -191,7 +222,7 @@ export function TechnicalPriceChart({
                     width={candleWidth}
                     height={bodyHeight}
                     rx="1.2"
-                    fill={candle.rise ? 'rgba(101, 222, 164, 0.9)' : 'rgba(255, 109, 117, 0.88)'}
+                    fill={candle.close >= candle.open ? 'rgba(101, 222, 164, 0.9)' : 'rgba(255, 109, 117, 0.88)'}
                   />
                 </g>
               )
@@ -245,7 +276,7 @@ export function TechnicalPriceChart({
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-[var(--ink-faint)]">
-          <span>{m.detail.technicalChartRangeLabel}: {selectedRange}</span>
+          <span>{m.detail.technicalChartRangeLabel}: {activeSeries.timeframe}</span>
           <span>•</span>
           <span>{m.detail.framework}</span>
         </div>
@@ -278,28 +309,6 @@ function InlineMetric({
   )
 }
 
-function buildCandles(points: TechnicalChartPoint[]) {
-  return points.map((point, index) => {
-    const previous = points[index - 1]?.close ?? point.close * 0.994
-    const open = previous
-    const close = point.close
-    const wickBase = Math.max(Math.abs(close - open) * 0.7, close * 0.006)
-    const upperBias = (Math.sin(index * 1.37) + 1) * 0.5
-    const lowerBias = (Math.cos(index * 1.11) + 1) * 0.5
-    const high = Math.max(open, close) + wickBase * (0.7 + upperBias)
-    const low = Math.min(open, close) - wickBase * (0.7 + lowerBias)
-
-    return {
-      date: point.date,
-      open,
-      close,
-      high,
-      low,
-      rise: close >= open,
-    }
-  })
-}
-
 function buildYTicks(min: number, max: number) {
   return Array.from({ length: 5 }, (_, index) => ({
     value: max - ((max - min) * index) / 4,
@@ -323,12 +332,27 @@ function mapPriceToY(price: number, min: number, max: number, chartBottom: numbe
   return PLOT.top + ((max - price) / (max - min)) * (chartBottom - PLOT.top)
 }
 
-function getXAxisLabels(points: TechnicalChartPoint[], locale: string) {
-  const formatter = new Intl.DateTimeFormat(locale, {
-    month: 'numeric',
-    day: 'numeric',
-    timeZone: 'UTC',
-  })
+function getXAxisLabels(
+  points: TechnicalChartPoint[],
+  locale: string,
+  timeframe: TechnicalChartTimeframe,
+  timeZone: string,
+) {
+  const formatter =
+    timeframe === '15M' || timeframe === '1H' || timeframe === '4H'
+      ? new Intl.DateTimeFormat(locale, {
+          month: 'numeric',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: false,
+          timeZone,
+        })
+      : new Intl.DateTimeFormat(locale, {
+          month: 'numeric',
+          day: 'numeric',
+          timeZone,
+        })
 
   return [0, 0.25, 0.5, 0.75, 1].map((progress, index, list) => {
     const point = points[Math.min(points.length - 1, Math.round((points.length - 1) * progress))]
@@ -341,11 +365,30 @@ function getXAxisLabels(points: TechnicalChartPoint[], locale: string) {
 
     return {
       anchor,
-      label: point ? formatter.format(new Date(point.date)) : '',
+      label: point ? formatter.format(new Date(point.timestampUtc)) : '',
       position:
         index === 0 ? ('start' as const) : index === list.length - 1 ? ('end' as const) : ('middle' as const),
     }
   })
+}
+
+function formatHeaderDate(
+  point: TechnicalChartPoint | undefined,
+  locale: string,
+  timeZone: string,
+) {
+  if (!point) {
+    return ''
+  }
+
+  return new Intl.DateTimeFormat(locale, {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZone,
+  })
+    .format(new Date(point.timestampUtc))
+    .replaceAll('/', '/')
 }
 
 function getAccent(status: TechnicalEntryStatus, periodMove: number) {

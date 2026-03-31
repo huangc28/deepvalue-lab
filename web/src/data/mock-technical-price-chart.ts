@@ -1,16 +1,10 @@
 import type {
   StockDetail,
   TechnicalChartPoint,
-  TechnicalChartRange,
   TechnicalPriceChart,
 } from '../types/stocks'
 
-const TIMEFRAME_POINTS: Array<[TechnicalChartRange, number]> = [
-  ['1M', 22],
-  ['3M', 66],
-  ['6M', 132],
-  ['1Y', 264],
-]
+const DAILY_POINTS = 220
 
 export function buildMockTechnicalPriceChart(
   stock: StockDetail,
@@ -19,10 +13,17 @@ export function buildMockTechnicalPriceChart(
 
   return {
     source: 'mock',
-    series: TIMEFRAME_POINTS.map(([range, points]) => ({
-      range,
-      points: buildSeries(stock, points, seed + points),
-    })),
+    defaultTimeframe: '1D',
+    availableTimeframes: ['1D'],
+    seriesByTimeframe: {
+      '1D': {
+        timeframe: '1D',
+        timezone: 'America/New_York',
+        sessionMode: 'market-hours',
+        lookbackLabel: '1D',
+        points: buildSeries(stock, DAILY_POINTS, seed + DAILY_POINTS),
+      },
+    },
   }
 }
 
@@ -50,10 +51,24 @@ function buildSeries(stock: StockDetail, points: number, seed: number): Technica
     index === smoothed.length - 1 ? endPrice : close,
   )
 
-  return dates.map((date, index) => ({
-    date,
-    close: roundPrice(anchored[index]),
-  }))
+  return dates.map((date, index) => {
+    const close = roundPrice(anchored[index])
+    const previousClose = roundPrice(anchored[Math.max(index - 1, 0)] ?? close)
+    const overnightGap = (random() - 0.5) * close * 0.012
+    const open = roundPrice(index === 0 ? close * (1 - 0.004) : previousClose + overnightGap)
+    const intradayRange = Math.max(Math.abs(close - open) * 1.35, close * (0.008 + random() * 0.01))
+    const high = roundPrice(Math.max(open, close) + intradayRange * (0.35 + random() * 0.45))
+    const low = roundPrice(Math.max(0.01, Math.min(open, close) - intradayRange * (0.35 + random() * 0.45)))
+
+    return {
+      timestampUtc: `${date}T20:00:00Z`,
+      exchangeTimestamp: `${date}T16:00:00-04:00`,
+      open,
+      high,
+      low,
+      close,
+    }
+  })
 }
 
 function getStartPrice(
@@ -103,13 +118,14 @@ function buildDates(points: number) {
   const dates: string[] = []
   const lastDate = new Date(Date.UTC(2026, 2, 25))
 
-  for (let index = points - 1; index >= 0; index -= 1) {
-    const date = new Date(lastDate)
-    date.setUTCDate(lastDate.getUTCDate() - index)
-    dates.push(date.toISOString().slice(0, 10))
+  while (dates.length < points) {
+    if (lastDate.getUTCDay() !== 0 && lastDate.getUTCDay() !== 6) {
+      dates.push(lastDate.toISOString().slice(0, 10))
+    }
+    lastDate.setUTCDate(lastDate.getUTCDate() - 1)
   }
 
-  return dates
+  return dates.reverse()
 }
 
 function smoothSeries(values: number[]) {

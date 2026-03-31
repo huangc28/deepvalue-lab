@@ -185,7 +185,7 @@ export const messages = {
       technicalChartChange: 'Period Move',
       technicalChartHigh: 'Period High',
       technicalChartLow: 'Period Low',
-      technicalChartRangeLabel: 'Range',
+      technicalChartRangeLabel: 'Timeframe',
       risksAndCatalystsTitle: 'Risks And Catalysts',
       risksAndCatalystsDescription:
         'Keep the key downside variables and potential unlocks visible in the same frame.',
@@ -486,7 +486,7 @@ export const messages = {
       technicalChartChange: '區間變動',
       technicalChartHigh: '區間高點',
       technicalChartLow: '區間低點',
-      technicalChartRangeLabel: '區間',
+      technicalChartRangeLabel: '週期',
       risksAndCatalystsTitle: '風險與催化劑',
       risksAndCatalystsDescription:
         '把主要 downside 變數與潛在 unlock 放在同一個畫面中。',

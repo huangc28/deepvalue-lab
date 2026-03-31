@@ -32,30 +32,145 @@ import {
 import type {
   FactItem,
   HistoricalReportDetail,
+  LegacyTechnicalPriceChart,
+  LegacyTechnicalPriceChartPayload,
   TechnicalPriceChart as TechnicalPriceChartData,
   TechnicalPriceChartPayload,
-  TechnicalChartRange,
+  TechnicalChartSeries,
 } from '../types/stocks'
 
-const RANGE_SIZES: Record<TechnicalChartRange, number> = {
-  '1M': 22,
-  '3M': 66,
-  '6M': 132,
-  '1Y': Infinity,
+const DAILY_VISIBLE_POINTS = 220
+
+function isTimeframePayload(
+  payload: TechnicalPriceChartPayload | LegacyTechnicalPriceChartPayload,
+): payload is TechnicalPriceChartPayload {
+  return 'seriesByTimeframe' in payload
 }
 
-const CHART_RANGES: TechnicalChartRange[] = ['1M', '3M', '6M', '1Y']
+function trimVisibleDailySeries(series: TechnicalChartSeries): TechnicalChartSeries {
+  return {
+    ...series,
+    points: series.points.slice(-Math.min(DAILY_VISIBLE_POINTS, series.points.length)),
+  }
+}
 
-function snapshotToChart(payload: TechnicalPriceChartPayload): TechnicalPriceChartData {
-  const series = CHART_RANGES.map((range) => {
-    const size = RANGE_SIZES[range]
-    const points = payload.points.slice(-Math.min(size, payload.points.length))
-    return {
-      range,
-      points: points.map((p) => ({ date: p.date, close: p.close })),
+function normalizeLegacyDailyPoints(
+  points: Array<{
+    date?: string
+    timestampUtc?: string
+    exchangeTimestamp?: string
+    open: number
+    high: number
+    low: number
+    close: number
+    volume?: number
+  }>,
+) {
+  return points
+    .slice(-Math.min(DAILY_VISIBLE_POINTS, points.length))
+    .map((point) => ({
+      timestampUtc:
+        point.timestampUtc ??
+        `${point.date ?? '1970-01-01'}T00:00:00Z`,
+      exchangeTimestamp:
+        point.exchangeTimestamp ??
+        `${point.date ?? '1970-01-01'}T00:00:00-05:00`,
+      open: point.open,
+      high: point.high,
+      low: point.low,
+      close: point.close,
+      volume: point.volume,
+    }))
+}
+
+function normalizeLegacyChart(chart: LegacyTechnicalPriceChart): TechnicalPriceChartData | null {
+  const series = chart.series?.find((candidate) => candidate.timeframe === '1D') ?? chart.series?.[0]
+  if (!series) {
+    return null
+  }
+
+  return {
+    source: chart.source,
+    defaultTimeframe: '1D',
+    availableTimeframes: ['1D'],
+    seriesByTimeframe: {
+      '1D': {
+        timeframe: '1D',
+        timezone: 'America/New_York',
+        sessionMode: 'market-hours',
+        lookbackLabel: '1D',
+        points: normalizeLegacyDailyPoints(series.points),
+      },
+    },
+  }
+}
+
+function normalizeAnyChart(
+  chart: TechnicalPriceChartData | LegacyTechnicalPriceChart | undefined,
+): TechnicalPriceChartData | null {
+  if (!chart) {
+    return null
+  }
+
+  if ('seriesByTimeframe' in chart) {
+    const dailySeries = chart.seriesByTimeframe['1D']
+    if (!dailySeries) {
+      return chart
     }
-  })
-  return { source: 'live', series }
+
+    return {
+      ...chart,
+      defaultTimeframe: '1D',
+      availableTimeframes: ['1D'],
+      seriesByTimeframe: {
+        '1D': trimVisibleDailySeries(dailySeries),
+      },
+    }
+  }
+
+  return normalizeLegacyChart(chart)
+}
+
+function snapshotToChart(
+  payload: TechnicalPriceChartPayload | LegacyTechnicalPriceChartPayload,
+): TechnicalPriceChartData {
+  if (isTimeframePayload(payload)) {
+    const dailySeries = payload.seriesByTimeframe['1D']
+    if (!dailySeries) {
+      return {
+        source: 'live',
+        defaultTimeframe: payload.defaultTimeframe,
+        availableTimeframes: payload.availableTimeframes,
+        seriesByTimeframe: payload.seriesByTimeframe,
+      }
+    }
+
+    return {
+      source: 'live',
+      defaultTimeframe: '1D',
+      availableTimeframes: ['1D'],
+      seriesByTimeframe: {
+        '1D': trimVisibleDailySeries(dailySeries),
+      },
+    }
+  }
+
+  const points = normalizeLegacyDailyPoints(payload.points)
+
+  return {
+    source: 'live',
+    defaultTimeframe: '1D',
+    availableTimeframes: ['1D'],
+    seriesByTimeframe: {
+      '1D': {
+        timeframe: '1D',
+        timezone: 'America/New_York',
+        sessionMode: 'market-hours',
+        lookbackLabel: '1D',
+        points,
+      },
+    },
+  }
 }
 
 interface StockDetailPageProps {
@@ -68,16 +183,18 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
   const { data: liveStock, isLoading, error } = useStock(ticker, locale)
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [compareId, setCompareId] = useState<string | null>(null)
+  const fallbackChart = normalizeAnyChart(liveStock?.technicalPriceChart)
   const stock = liveStock
     ? {
         ...mockStock,
         ...liveStock,
         // Keep mock charts out of the live read path so missing live data shows
         // the intended fallback state instead of synthetic UI-only price action.
-        technicalPriceChart: liveStock.technicalPriceChart,
+        technicalPriceChart: fallbackChart,
       }
     : mockStock
   const useMockHistory = !liveStock && !!mockStock
+  const stockFallbackChart = normalizeAnyChart(stock?.technicalPriceChart ?? undefined)
   const reportsQuery = useStockReports(ticker, locale, Boolean(liveStock))
   const historicalReports = reportsQuery.data ?? []
   const latestReportId =
@@ -331,9 +448,9 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
                 title={m.detail.technicalChartFailedTitle}
                 description={m.detail.technicalChartFailedDescription}
               />
-            ) : stock.technicalPriceChart ? (
+            ) : stockFallbackChart ? (
               <TechnicalPriceChart
-                chart={stock.technicalPriceChart}
+                chart={stockFallbackChart}
                 ticker={stock.ticker}
                 companyName={stock.companyName}
                 entryStatus={stock.technicalEntryStatus}
