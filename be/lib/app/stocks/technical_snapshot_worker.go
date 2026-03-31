@@ -32,7 +32,11 @@ type workerStorage interface {
 	UploadJSON(ctx context.Context, key string, data []byte) error
 }
 
-const phase2DailyFetchLookbackMonths = 36
+const (
+	phase3DailyFetchLookbackMonths    = 36
+	phase3IntradayFetchLookbackMonths = 8
+	intradayNativeMultiplier          = 15
+)
 
 // TechnicalSnapshotWorker consumes published-report jobs, fetches OHLC data from
 // Massive, stores normalized bars to R2, computes technical indicators, and marks
@@ -79,22 +83,30 @@ func (w *TechnicalSnapshotWorker) process(ctx context.Context, body []byte) erro
 	log.Info("processing technical snapshot job")
 
 	publishedAt := time.UnixMilli(job.PublishedAtMs).UTC()
-	from := publishedAt.AddDate(0, -phase2DailyFetchLookbackMonths, 0)
+	dailyFrom := publishedAt.AddDate(0, -phase3DailyFetchLookbackMonths, 0)
+	intradayFrom := publishedAt.AddDate(0, -phase3IntradayFetchLookbackMonths, 0)
 	to := publishedAt
 
-	bars, err := w.massive.FetchDailyBars(ctx, job.Ticker, from, to)
+	dailyBars, err := w.massive.FetchDailyBars(ctx, job.Ticker, dailyFrom, to)
 	if err != nil {
 		log.Error("fetch daily bars from massive", zap.Error(err))
 		w.markFailed(ctx, job, fmt.Sprintf("fetch daily bars: %s", err.Error()))
 		return err
 	}
 
-	log.Info("fetched daily bars from massive", zap.Int("count", len(bars)))
+	log.Info("fetched daily bars from massive", zap.Int("count", len(dailyBars)))
 
-	weeklyBars := aggregateWeeklyBars(bars)
+	intradayBars, intradayErr := w.massive.FetchIntradayBars(ctx, job.Ticker, intradayNativeMultiplier, intradayFrom, to)
+	if intradayErr != nil {
+		log.Warn("fetch intraday bars from massive", zap.Error(intradayErr))
+	} else {
+		log.Info("fetched intraday bars from massive", zap.Int("count", len(intradayBars)))
+	}
+
+	weeklyBars := aggregateWeeklyBars(dailyBars)
 	log.Info("derived weekly bars from daily bars", zap.Int("count", len(weeklyBars)))
 
-	data, err := json.Marshal(bars)
+	data, err := json.Marshal(dailyBars)
 	if err != nil {
 		log.Error("marshal ohlc bars", zap.Error(err))
 		w.markFailed(ctx, job, fmt.Sprintf("marshal ohlc bars: %s", err.Error()))
@@ -110,7 +122,21 @@ func (w *TechnicalSnapshotWorker) process(ctx context.Context, body []byte) erro
 
 	log.Info("ohlc bars stored to r2", zap.String("key", ohlcKey))
 
-	if err := w.buildAndMarkReady(ctx, job, bars, weeklyBars); err != nil {
+	if len(intradayBars) > 0 {
+		intradayData, err := json.Marshal(intradayBars)
+		if err != nil {
+			log.Warn("marshal intraday ohlc bars", zap.Error(err))
+		} else {
+			intradayKey := r2.OHLCIntradayKey(job.Ticker, job.ReportID)
+			if err := w.r2Client.UploadJSON(ctx, intradayKey, intradayData); err != nil {
+				log.Warn("upload intraday ohlc to r2", zap.String("key", intradayKey), zap.Error(err))
+			} else {
+				log.Info("intraday ohlc bars stored to r2", zap.String("key", intradayKey))
+			}
+		}
+	}
+
+	if err := w.buildAndMarkReady(ctx, job, dailyBars, intradayBars, weeklyBars); err != nil {
 		// markFailed already called inside buildAndMarkReady
 		return err
 	}
@@ -118,9 +144,9 @@ func (w *TechnicalSnapshotWorker) process(ctx context.Context, body []byte) erro
 	return nil
 }
 
-func (w *TechnicalSnapshotWorker) buildAndMarkReady(ctx context.Context, job TechnicalSnapshotJob, bars, weeklyBars []massive.Bar) error {
+func (w *TechnicalSnapshotWorker) buildAndMarkReady(ctx context.Context, job TechnicalSnapshotJob, dailyBars, intradayBars, weeklyBars []massive.Bar) error {
 	log := w.logger.With(zap.String("ticker", job.Ticker), zap.String("report_id", job.ReportID))
-	payload := buildTechnicalPriceChartPayload(job, bars, weeklyBars)
+	payload := buildTechnicalPriceChartPayload(job, dailyBars, intradayBars, weeklyBars)
 
 	payloadData, err := json.Marshal(payload)
 	if err != nil {
@@ -163,12 +189,12 @@ func (w *TechnicalSnapshotWorker) buildAndMarkReady(ctx context.Context, job Tec
 	return nil
 }
 
-func buildTechnicalPriceChartPayload(job TechnicalSnapshotJob, bars, weeklyBars []massive.Bar) TechnicalPriceChartPayload {
-	n := len(bars)
+func buildTechnicalPriceChartPayload(job TechnicalSnapshotJob, dailyBars, intradayBars, weeklyBars []massive.Bar) TechnicalPriceChartPayload {
+	n := len(dailyBars)
 	closes := make([]float64, n)
 	highs := make([]float64, n)
 	lows := make([]float64, n)
-	for i, b := range bars {
+	for i, b := range dailyBars {
 		closes[i] = b.Close
 		highs[i] = b.High
 		lows[i] = b.Low
@@ -191,8 +217,8 @@ func buildTechnicalPriceChartPayload(job TechnicalSnapshotJob, bars, weeklyBars 
 	}
 
 	legacyPoints := make([]TechnicalPricePoint, n)
-	seriesPoints := make([]OhlcPoint, n)
-	for i, b := range bars {
+	dailySeriesPoints := make([]OhlcPoint, n)
+	for i, b := range dailyBars {
 		legacyPoints[i] = TechnicalPricePoint{
 			Date:      b.Date,
 			Open:      b.Open,
@@ -208,7 +234,7 @@ func buildTechnicalPriceChartPayload(job TechnicalSnapshotJob, bars, weeklyBars 
 			MRCLower:  toPtr(mrcLower[i]),
 		}
 		timestampUtc, exchangeTimestamp := buildDailyBarTimestamps(b.Date)
-		seriesPoints[i] = OhlcPoint{
+		dailySeriesPoints[i] = OhlcPoint{
 			TimestampUtc:      timestampUtc,
 			ExchangeTimestamp: exchangeTimestamp,
 			Open:              b.Open,
@@ -235,34 +261,245 @@ func buildTechnicalPriceChartPayload(job TechnicalSnapshotJob, bars, weeklyBars 
 		}
 	}
 
-	seriesByTimeframe := map[ChartTimeframe]TimeframeSeries{
-		ChartTimeframe1D: {
-			Timeframe:     ChartTimeframe1D,
-			Timezone:      technicalChartTimezone,
-			SessionMode:   SessionModeMarketHours,
-			LookbackLabel: technicalChartLookback,
-			Points:        seriesPoints,
-		},
-		ChartTimeframe1W: {
-			Timeframe:     ChartTimeframe1W,
-			Timezone:      technicalChartTimezone,
-			SessionMode:   SessionModeMarketHours,
-			LookbackLabel: "1W",
-			Points:        weeklySeriesPoints,
-		},
+	intraday15mBars := filterRegularMarketSessionBars(intradayBars)
+	intraday15mSeriesPoints := buildIntradaySeriesPoints(intraday15mBars, intradayNativeMultiplier)
+	intraday1hSeriesPoints := buildIntradaySeriesPoints(aggregateIntradayBars(intraday15mBars, 60), 60)
+	intraday4hSeriesPoints := buildIntradaySeriesPoints(aggregateIntradayBars(intraday15mBars, 240), 240)
+
+	seriesByTimeframe := make(map[ChartTimeframe]TimeframeSeries, 5)
+	availableTimeframes := make([]ChartTimeframe, 0, 5)
+	addSeries := func(series TimeframeSeries) {
+		if len(series.Points) == 0 {
+			return
+		}
+		seriesByTimeframe[series.Timeframe] = series
+		availableTimeframes = append(availableTimeframes, series.Timeframe)
 	}
+
+	addSeries(TimeframeSeries{
+		Timeframe:     ChartTimeframe15M,
+		Timezone:      technicalChartTimezone,
+		SessionMode:   SessionModeMarketHours,
+		LookbackLabel: "15M",
+		Points:        intraday15mSeriesPoints,
+	})
+	addSeries(TimeframeSeries{
+		Timeframe:     ChartTimeframe1H,
+		Timezone:      technicalChartTimezone,
+		SessionMode:   SessionModeMarketHours,
+		LookbackLabel: "1H",
+		Points:        intraday1hSeriesPoints,
+	})
+	addSeries(TimeframeSeries{
+		Timeframe:     ChartTimeframe4H,
+		Timezone:      technicalChartTimezone,
+		SessionMode:   SessionModeMarketHours,
+		LookbackLabel: "4H",
+		Points:        intraday4hSeriesPoints,
+	})
+	addSeries(TimeframeSeries{
+		Timeframe:     ChartTimeframe1D,
+		Timezone:      technicalChartTimezone,
+		SessionMode:   SessionModeMarketHours,
+		LookbackLabel: technicalChartLookback,
+		Points:        dailySeriesPoints,
+	})
+	addSeries(TimeframeSeries{
+		Timeframe:     ChartTimeframe1W,
+		Timezone:      technicalChartTimezone,
+		SessionMode:   SessionModeMarketHours,
+		LookbackLabel: "1W",
+		Points:        weeklySeriesPoints,
+	})
 
 	return TechnicalPriceChartPayload{
 		Source:              "massive",
 		Ticker:              job.Ticker,
 		ReportID:            job.ReportID,
 		DefaultTimeframe:    ChartTimeframe1D,
-		AvailableTimeframes: []ChartTimeframe{ChartTimeframe1D, ChartTimeframe1W},
+		AvailableTimeframes: availableTimeframes,
 		SeriesByTimeframe:   seriesByTimeframe,
 		Indicators:          indicatorSnapshot,
 		Points:              legacyPoints,
 		Latest:              summary,
 	}
+}
+
+func buildIntradaySeriesPoints(bars []massive.Bar, windowMinutes int) []OhlcPoint {
+	points := make([]OhlcPoint, 0, len(bars))
+	for _, bar := range bars {
+		if bar.TimestampMs == 0 {
+			continue
+		}
+
+		start := time.UnixMilli(bar.TimestampMs).In(technicalChartLocation)
+		timestampUtc, exchangeTimestamp := buildSessionBarTimestamps(start)
+		points = append(points, OhlcPoint{
+			TimestampUtc:      timestampUtc,
+			ExchangeTimestamp: exchangeTimestamp,
+			Open:              bar.Open,
+			High:              bar.High,
+			Low:               bar.Low,
+			Close:             bar.Close,
+			Volume:            bar.Volume,
+		})
+	}
+
+	return points
+}
+
+func filterRegularMarketSessionBars(bars []massive.Bar) []massive.Bar {
+	filtered := make([]massive.Bar, 0, len(bars))
+	for _, bar := range bars {
+		if bar.TimestampMs == 0 {
+			continue
+		}
+
+		barTime := time.UnixMilli(bar.TimestampMs).In(technicalChartLocation)
+		if !isRegularMarketSession(barTime) {
+			continue
+		}
+
+		filtered = append(filtered, bar)
+	}
+
+	return filtered
+}
+
+func isRegularMarketSession(barTime time.Time) bool {
+	if barTime.Weekday() == time.Saturday || barTime.Weekday() == time.Sunday {
+		return false
+	}
+
+	sessionOpen := time.Date(
+		barTime.Year(),
+		barTime.Month(),
+		barTime.Day(),
+		9,
+		30,
+		0,
+		0,
+		technicalChartLocation,
+	)
+	sessionClose := time.Date(
+		barTime.Year(),
+		barTime.Month(),
+		barTime.Day(),
+		16,
+		0,
+		0,
+		0,
+		technicalChartLocation,
+	)
+
+	return !barTime.Before(sessionOpen) && barTime.Before(sessionClose)
+}
+
+func aggregateIntradayBars(bars []massive.Bar, windowMinutes int) []massive.Bar {
+	if len(bars) == 0 {
+		return nil
+	}
+
+	sorted := append([]massive.Bar(nil), bars...)
+	sort.Slice(sorted, func(i, j int) bool {
+		return sorted[i].TimestampMs < sorted[j].TimestampMs
+	})
+
+	aggregated := make([]massive.Bar, 0, len(sorted)/windowMinutes+1)
+	var current intradayBarAggregate
+
+	for _, bar := range sorted {
+		if bar.TimestampMs == 0 {
+			continue
+		}
+
+		barTime := time.UnixMilli(bar.TimestampMs).In(technicalChartLocation)
+		if !isRegularMarketSession(barTime) {
+			continue
+		}
+
+		bucketStart := sessionBucketStart(barTime, windowMinutes)
+		bucketKey := bucketStart.Format("2006-01-02T15:04:05")
+
+		if current.key == "" || current.key != bucketKey {
+			if current.key != "" {
+				aggregated = append(aggregated, current.toBar())
+			}
+			current = intradayBarAggregate{
+				key:     bucketKey,
+				open:    bar.Open,
+				high:    bar.High,
+				low:     bar.Low,
+				close:   bar.Close,
+				volume:  bar.Volume,
+				startMs: bucketStart.UTC().UnixMilli(),
+				start:   bucketStart,
+			}
+			continue
+		}
+
+		if bar.High > current.high {
+			current.high = bar.High
+		}
+		if bar.Low < current.low {
+			current.low = bar.Low
+		}
+		current.close = bar.Close
+		current.volume += bar.Volume
+	}
+
+	if current.key != "" {
+		aggregated = append(aggregated, current.toBar())
+	}
+
+	return aggregated
+}
+
+type intradayBarAggregate struct {
+	key     string
+	open    float64
+	high    float64
+	low     float64
+	close   float64
+	volume  float64
+	startMs int64
+	start   time.Time
+}
+
+func (a intradayBarAggregate) toBar() massive.Bar {
+	return massive.Bar{
+		TimestampMs: a.startMs,
+		Date:        a.start.Format("2006-01-02"),
+		Open:        a.open,
+		High:        a.high,
+		Low:         a.low,
+		Close:       a.close,
+		Volume:      a.volume,
+	}
+}
+
+func sessionBucketStart(barTime time.Time, windowMinutes int) time.Time {
+	sessionOpen := time.Date(
+		barTime.Year(),
+		barTime.Month(),
+		barTime.Day(),
+		9,
+		30,
+		0,
+		0,
+		technicalChartLocation,
+	)
+
+	elapsedMinutes := int(barTime.Sub(sessionOpen) / time.Minute)
+	bucketIndex := elapsedMinutes / windowMinutes
+	return sessionOpen.Add(time.Duration(bucketIndex*windowMinutes) * time.Minute)
+}
+
+func buildSessionBarTimestamps(start time.Time) (string, string) {
+	exchangeTimestamp := start.Format(time.RFC3339)
+	utcTimestamp := start.UTC().Format(time.RFC3339)
+
+	return utcTimestamp, exchangeTimestamp
 }
 
 type weeklyBarAggregate struct {

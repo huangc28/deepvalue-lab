@@ -4,28 +4,58 @@ import type {
   TechnicalPriceChart,
 } from '../types/stocks'
 
-const DAILY_POINTS = 220
+const DAILY_VISIBLE_POINTS = 220
+const DAILY_HISTORY_POINTS = 756
+const INTRADAY_POINTS = 960
+const INTRADAY_BARS_PER_SESSION = 26
 const WEEKLY_VISIBLE_POINTS = 84
-const MOCK_DAILY_HISTORY_POINTS = 756
 
 export function buildMockTechnicalPriceChart(
   stock: StockDetail,
 ): TechnicalPriceChart {
   const seed = hashTicker(stock.ticker)
-  const dailyPoints = buildSeries(stock, MOCK_DAILY_HISTORY_POINTS, seed + MOCK_DAILY_HISTORY_POINTS)
+  const dailyPoints = buildSeries(stock, DAILY_HISTORY_POINTS, seed + DAILY_HISTORY_POINTS)
+  const intradayPoints = buildIntradaySeries(
+    stock,
+    INTRADAY_POINTS,
+    seed + INTRADAY_POINTS,
+  )
   const weeklyPoints = aggregateWeeklySeries(dailyPoints)
+  const hourlyPoints = aggregateSessionSeries(intradayPoints, 60)
+  const fourHourPoints = aggregateSessionSeries(intradayPoints, 240)
 
   return {
     source: 'mock',
     defaultTimeframe: '1D',
-    availableTimeframes: ['1D', '1W'],
+    availableTimeframes: ['15M', '1H', '4H', '1D', '1W'],
     seriesByTimeframe: {
+      '15M': {
+        timeframe: '15M',
+        timezone: 'America/New_York',
+        sessionMode: 'market-hours',
+        lookbackLabel: '15M',
+        points: intradayPoints.slice(-INTRADAY_POINTS),
+      },
+      '1H': {
+        timeframe: '1H',
+        timezone: 'America/New_York',
+        sessionMode: 'market-hours',
+        lookbackLabel: '1H',
+        points: hourlyPoints,
+      },
+      '4H': {
+        timeframe: '4H',
+        timezone: 'America/New_York',
+        sessionMode: 'market-hours',
+        lookbackLabel: '4H',
+        points: fourHourPoints,
+      },
       '1D': {
         timeframe: '1D',
         timezone: 'America/New_York',
         sessionMode: 'market-hours',
         lookbackLabel: '1D',
-        points: dailyPoints.slice(-DAILY_POINTS),
+        points: dailyPoints.slice(-DAILY_VISIBLE_POINTS),
       },
       '1W': {
         timeframe: '1W',
@@ -36,6 +66,69 @@ export function buildMockTechnicalPriceChart(
       },
     },
   }
+}
+
+function buildIntradaySeries(stock: StockDetail, points: number, seed: number): TechnicalChartPoint[] {
+  const random = createPrng(seed)
+  const sessionDays = Math.ceil(points / INTRADAY_BARS_PER_SESSION)
+  const dates = buildDates(sessionDays)
+  const endPrice = stock.currentPrice
+  const startPrice = getStartPrice(stock, sessionDays, random)
+  const amplitudeBase = endPrice * (0.012 + random() * 0.006)
+  const closes: number[] = []
+
+  for (let index = 0; index < points; index += 1) {
+    const progress = index / (points - 1)
+    const trend = lerp(startPrice, endPrice, progress)
+    const wave =
+      Math.sin(progress * Math.PI * 3.2 + random() * 0.7) * amplitudeBase +
+      Math.sin(progress * Math.PI * 8.5 + seed * 0.014) * amplitudeBase * 0.22
+    const noise = (random() - 0.5) * amplitudeBase * 0.15
+    closes.push(Math.max(1, trend + wave + noise))
+  }
+
+  const smoothed = smoothSeries(closes)
+  const anchored = smoothed.map((close, index) =>
+    index === smoothed.length - 1 ? endPrice : close,
+  )
+
+  const pointsOut: TechnicalChartPoint[] = []
+  let globalIndex = 0
+
+  for (let dayIndex = 0; dayIndex < dates.length && globalIndex < points; dayIndex += 1) {
+    const date = dates[dayIndex]
+    for (let slot = 0; slot < INTRADAY_BARS_PER_SESSION && globalIndex < points; slot += 1) {
+      const close = roundPrice(anchored[globalIndex])
+      const previousClose = roundPrice(anchored[Math.max(globalIndex - 1, 0)] ?? close)
+      const gap = (random() - 0.5) * close * 0.0025
+      const open =
+        roundPrice(
+          globalIndex === 0
+            ? close * (1 - 0.0015)
+            : previousClose + gap,
+        )
+      const intradayRange = Math.max(
+        Math.abs(close - open) * 1.15,
+        close * (0.0015 + random() * 0.0015),
+      )
+      const high = roundPrice(Math.max(open, close) + intradayRange * (0.35 + random() * 0.35))
+      const low = roundPrice(Math.max(0.01, Math.min(open, close) - intradayRange * (0.35 + random() * 0.35)))
+      const timestamp = buildIntradayTimestamp(date, slot)
+
+      pointsOut.push({
+        timestampUtc: timestamp.timestampUtc,
+        exchangeTimestamp: timestamp.exchangeTimestamp,
+        open,
+        high,
+        low,
+        close,
+      })
+
+      globalIndex += 1
+    }
+  }
+
+  return pointsOut
 }
 
 function buildSeries(stock: StockDetail, points: number, seed: number): TechnicalChartPoint[] {
@@ -80,6 +173,49 @@ function buildSeries(stock: StockDetail, points: number, seed: number): Technica
       close,
     }
   })
+}
+
+function aggregateSessionSeries(points: TechnicalChartPoint[], windowMinutes: number): TechnicalChartPoint[] {
+  if (points.length === 0) {
+    return []
+  }
+
+  const aggregated: TechnicalChartPoint[] = []
+  let currentBucket = ''
+  let currentPoint: TechnicalChartPoint | null = null
+
+  for (const point of points) {
+    const barTime = new Date(point.timestampUtc)
+    const bucketStart = getSessionBucketStart(barTime, windowMinutes)
+    const bucketKey = bucketStart.toISOString()
+
+    if (bucketKey !== currentBucket || !currentPoint) {
+      if (currentPoint) {
+        aggregated.push(currentPoint)
+      }
+
+      currentBucket = bucketKey
+      currentPoint = {
+        ...point,
+        timestampUtc: bucketStart.toISOString(),
+        exchangeTimestamp: formatMockExchangeTimestamp(bucketStart),
+      }
+      continue
+    }
+
+    currentPoint = {
+      ...currentPoint,
+      high: Math.max(currentPoint.high, point.high),
+      low: Math.min(currentPoint.low, point.low),
+      close: point.close,
+    }
+  }
+
+  if (currentPoint) {
+    aggregated.push(currentPoint)
+  }
+
+  return aggregated
 }
 
 function aggregateWeeklySeries(points: TechnicalChartPoint[]): TechnicalChartPoint[] {
@@ -181,6 +317,31 @@ function buildDates(points: number) {
   }
 
   return dates.reverse()
+}
+
+function buildIntradayTimestamp(date: string, slot: number) {
+  const [year, month, day] = date.split('-').map((value) => Number(value))
+  const timestamp = new Date(Date.UTC(year, month - 1, day, 13, 30, 0, 0))
+  timestamp.setUTCMinutes(timestamp.getUTCMinutes() + slot * 15)
+
+  return {
+    timestampUtc: timestamp.toISOString(),
+    exchangeTimestamp: formatMockExchangeTimestamp(timestamp),
+  }
+}
+
+function getSessionBucketStart(barTime: Date, windowMinutes: number) {
+  const sessionOpen = new Date(barTime)
+  sessionOpen.setUTCHours(13, 30, 0, 0)
+  const elapsedMinutes = Math.max(0, Math.floor((barTime.getTime() - sessionOpen.getTime()) / 60000))
+  const bucketIndex = Math.floor(elapsedMinutes / windowMinutes)
+  return new Date(sessionOpen.getTime() + bucketIndex * windowMinutes * 60000)
+}
+
+function formatMockExchangeTimestamp(timestamp: Date) {
+  const offsetMinutes = -4 * 60
+  const local = new Date(timestamp.getTime() + offsetMinutes * 60000)
+  return `${local.toISOString().slice(0, 19)}-04:00`
 }
 
 function smoothSeries(values: number[]) {

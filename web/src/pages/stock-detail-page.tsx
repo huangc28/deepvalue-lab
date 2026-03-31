@@ -41,7 +41,11 @@ import type {
 } from '../types/stocks'
 
 const DAILY_VISIBLE_POINTS = 220
+const INTRADAY_15M_VISIBLE_POINTS = 240
+const INTRADAY_1H_VISIBLE_POINTS = 240
+const INTRADAY_4H_VISIBLE_POINTS = 144
 const WEEKLY_VISIBLE_POINTS = 84
+const TIMEFRAME_ORDER: TechnicalChartTimeframe[] = ['15M', '1H', '4H', '1D', '1W']
 
 function isTimeframePayload(
   payload: TechnicalPriceChartPayload | LegacyTechnicalPriceChartPayload,
@@ -58,6 +62,15 @@ function trimVisibleSeries(series: TechnicalChartSeries): TechnicalChartSeries {
 }
 
 function getVisiblePointCount(timeframe: TechnicalChartTimeframe) {
+  if (timeframe === '15M') {
+    return INTRADAY_15M_VISIBLE_POINTS
+  }
+  if (timeframe === '1H') {
+    return INTRADAY_1H_VISIBLE_POINTS
+  }
+  if (timeframe === '4H') {
+    return INTRADAY_4H_VISIBLE_POINTS
+  }
   if (timeframe === '1W') {
     return WEEKLY_VISIBLE_POINTS
   }
@@ -87,13 +100,16 @@ function resolveAvailableTimeframes(
   availableTimeframes: TechnicalChartTimeframe[] | undefined,
   seriesByTimeframe: Partial<Record<TechnicalChartTimeframe, TechnicalChartSeries>>,
 ) {
-  const filtered = (availableTimeframes ?? []).filter((timeframe) => seriesByTimeframe[timeframe])
+  const filtered = (availableTimeframes ?? TIMEFRAME_ORDER).filter(
+    (timeframe) => seriesByTimeframe[timeframe],
+  )
+  const ordered = [...filtered].sort((left, right) => timeframeRank(left) - timeframeRank(right))
 
-  if (filtered.length > 0) {
-    return filtered
+  if (ordered.length > 0) {
+    return ordered
   }
 
-  return Object.keys(seriesByTimeframe) as TechnicalChartTimeframe[]
+  return TIMEFRAME_ORDER.filter((timeframe) => seriesByTimeframe[timeframe])
 }
 
 function normalizeLegacyDailyPoints(
@@ -1064,4 +1080,8 @@ function toInfoItems(
   return items.map(
     ({ label, value }) => [text(label), text(value)] as [string, string],
   )
+}
+
+function timeframeRank(timeframe: TechnicalChartTimeframe) {
+  return TIMEFRAME_ORDER.indexOf(timeframe)
 }

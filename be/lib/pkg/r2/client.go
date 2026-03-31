@@ -126,4 +126,10 @@ func OHLCKey(ticker, reportID string) string {
 	return fmt.Sprintf("stocks/%s/ohlc/%s.json", ticker, reportID)
 }
 
+// OHLCIntradayKey returns the R2 key for the raw native intraday OHLC bars for a report.
+// Format: stocks/{ticker}/ohlc-15m/{reportID}.json
+func OHLCIntradayKey(ticker, reportID string) string {
+	return fmt.Sprintf("stocks/%s/ohlc-15m/%s.json", ticker, reportID)
+}
+
 var Module = fx.Provide(NewClient)

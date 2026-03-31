@@ -4,8 +4,11 @@ package stocks
 type ChartTimeframe string
 
 const (
-	ChartTimeframe1D ChartTimeframe = "1D"
-	ChartTimeframe1W ChartTimeframe = "1W"
+	ChartTimeframe15M ChartTimeframe = "15M"
+	ChartTimeframe1H  ChartTimeframe = "1H"
+	ChartTimeframe4H  ChartTimeframe = "4H"
+	ChartTimeframe1D  ChartTimeframe = "1D"
+	ChartTimeframe1W  ChartTimeframe = "1W"
 )
 
 // SessionMode identifies the market session coverage for a timeframe series.
@@ -20,8 +23,8 @@ const (
 // TechnicalPriceChartPayload is the top-level snapshot artifact stored to R2.
 // This is the value stored as `snapshot` in the technical snapshot read endpoint.
 //
-// The new timeframe-aware fields are additive so Phase 1 can be rolled out
-// without breaking the existing read path during the frontend transition.
+// The timeframe-aware fields are additive so older consumers can keep using
+// the legacy daily points path during the frontend transition.
 type TechnicalPriceChartPayload struct {
 	Source              string                             `json:"source"`
 	Ticker              string                             `json:"ticker"`

@@ -362,12 +362,20 @@ function getXAxisLabels(
 }
 
 function getLabelProgresses(timeframe: TechnicalChartTimeframe) {
-  if (timeframe === '1W') {
+  if (timeframe === '15M') {
+    return [0, 0.24, 0.48, 0.72, 0.88, 1]
+  }
+
+  if (timeframe === '1H') {
     return [0, 0.2, 0.4, 0.6, 0.8, 1]
   }
 
-  if (timeframe === '1D') {
+  if (timeframe === '4H') {
     return [0, 0.25, 0.5, 0.75, 1]
+  }
+
+  if (timeframe === '1W') {
+    return [0, 0.2, 0.4, 0.6, 0.8, 1]
   }
 
   return [0, 0.25, 0.5, 0.75, 1]
