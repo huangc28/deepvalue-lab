@@ -36,10 +36,12 @@ import type {
   LegacyTechnicalPriceChartPayload,
   TechnicalPriceChart as TechnicalPriceChartData,
   TechnicalPriceChartPayload,
+  TechnicalChartTimeframe,
   TechnicalChartSeries,
 } from '../types/stocks'
 
 const DAILY_VISIBLE_POINTS = 220
+const WEEKLY_VISIBLE_POINTS = 84
 
 function isTimeframePayload(
   payload: TechnicalPriceChartPayload | LegacyTechnicalPriceChartPayload,
@@ -47,11 +49,51 @@ function isTimeframePayload(
   return 'seriesByTimeframe' in payload
 }
 
-function trimVisibleDailySeries(series: TechnicalChartSeries): TechnicalChartSeries {
+function trimVisibleSeries(series: TechnicalChartSeries): TechnicalChartSeries {
+  const visiblePoints = getVisiblePointCount(series.timeframe)
   return {
     ...series,
-    points: series.points.slice(-Math.min(DAILY_VISIBLE_POINTS, series.points.length)),
+    points: series.points.slice(-Math.min(visiblePoints, series.points.length)),
   }
+}
+
+function getVisiblePointCount(timeframe: TechnicalChartTimeframe) {
+  if (timeframe === '1W') {
+    return WEEKLY_VISIBLE_POINTS
+  }
+
+  return DAILY_VISIBLE_POINTS
+}
+
+function normalizeSeriesByTimeframe(
+  seriesByTimeframe: Partial<Record<TechnicalChartTimeframe, TechnicalChartSeries>>,
+) {
+  const normalized: Partial<Record<TechnicalChartTimeframe, TechnicalChartSeries>> = {}
+
+  for (const [timeframe, series] of Object.entries(seriesByTimeframe) as Array<
+    [TechnicalChartTimeframe, TechnicalChartSeries | undefined]
+  >) {
+    if (!series) {
+      continue
+    }
+
+    normalized[timeframe] = trimVisibleSeries(series)
+  }
+
+  return normalized
+}
+
+function resolveAvailableTimeframes(
+  availableTimeframes: TechnicalChartTimeframe[] | undefined,
+  seriesByTimeframe: Partial<Record<TechnicalChartTimeframe, TechnicalChartSeries>>,
+) {
+  const filtered = (availableTimeframes ?? []).filter((timeframe) => seriesByTimeframe[timeframe])
+
+  if (filtered.length > 0) {
+    return filtered
+  }
+
+  return Object.keys(seriesByTimeframe) as TechnicalChartTimeframe[]
 }
 
 function normalizeLegacyDailyPoints(
@@ -113,18 +155,28 @@ function normalizeAnyChart(
   }
 
   if ('seriesByTimeframe' in chart) {
-    const dailySeries = chart.seriesByTimeframe['1D']
-    if (!dailySeries) {
-      return chart
+    const seriesByTimeframe = normalizeSeriesByTimeframe(chart.seriesByTimeframe)
+    const availableTimeframes = resolveAvailableTimeframes(
+      chart.availableTimeframes,
+      seriesByTimeframe,
+    )
+    const defaultTimeframe =
+      availableTimeframes.includes(chart.defaultTimeframe)
+        ? chart.defaultTimeframe
+        : availableTimeframes[0] ?? chart.defaultTimeframe
+
+    if (availableTimeframes.length === 0) {
+      return {
+        ...chart,
+        seriesByTimeframe,
+      }
     }
 
     return {
       ...chart,
-      defaultTimeframe: '1D',
-      availableTimeframes: ['1D'],
-      seriesByTimeframe: {
-        '1D': trimVisibleDailySeries(dailySeries),
-      },
+      defaultTimeframe,
+      availableTimeframes,
+      seriesByTimeframe,
     }
   }
 
@@ -135,23 +187,30 @@ function snapshotToChart(
   payload: TechnicalPriceChartPayload | LegacyTechnicalPriceChartPayload,
 ): TechnicalPriceChartData {
   if (isTimeframePayload(payload)) {
-    const dailySeries = payload.seriesByTimeframe['1D']
-    if (!dailySeries) {
+    const seriesByTimeframe = normalizeSeriesByTimeframe(payload.seriesByTimeframe)
+    const availableTimeframes = resolveAvailableTimeframes(
+      payload.availableTimeframes,
+      seriesByTimeframe,
+    )
+    const defaultTimeframe =
+      availableTimeframes.includes(payload.defaultTimeframe)
+        ? payload.defaultTimeframe
+        : availableTimeframes[0] ?? payload.defaultTimeframe
+
+    if (availableTimeframes.length === 0) {
       return {
         source: 'live',
-        defaultTimeframe: payload.defaultTimeframe,
-        availableTimeframes: payload.availableTimeframes,
-        seriesByTimeframe: payload.seriesByTimeframe,
+        defaultTimeframe,
+        availableTimeframes,
+        seriesByTimeframe,
       }
     }
 
     return {
       source: 'live',
-      defaultTimeframe: '1D',
-      availableTimeframes: ['1D'],
-      seriesByTimeframe: {
-        '1D': trimVisibleDailySeries(dailySeries),
-      },
+      defaultTimeframe,
+      availableTimeframes,
+      seriesByTimeframe,
     }
   }
 

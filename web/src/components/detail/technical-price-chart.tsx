@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { useI18n } from '../../i18n/context'
 import { cx } from '../../lib/cx'
@@ -45,19 +45,6 @@ export function TechnicalPriceChart({
     availableTimeframes
       .map((timeframe) => chart.seriesByTimeframe[timeframe])
       .find(Boolean)
-
-  useEffect(() => {
-    if (availableTimeframes.length === 0) {
-      return
-    }
-    if (!availableTimeframes.includes(selectedTimeframe)) {
-      setSelectedTimeframe(
-        availableTimeframes.includes(chart.defaultTimeframe)
-          ? chart.defaultTimeframe
-          : availableTimeframes[0],
-      )
-    }
-  }, [availableTimeframes, chart.defaultTimeframe, selectedTimeframe])
 
   if (!activeSeries || activeSeries.points.length === 0) return null
 
@@ -354,7 +341,9 @@ function getXAxisLabels(
           timeZone,
         })
 
-  return [0, 0.25, 0.5, 0.75, 1].map((progress, index, list) => {
+  const labelProgresses = getLabelProgresses(timeframe)
+
+  return labelProgresses.map((progress, index, list) => {
     const point = points[Math.min(points.length - 1, Math.round((points.length - 1) * progress))]
     const anchor =
       index === 0
@@ -370,6 +359,18 @@ function getXAxisLabels(
         index === 0 ? ('start' as const) : index === list.length - 1 ? ('end' as const) : ('middle' as const),
     }
   })
+}
+
+function getLabelProgresses(timeframe: TechnicalChartTimeframe) {
+  if (timeframe === '1W') {
+    return [0, 0.2, 0.4, 0.6, 0.8, 1]
+  }
+
+  if (timeframe === '1D') {
+    return [0, 0.25, 0.5, 0.75, 1]
+  }
+
+  return [0, 0.25, 0.5, 0.75, 1]
 }
 
 function formatHeaderDate(

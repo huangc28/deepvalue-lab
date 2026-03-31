@@ -5,6 +5,7 @@ type ChartTimeframe string
 
 const (
 	ChartTimeframe1D ChartTimeframe = "1D"
+	ChartTimeframe1W ChartTimeframe = "1W"
 )
 
 // SessionMode identifies the market session coverage for a timeframe series.

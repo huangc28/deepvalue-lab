@@ -5,23 +5,34 @@ import type {
 } from '../types/stocks'
 
 const DAILY_POINTS = 220
+const WEEKLY_VISIBLE_POINTS = 84
+const MOCK_DAILY_HISTORY_POINTS = 756
 
 export function buildMockTechnicalPriceChart(
   stock: StockDetail,
 ): TechnicalPriceChart {
   const seed = hashTicker(stock.ticker)
+  const dailyPoints = buildSeries(stock, MOCK_DAILY_HISTORY_POINTS, seed + MOCK_DAILY_HISTORY_POINTS)
+  const weeklyPoints = aggregateWeeklySeries(dailyPoints)
 
   return {
     source: 'mock',
     defaultTimeframe: '1D',
-    availableTimeframes: ['1D'],
+    availableTimeframes: ['1D', '1W'],
     seriesByTimeframe: {
       '1D': {
         timeframe: '1D',
         timezone: 'America/New_York',
         sessionMode: 'market-hours',
         lookbackLabel: '1D',
-        points: buildSeries(stock, DAILY_POINTS, seed + DAILY_POINTS),
+        points: dailyPoints.slice(-DAILY_POINTS),
+      },
+      '1W': {
+        timeframe: '1W',
+        timezone: 'America/New_York',
+        sessionMode: 'market-hours',
+        lookbackLabel: '1W',
+        points: weeklyPoints.slice(-WEEKLY_VISIBLE_POINTS),
       },
     },
   }
@@ -69,6 +80,50 @@ function buildSeries(stock: StockDetail, points: number, seed: number): Technica
       close,
     }
   })
+}
+
+function aggregateWeeklySeries(points: TechnicalChartPoint[]): TechnicalChartPoint[] {
+  if (points.length === 0) {
+    return []
+  }
+
+  const weekly: TechnicalChartPoint[] = []
+  let currentWeekKey = ''
+  let currentPoint: TechnicalChartPoint | null = null
+
+  for (const point of points) {
+    const weekKey = getIsoWeekKey(point.timestampUtc.slice(0, 10))
+    if (weekKey !== currentWeekKey || !currentPoint) {
+      if (currentPoint) {
+        weekly.push(currentPoint)
+      }
+
+      currentWeekKey = weekKey
+      currentPoint = {
+        ...point,
+      }
+      continue
+    }
+
+    currentPoint = {
+      ...currentPoint,
+      high: Math.max(currentPoint.high, point.high),
+      low: Math.min(currentPoint.low, point.low),
+      close: point.close,
+      volume:
+        currentPoint.volume !== undefined || point.volume !== undefined
+          ? (currentPoint.volume ?? 0) + (point.volume ?? 0)
+          : undefined,
+      exchangeTimestamp: point.exchangeTimestamp,
+      timestampUtc: point.timestampUtc,
+    }
+  }
+
+  if (currentPoint) {
+    weekly.push(currentPoint)
+  }
+
+  return weekly
 }
 
 function getStartPrice(
@@ -152,6 +207,19 @@ function clamp(value: number, min: number, max: number) {
 
 function roundPrice(value: number) {
   return Math.round(value * 100) / 100
+}
+
+function getIsoWeekKey(dateString: string) {
+  const date = new Date(`${dateString}T00:00:00Z`)
+  const target = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()))
+  const dayNum = target.getUTCDay() || 7
+
+  target.setUTCDate(target.getUTCDate() + 4 - dayNum)
+
+  const yearStart = new Date(Date.UTC(target.getUTCFullYear(), 0, 1))
+  const week = Math.ceil((((target.getTime() - yearStart.getTime()) / 86400000) + 1) / 7)
+
+  return `${target.getUTCFullYear()}-W${String(week).padStart(2, '0')}`
 }
 
 function hashTicker(ticker: string) {
