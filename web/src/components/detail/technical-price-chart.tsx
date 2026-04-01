@@ -297,28 +297,48 @@ export function TechnicalPriceChart({
                     {level}
                   </text>
                 ))}
-                {emaOnRsiSegments.map((segment, index) => (
-                  <polyline
-                    key={`ema-segment-${index}`}
-                    points={segment}
-                    fill="none"
-                    stroke="rgba(101, 222, 164, 0.38)"
-                    strokeWidth="1.2"
-                    strokeLinejoin="round"
-                    strokeLinecap="round"
-                  />
-                ))}
-                {rsiSegments.map((segment, index) => (
-                  <polyline
-                    key={`rsi-segment-${index}`}
-                    points={segment}
-                    fill="none"
-                    stroke="rgba(101, 222, 164, 0.85)"
-                    strokeWidth="1.5"
-                    strokeLinejoin="round"
-                    strokeLinecap="round"
-                  />
-                ))}
+                {emaOnRsiSegments.map((segment, index) =>
+                  segment.singlePoint ? (
+                    <circle
+                      key={`ema-point-${index}`}
+                      cx={segment.points.split(',')[0]}
+                      cy={segment.points.split(',')[1]}
+                      r="1.5"
+                      fill="rgba(101, 222, 164, 0.38)"
+                    />
+                  ) : (
+                    <polyline
+                      key={`ema-segment-${index}`}
+                      points={segment.points}
+                      fill="none"
+                      stroke="rgba(101, 222, 164, 0.38)"
+                      strokeWidth="1.2"
+                      strokeLinejoin="round"
+                      strokeLinecap="round"
+                    />
+                  ),
+                )}
+                {rsiSegments.map((segment, index) =>
+                  segment.singlePoint ? (
+                    <circle
+                      key={`rsi-point-${index}`}
+                      cx={segment.points.split(',')[0]}
+                      cy={segment.points.split(',')[1]}
+                      r="1.8"
+                      fill="rgba(101, 222, 164, 0.85)"
+                    />
+                  ) : (
+                    <polyline
+                      key={`rsi-segment-${index}`}
+                      points={segment.points}
+                      fill="none"
+                      stroke="rgba(101, 222, 164, 0.85)"
+                      strokeWidth="1.5"
+                      strokeLinejoin="round"
+                      strokeLinecap="round"
+                    />
+                  ),
+                )}
               </g>
             )}
 
@@ -415,7 +435,10 @@ function buildIndicatorSegments(
   paneTop: number,
   paneBottom: number,
 ) {
-  const segments: string[] = []
+  const segments: Array<{
+    points: string
+    singlePoint: boolean
+  }> = []
   let currentSegment: string[] = []
 
   for (let index = 0; index < points.length; index += 1) {
@@ -423,8 +446,11 @@ function buildIndicatorSegments(
     const value = getValue(point)
 
     if (value === undefined) {
-      if (currentSegment.length > 1) {
-        segments.push(currentSegment.join(' '))
+      if (currentSegment.length > 0) {
+        segments.push({
+          points: currentSegment.join(' '),
+          singlePoint: currentSegment.length === 1,
+        })
       }
       currentSegment = []
       continue
@@ -435,8 +461,11 @@ function buildIndicatorSegments(
     currentSegment.push(`${x},${y}`)
   }
 
-  if (currentSegment.length > 1) {
-    segments.push(currentSegment.join(' '))
+  if (currentSegment.length > 0) {
+    segments.push({
+      points: currentSegment.join(' '),
+      singlePoint: currentSegment.length === 1,
+    })
   }
 
   return segments

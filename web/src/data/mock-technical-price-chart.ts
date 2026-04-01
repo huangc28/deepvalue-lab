@@ -244,6 +244,8 @@ function aggregateWeeklySeries(points: TechnicalChartPoint[]): TechnicalChartPoi
       currentWeekKey = weekKey
       currentPoint = {
         ...point,
+        rsi: undefined,
+        emaOnRsi: undefined,
       }
       continue
     }
@@ -259,6 +261,8 @@ function aggregateWeeklySeries(points: TechnicalChartPoint[]): TechnicalChartPoi
           : undefined,
       exchangeTimestamp: point.exchangeTimestamp,
       timestampUtc: point.timestampUtc,
+      rsi: undefined,
+      emaOnRsi: undefined,
     }
   }
 
