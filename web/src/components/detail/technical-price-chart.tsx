@@ -10,11 +10,11 @@ import type {
 } from '../../types/stocks'
 
 const CHART_WIDTH = 980
-const CHART_HEIGHT = 390
+const CHART_HEIGHT = 260
 const PLOT = {
-  top: 18,
+  top: 14,
   right: 74,
-  bottom: 28,
+  bottom: 22,
   left: 10,
 }
 
