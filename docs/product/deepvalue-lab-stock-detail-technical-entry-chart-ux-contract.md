@@ -68,6 +68,11 @@ Reason:
 - Do not place a status chip inside the plot area.
 - Do not place a paragraph-length timing explanation inside the chart chrome.
 - Keep chart chrome limited to market context such as ticker, date context, source tag, and quick metrics.
+- In v1, `1D` uses a stacked chart layout:
+  - top pane: price candles
+  - bottom pane: RSI pane
+  - both panes share the same x-axis
+- The price pane should remain visually dominant over the RSI pane.
 
 ## V1 Supporting Content
 
@@ -81,9 +86,18 @@ Reason:
 
 ## Indicator Policy
 
-- V1 does not render indicator overlays inside the chart plot.
-- V1 may show indicator meaning through the summary rail or signal strip only.
-- The chart must not imply that RSI, EMA, or MRC overlays are available if they are not actually rendered.
+- V1 supports a `1D-first` separate RSI pane inside the chart card.
+- The RSI pane is not a price overlay and must not be drawn on top of price candles.
+- In v1, non-`1D` timeframes remain price-only and do not render the RSI pane.
+- The RSI pane visual grammar is fixed for v1:
+  - scale: `0–100`
+  - overbought zone: `70–100`
+  - neutral zone: `30–70`
+  - oversold zone: `0–30`
+  - dashed guide lines: `70` / `50` / `30`
+  - `RSI(22)` as the primary line
+  - `EMA(12) on RSI` as the lower-emphasis secondary line
+- `HLC3` and `MRC` remain out of scope for chart visualization in v1.
 
 ## V1 Non-Scope
 
@@ -94,6 +108,8 @@ Reason:
 - alerts UI
 - user-drawn studies
 - indicator overlay parity with TradingView or Pine Script
+- non-`1D` RSI / EMA pane rendering
+- RSI tooltip or advanced hover interactions
 
 ## Frozen Copy
 
@@ -134,6 +150,7 @@ Reason:
 - Frontend cleanup should remove duplicated timing commentary from chart chrome once the cleanup phase starts.
 - The current chart shell can keep mock data during UI iteration, but the visual grammar should already match the OHLC-first contract.
 - The frontend data model should move toward daily OHLC-backed payloads without changing these UX decisions.
+- The `1D` read path must preserve daily `rsi` / `emaOnRsi` alignment from the technical snapshot instead of dropping those values during normalization.
 - Locale behavior should keep enum semantics stable in English and localize only the user-facing labels.
 
 ## Definition Of Done For Phase 1
