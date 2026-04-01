@@ -91,10 +91,10 @@ Reason:
 - In v1, non-`1D` timeframes remain price-only and do not render the RSI pane.
 - The RSI pane visual grammar is fixed for v1:
   - scale: `0–100`
-  - overbought zone: `70–100`
-  - neutral zone: `30–70`
-  - oversold zone: `0–30`
-  - dashed guide lines: `70` / `50` / `30`
+  - overbought zone: `65–100`
+  - neutral zone: `45–65`
+  - oversold zone: `0–45`
+  - dashed guide lines: `65` / `55` / `45`
   - `RSI(22)` as the primary line
   - `EMA(12) on RSI` as the lower-emphasis secondary line
 - `HLC3` and `MRC` remain out of scope for chart visualization in v1.

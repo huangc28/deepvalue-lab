@@ -11,7 +11,11 @@ import type {
 
 const CHART_WIDTH = 980
 const PRICE_CHART_HEIGHT = 260
-const RSI_CHART_HEIGHT = 120
+const RSI_PANE_PX = 88
+const PANE_GAP = 8
+const RSI_LOWER_THRESHOLD = 45
+const RSI_MIDPOINT = 55
+const RSI_UPPER_THRESHOLD = 65
 const PLOT = {
   top: 14,
   right: 74,
@@ -78,19 +82,18 @@ export function TechnicalPriceChart({
   const candleWidth = clamp(candleSlot * 0.28, 1.5, 4)
   const currentY = mapPriceToY(lastPrice, yMin, yMax, priceChartBottom)
   const latestPoint = activeSeries.points[activeSeries.points.length - 1]
-  const rsiChartBottom = RSI_CHART_HEIGHT - PLOT.bottom
-  const rsiSegments = buildIndicatorSegments(
-    activeSeries.points,
-    (point) => point.rsi,
-    chartRight,
-    rsiChartBottom,
-  )
-  const emaOnRsiSegments = buildIndicatorSegments(
-    activeSeries.points,
-    (point) => point.emaOnRsi,
-    chartRight,
-    rsiChartBottom,
-  )
+
+  // RSI pane layout: price ~72%, RSI ~28% of total plot area
+  const totalSvgHeight = showRsiPane ? PRICE_CHART_HEIGHT + PANE_GAP + RSI_PANE_PX : PRICE_CHART_HEIGHT
+  const rsiPaneTop = showRsiPane ? priceChartBottom + PANE_GAP : 0
+  const rsiPaneBottom = showRsiPane ? totalSvgHeight - PLOT.bottom : 0
+  const guideBottom = showRsiPane ? rsiPaneBottom : priceChartBottom
+  const rsiSegments = showRsiPane
+    ? buildIndicatorSegments(activeSeries.points, (point) => point.rsi, chartRight, rsiPaneTop, rsiPaneBottom)
+    : []
+  const emaOnRsiSegments = showRsiPane
+    ? buildIndicatorSegments(activeSeries.points, (point) => point.emaOnRsi, chartRight, rsiPaneTop, rsiPaneBottom)
+    : []
 
   return (
     <div className="overflow-hidden rounded-[1.15rem] border border-[rgba(94,110,138,0.26)] bg-[#0d0f18] shadow-[0_14px_34px_rgba(0,0,0,0.28)]">
@@ -157,7 +160,7 @@ export function TechnicalPriceChart({
       <div className="relative px-3 pb-4 pt-3">
         <div className="absolute inset-x-3 top-3 h-12 rounded-t-[0.9rem] bg-[linear-gradient(180deg,rgba(88,166,255,0.06),transparent)]" />
         <div className="overflow-hidden rounded-[0.95rem] border border-[rgba(240,246,252,0.05)] bg-[#0a0c12]">
-          <svg viewBox={`0 0 ${CHART_WIDTH} ${PRICE_CHART_HEIGHT}`} className="block w-full">
+          <svg viewBox={`0 0 ${CHART_WIDTH} ${totalSvgHeight}`} className="block w-full">
             {yTicks.map((tick) => (
               <g key={`y-${tick.value}`}>
                 <line
@@ -187,7 +190,7 @@ export function TechnicalPriceChart({
                 x1={mapIndexToX(index, candles.length, chartRight)}
                 x2={mapIndexToX(index, candles.length, chartRight)}
                 y1={PLOT.top}
-                y2={priceChartBottom}
+                y2={guideBottom}
                 stroke="rgba(240,246,252,0.04)"
               />
             ))}
@@ -254,123 +257,94 @@ export function TechnicalPriceChart({
               </text>
             </g>
 
+            {showRsiPane && (
+              <g>
+                <rect
+                  x={PLOT.left}
+                  y={mapRsiToY(100, rsiPaneTop, rsiPaneBottom)}
+                  width={chartRight - PLOT.left}
+                  height={mapRsiToY(RSI_UPPER_THRESHOLD, rsiPaneTop, rsiPaneBottom) - mapRsiToY(100, rsiPaneTop, rsiPaneBottom)}
+                  fill="rgba(101, 222, 164, 0.06)"
+                />
+                <rect
+                  x={PLOT.left}
+                  y={mapRsiToY(RSI_LOWER_THRESHOLD, rsiPaneTop, rsiPaneBottom)}
+                  width={chartRight - PLOT.left}
+                  height={mapRsiToY(0, rsiPaneTop, rsiPaneBottom) - mapRsiToY(RSI_LOWER_THRESHOLD, rsiPaneTop, rsiPaneBottom)}
+                  fill="rgba(255, 109, 117, 0.06)"
+                />
+                {[RSI_UPPER_THRESHOLD, RSI_MIDPOINT, RSI_LOWER_THRESHOLD].map((level) => (
+                  <line
+                    key={`rsi-guide-${level}`}
+                    x1={PLOT.left}
+                    x2={chartRight}
+                    y1={mapRsiToY(level, rsiPaneTop, rsiPaneBottom)}
+                    y2={mapRsiToY(level, rsiPaneTop, rsiPaneBottom)}
+                    stroke="rgba(240,246,252,0.12)"
+                    strokeDasharray="4 4"
+                  />
+                ))}
+                {[RSI_UPPER_THRESHOLD, RSI_MIDPOINT, RSI_LOWER_THRESHOLD].map((level) => (
+                  <text
+                    key={`rsi-lbl-${level}`}
+                    x={CHART_WIDTH - 10}
+                    y={mapRsiToY(level, rsiPaneTop, rsiPaneBottom) + 4}
+                    textAnchor="end"
+                    fill="var(--ink-faint)"
+                    fontSize="10"
+                    fontFamily="JetBrains Mono, monospace"
+                  >
+                    {level}
+                  </text>
+                ))}
+                {emaOnRsiSegments.map((segment, index) => (
+                  <polyline
+                    key={`ema-segment-${index}`}
+                    points={segment}
+                    fill="none"
+                    stroke="rgba(101, 222, 164, 0.38)"
+                    strokeWidth="1.2"
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                  />
+                ))}
+                {rsiSegments.map((segment, index) => (
+                  <polyline
+                    key={`rsi-segment-${index}`}
+                    points={segment}
+                    fill="none"
+                    stroke="rgba(101, 222, 164, 0.85)"
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                  />
+                ))}
+              </g>
+            )}
+
+            {xLabels.map((label) => (
+              <text
+                key={`${label.anchor}-${label.label}`}
+                x={label.anchor}
+                y={totalSvgHeight - 8}
+                textAnchor={label.position}
+                fill="var(--ink-faint)"
+                fontSize="12"
+                fontFamily="JetBrains Mono, monospace"
+              >
+                {label.label}
+              </text>
+            ))}
+
             <rect
               x={PLOT.left}
               y={PLOT.top}
               width={chartRight - PLOT.left}
-              height={priceChartBottom - PLOT.top}
+              height={guideBottom - PLOT.top}
               fill="none"
               stroke="rgba(240,246,252,0.05)"
             />
           </svg>
-
-          {showRsiPane ? (
-            <svg
-              viewBox={`0 0 ${CHART_WIDTH} ${RSI_CHART_HEIGHT}`}
-              className="block w-full border-t border-[rgba(240,246,252,0.05)]"
-            >
-              {buildVerticalGuides(candles.length).map((index) => (
-                <line
-                  key={`rsi-x-${index}`}
-                  x1={mapIndexToX(index, candles.length, chartRight)}
-                  x2={mapIndexToX(index, candles.length, chartRight)}
-                  y1={PLOT.top}
-                  y2={rsiChartBottom}
-                  stroke="rgba(240,246,252,0.04)"
-                />
-              ))}
-
-              <rect
-                x={PLOT.left}
-                y={mapRsiToY(100, rsiChartBottom)}
-                width={chartRight - PLOT.left}
-                height={mapRsiToY(70, rsiChartBottom) - mapRsiToY(100, rsiChartBottom)}
-                fill="rgba(46, 160, 67, 0.08)"
-              />
-              <rect
-                x={PLOT.left}
-                y={mapRsiToY(30, rsiChartBottom)}
-                width={chartRight - PLOT.left}
-                height={mapRsiToY(0, rsiChartBottom) - mapRsiToY(30, rsiChartBottom)}
-                fill="rgba(218, 54, 51, 0.08)"
-              />
-
-              {[70, 50, 30].map((value) => (
-                <line
-                  key={`rsi-guide-${value}`}
-                  x1={PLOT.left}
-                  x2={chartRight}
-                  y1={mapRsiToY(value, rsiChartBottom)}
-                  y2={mapRsiToY(value, rsiChartBottom)}
-                  stroke="rgba(240,246,252,0.14)"
-                  strokeDasharray="3 6"
-                />
-              ))}
-
-              {emaOnRsiSegments.map((segment, index) => (
-                <polyline
-                  key={`ema-segment-${index}`}
-                  points={segment}
-                  fill="none"
-                  stroke="rgba(126, 231, 135, 0.22)"
-                  strokeWidth="0.8"
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                />
-              ))}
-
-              {rsiSegments.map((segment, index) => (
-                <polyline
-                  key={`rsi-segment-${index}`}
-                  points={segment}
-                  fill="none"
-                  stroke="rgba(46, 160, 67, 0.95)"
-                  strokeWidth="1.7"
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                />
-              ))}
-
-              {xLabels.map((label) => (
-                <text
-                  key={`${label.anchor}-${label.label}`}
-                  x={label.anchor}
-                  y={RSI_CHART_HEIGHT - 8}
-                  textAnchor={label.position}
-                  fill="var(--ink-faint)"
-                  fontSize="12"
-                  fontFamily="JetBrains Mono, monospace"
-                >
-                  {label.label}
-                </text>
-              ))}
-
-              <rect
-                x={PLOT.left}
-                y={PLOT.top}
-                width={chartRight - PLOT.left}
-                height={rsiChartBottom - PLOT.top}
-                fill="none"
-                stroke="rgba(240,246,252,0.05)"
-              />
-            </svg>
-          ) : (
-            <svg viewBox={`0 0 ${CHART_WIDTH} 28`} className="block w-full">
-              {xLabels.map((label) => (
-                <text
-                  key={`${label.anchor}-${label.label}`}
-                  x={label.anchor}
-                  y={20}
-                  textAnchor={label.position}
-                  fill="var(--ink-faint)"
-                  fontSize="12"
-                  fontFamily="JetBrains Mono, monospace"
-                >
-                  {label.label}
-                </text>
-              ))}
-            </svg>
-          )}
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-[var(--ink-faint)]">
@@ -430,15 +404,16 @@ function mapPriceToY(price: number, min: number, max: number, chartBottom: numbe
   return PLOT.top + ((max - price) / (max - min)) * (chartBottom - PLOT.top)
 }
 
-function mapRsiToY(value: number, chartBottom: number) {
-  return PLOT.top + ((100 - value) / 100) * (chartBottom - PLOT.top)
+function mapRsiToY(value: number, top: number, bottom: number) {
+  return top + ((100 - value) / 100) * (bottom - top)
 }
 
 function buildIndicatorSegments(
   points: TechnicalChartPoint[],
   getValue: (point: TechnicalChartPoint) => number | undefined,
   chartRight: number,
-  chartBottom: number,
+  paneTop: number,
+  paneBottom: number,
 ) {
   const segments: string[] = []
   let currentSegment: string[] = []
@@ -456,7 +431,7 @@ function buildIndicatorSegments(
     }
 
     const x = mapIndexToX(index, points.length, chartRight)
-    const y = mapRsiToY(value, chartBottom)
+    const y = mapRsiToY(value, paneTop, paneBottom)
     currentSegment.push(`${x},${y}`)
   }
 
