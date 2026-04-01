@@ -9,6 +9,8 @@ const DAILY_HISTORY_POINTS = 756
 const INTRADAY_POINTS = 960
 const INTRADAY_BARS_PER_SESSION = 26
 const WEEKLY_VISIBLE_POINTS = 84
+const MOCK_RSI_PERIOD = 22
+const MOCK_EMA_ON_RSI_PERIOD = 12
 
 export function buildMockTechnicalPriceChart(
   stock: StockDetail,
@@ -154,10 +156,13 @@ function buildSeries(stock: StockDetail, points: number, seed: number): Technica
   const anchored = smoothed.map((close, index) =>
     index === smoothed.length - 1 ? endPrice : close,
   )
+  const roundedCloses = anchored.map((close) => roundPrice(close))
+  const rsiSeries = calculateRsi(roundedCloses, MOCK_RSI_PERIOD)
+  const emaOnRsiSeries = calculateEma(rsiSeries, MOCK_EMA_ON_RSI_PERIOD)
 
   return dates.map((date, index) => {
-    const close = roundPrice(anchored[index])
-    const previousClose = roundPrice(anchored[Math.max(index - 1, 0)] ?? close)
+    const close = roundedCloses[index] ?? roundPrice(anchored[index])
+    const previousClose = roundedCloses[Math.max(index - 1, 0)] ?? close
     const overnightGap = (random() - 0.5) * close * 0.012
     const open = roundPrice(index === 0 ? close * (1 - 0.004) : previousClose + overnightGap)
     const intradayRange = Math.max(Math.abs(close - open) * 1.35, close * (0.008 + random() * 0.01))
@@ -171,6 +176,8 @@ function buildSeries(stock: StockDetail, points: number, seed: number): Technica
       high,
       low,
       close,
+      rsi: rsiSeries[index],
+      emaOnRsi: emaOnRsiSeries[index],
     }
   })
 }
@@ -353,6 +360,72 @@ function smoothSeries(values: number[]) {
   })
 }
 
+function calculateRsi(values: number[], period: number) {
+  const out = new Array<number | undefined>(values.length).fill(undefined)
+
+  if (period <= 0 || values.length <= period) {
+    return out
+  }
+
+  let sumGain = 0
+  let sumLoss = 0
+  for (let index = 1; index <= period; index += 1) {
+    const change = values[index]! - values[index - 1]!
+    if (change > 0) {
+      sumGain += change
+    } else {
+      sumLoss -= change
+    }
+  }
+
+  let averageGain = sumGain / period
+  let averageLoss = sumLoss / period
+  out[period] = averageLoss === 0 ? 100 : roundIndicator(100 - (100 / (1 + (averageGain / averageLoss))))
+
+  for (let index = period + 1; index < values.length; index += 1) {
+    const change = values[index]! - values[index - 1]!
+    const gain = change > 0 ? change : 0
+    const loss = change < 0 ? -change : 0
+
+    averageGain = ((averageGain * (period - 1)) + gain) / period
+    averageLoss = ((averageLoss * (period - 1)) + loss) / period
+    out[index] =
+      averageLoss === 0 ? 100 : roundIndicator(100 - (100 / (1 + (averageGain / averageLoss))))
+  }
+
+  return out
+}
+
+function calculateEma(values: Array<number | undefined>, period: number) {
+  const out = new Array<number | undefined>(values.length).fill(undefined)
+  const validIndices = values
+    .map((value, index) => (value === undefined ? -1 : index))
+    .filter((index) => index >= 0)
+
+  if (period <= 0 || validIndices.length < period) {
+    return out
+  }
+
+  const seedIndices = validIndices.slice(0, period)
+  let ema =
+    seedIndices.reduce((sum, index) => sum + (values[index] ?? 0), 0) / period
+  const seedIndex = seedIndices[seedIndices.length - 1]!
+  out[seedIndex] = roundIndicator(ema)
+
+  const multiplier = 2 / (period + 1)
+  for (const index of validIndices.slice(period)) {
+    const value = values[index]
+    if (value === undefined) {
+      continue
+    }
+
+    ema = (value * multiplier) + (ema * (1 - multiplier))
+    out[index] = roundIndicator(ema)
+  }
+
+  return out
+}
+
 function gaussian(value: number, mean: number, deviation: number) {
   const variance = deviation * deviation
   return Math.exp(-((value - mean) * (value - mean)) / (2 * variance))
@@ -367,6 +440,10 @@ function clamp(value: number, min: number, max: number) {
 }
 
 function roundPrice(value: number) {
+  return Math.round(value * 100) / 100
+}
+
+function roundIndicator(value: number) {
   return Math.round(value * 100) / 100
 }
 

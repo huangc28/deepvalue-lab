@@ -73,6 +73,8 @@ export interface TechnicalChartPoint {
   low: number
   close: number
   volume?: number
+  rsi?: number
+  emaOnRsi?: number
 }
 
 export interface TechnicalChartSeries {
@@ -141,6 +143,8 @@ export interface TechnicalPriceChartPayload {
   availableTimeframes: TechnicalChartTimeframe[]
   seriesByTimeframe: Partial<Record<TechnicalChartTimeframe, TechnicalChartSeries>>
   indicators: TechnicalIndicatorSummary
+  points?: LegacyTechnicalPricePoint[]
+  latest?: TechnicalIndicatorSummary
 }
 
 export interface LegacyTechnicalPricePoint

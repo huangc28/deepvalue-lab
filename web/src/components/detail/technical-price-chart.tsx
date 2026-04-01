@@ -10,7 +10,8 @@ import type {
 } from '../../types/stocks'
 
 const CHART_WIDTH = 980
-const CHART_HEIGHT = 260
+const PRICE_CHART_HEIGHT = 260
+const RSI_CHART_HEIGHT = 120
 const PLOT = {
   top: 14,
   right: 74,
@@ -48,6 +49,9 @@ export function TechnicalPriceChart({
 
   if (!activeSeries || activeSeries.points.length === 0) return null
 
+  const showRsiPane =
+    activeSeries.timeframe === '1D' &&
+    activeSeries.points.some((point) => point.rsi !== undefined || point.emaOnRsi !== undefined)
   const closes = activeSeries.points.map((point) => point.close)
   const highs = activeSeries.points.map((point) => point.high)
   const lows = activeSeries.points.map((point) => point.low)
@@ -56,7 +60,7 @@ export function TechnicalPriceChart({
   const lastPrice = closes[closes.length - 1] ?? 0
   const startPrice = activeSeries.points[0]?.open ?? lastPrice
   const periodMove = ((lastPrice - startPrice) / startPrice) * 100
-  const chartBottom = CHART_HEIGHT - PLOT.bottom
+  const priceChartBottom = PRICE_CHART_HEIGHT - PLOT.bottom
   const chartRight = CHART_WIDTH - PLOT.right
   const yMin = periodLow * 0.94
   const yMax = periodHigh * 1.06
@@ -72,8 +76,21 @@ export function TechnicalPriceChart({
   const plotWidth = chartRight - PLOT.left
   const candleSlot = plotWidth / Math.max(candles.length, 1)
   const candleWidth = clamp(candleSlot * 0.28, 1.5, 4)
-  const currentY = mapPriceToY(lastPrice, yMin, yMax, chartBottom)
+  const currentY = mapPriceToY(lastPrice, yMin, yMax, priceChartBottom)
   const latestPoint = activeSeries.points[activeSeries.points.length - 1]
+  const rsiChartBottom = RSI_CHART_HEIGHT - PLOT.bottom
+  const rsiSegments = buildIndicatorSegments(
+    activeSeries.points,
+    (point) => point.rsi,
+    chartRight,
+    rsiChartBottom,
+  )
+  const emaOnRsiSegments = buildIndicatorSegments(
+    activeSeries.points,
+    (point) => point.emaOnRsi,
+    chartRight,
+    rsiChartBottom,
+  )
 
   return (
     <div className="overflow-hidden rounded-[1.15rem] border border-[rgba(94,110,138,0.26)] bg-[#0d0f18] shadow-[0_14px_34px_rgba(0,0,0,0.28)]">
@@ -140,20 +157,20 @@ export function TechnicalPriceChart({
       <div className="relative px-3 pb-4 pt-3">
         <div className="absolute inset-x-3 top-3 h-12 rounded-t-[0.9rem] bg-[linear-gradient(180deg,rgba(88,166,255,0.06),transparent)]" />
         <div className="overflow-hidden rounded-[0.95rem] border border-[rgba(240,246,252,0.05)] bg-[#0a0c12]">
-          <svg viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`} className="block w-full">
+          <svg viewBox={`0 0 ${CHART_WIDTH} ${PRICE_CHART_HEIGHT}`} className="block w-full">
             {yTicks.map((tick) => (
               <g key={`y-${tick.value}`}>
                 <line
                   x1={PLOT.left}
                   x2={chartRight}
-                  y1={mapPriceToY(tick.value, yMin, yMax, chartBottom)}
-                  y2={mapPriceToY(tick.value, yMin, yMax, chartBottom)}
+                  y1={mapPriceToY(tick.value, yMin, yMax, priceChartBottom)}
+                  y2={mapPriceToY(tick.value, yMin, yMax, priceChartBottom)}
                   stroke="rgba(240,246,252,0.08)"
                   strokeDasharray="2 6"
                 />
                 <text
                   x={CHART_WIDTH - 10}
-                  y={mapPriceToY(tick.value, yMin, yMax, chartBottom) + 4}
+                  y={mapPriceToY(tick.value, yMin, yMax, priceChartBottom) + 4}
                   textAnchor="end"
                   fill="var(--ink-faint)"
                   fontSize="12"
@@ -170,7 +187,7 @@ export function TechnicalPriceChart({
                 x1={mapIndexToX(index, candles.length, chartRight)}
                 x2={mapIndexToX(index, candles.length, chartRight)}
                 y1={PLOT.top}
-                y2={chartBottom}
+                y2={priceChartBottom}
                 stroke="rgba(240,246,252,0.04)"
               />
             ))}
@@ -186,10 +203,10 @@ export function TechnicalPriceChart({
 
             {candles.map((candle, index) => {
               const x = mapIndexToX(index, candles.length, chartRight)
-              const openY = mapPriceToY(candle.open, yMin, yMax, chartBottom)
-              const closeY = mapPriceToY(candle.close, yMin, yMax, chartBottom)
-              const highY = mapPriceToY(candle.high, yMin, yMax, chartBottom)
-              const lowY = mapPriceToY(candle.low, yMin, yMax, chartBottom)
+              const openY = mapPriceToY(candle.open, yMin, yMax, priceChartBottom)
+              const closeY = mapPriceToY(candle.close, yMin, yMax, priceChartBottom)
+              const highY = mapPriceToY(candle.high, yMin, yMax, priceChartBottom)
+              const lowY = mapPriceToY(candle.low, yMin, yMax, priceChartBottom)
               const bodyTop = Math.min(openY, closeY)
               const bodyHeight = Math.max(Math.abs(closeY - openY), 1.8)
 
@@ -237,29 +254,123 @@ export function TechnicalPriceChart({
               </text>
             </g>
 
-            {xLabels.map((label) => (
-              <text
-                key={`${label.anchor}-${label.label}`}
-                x={label.anchor}
-                y={CHART_HEIGHT - 8}
-                textAnchor={label.position}
-                fill="var(--ink-faint)"
-                fontSize="12"
-                fontFamily="JetBrains Mono, monospace"
-              >
-                {label.label}
-              </text>
-            ))}
-
             <rect
               x={PLOT.left}
               y={PLOT.top}
               width={chartRight - PLOT.left}
-              height={chartBottom - PLOT.top}
+              height={priceChartBottom - PLOT.top}
               fill="none"
               stroke="rgba(240,246,252,0.05)"
             />
           </svg>
+
+          {showRsiPane ? (
+            <svg
+              viewBox={`0 0 ${CHART_WIDTH} ${RSI_CHART_HEIGHT}`}
+              className="block w-full border-t border-[rgba(240,246,252,0.05)]"
+            >
+              {buildVerticalGuides(candles.length).map((index) => (
+                <line
+                  key={`rsi-x-${index}`}
+                  x1={mapIndexToX(index, candles.length, chartRight)}
+                  x2={mapIndexToX(index, candles.length, chartRight)}
+                  y1={PLOT.top}
+                  y2={rsiChartBottom}
+                  stroke="rgba(240,246,252,0.04)"
+                />
+              ))}
+
+              <rect
+                x={PLOT.left}
+                y={mapRsiToY(100, rsiChartBottom)}
+                width={chartRight - PLOT.left}
+                height={mapRsiToY(70, rsiChartBottom) - mapRsiToY(100, rsiChartBottom)}
+                fill="rgba(46, 160, 67, 0.08)"
+              />
+              <rect
+                x={PLOT.left}
+                y={mapRsiToY(30, rsiChartBottom)}
+                width={chartRight - PLOT.left}
+                height={mapRsiToY(0, rsiChartBottom) - mapRsiToY(30, rsiChartBottom)}
+                fill="rgba(218, 54, 51, 0.08)"
+              />
+
+              {[70, 50, 30].map((value) => (
+                <line
+                  key={`rsi-guide-${value}`}
+                  x1={PLOT.left}
+                  x2={chartRight}
+                  y1={mapRsiToY(value, rsiChartBottom)}
+                  y2={mapRsiToY(value, rsiChartBottom)}
+                  stroke="rgba(240,246,252,0.14)"
+                  strokeDasharray="3 6"
+                />
+              ))}
+
+              {emaOnRsiSegments.map((segment, index) => (
+                <polyline
+                  key={`ema-segment-${index}`}
+                  points={segment}
+                  fill="none"
+                  stroke="rgba(126, 231, 135, 0.22)"
+                  strokeWidth="0.8"
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                />
+              ))}
+
+              {rsiSegments.map((segment, index) => (
+                <polyline
+                  key={`rsi-segment-${index}`}
+                  points={segment}
+                  fill="none"
+                  stroke="rgba(46, 160, 67, 0.95)"
+                  strokeWidth="1.7"
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                />
+              ))}
+
+              {xLabels.map((label) => (
+                <text
+                  key={`${label.anchor}-${label.label}`}
+                  x={label.anchor}
+                  y={RSI_CHART_HEIGHT - 8}
+                  textAnchor={label.position}
+                  fill="var(--ink-faint)"
+                  fontSize="12"
+                  fontFamily="JetBrains Mono, monospace"
+                >
+                  {label.label}
+                </text>
+              ))}
+
+              <rect
+                x={PLOT.left}
+                y={PLOT.top}
+                width={chartRight - PLOT.left}
+                height={rsiChartBottom - PLOT.top}
+                fill="none"
+                stroke="rgba(240,246,252,0.05)"
+              />
+            </svg>
+          ) : (
+            <svg viewBox={`0 0 ${CHART_WIDTH} 28`} className="block w-full">
+              {xLabels.map((label) => (
+                <text
+                  key={`${label.anchor}-${label.label}`}
+                  x={label.anchor}
+                  y={20}
+                  textAnchor={label.position}
+                  fill="var(--ink-faint)"
+                  fontSize="12"
+                  fontFamily="JetBrains Mono, monospace"
+                >
+                  {label.label}
+                </text>
+              ))}
+            </svg>
+          )}
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-[var(--ink-faint)]">
@@ -317,6 +428,43 @@ function mapIndexToX(index: number, length: number, chartRight: number) {
 function mapPriceToY(price: number, min: number, max: number, chartBottom: number) {
   if (max === min) return chartBottom
   return PLOT.top + ((max - price) / (max - min)) * (chartBottom - PLOT.top)
+}
+
+function mapRsiToY(value: number, chartBottom: number) {
+  return PLOT.top + ((100 - value) / 100) * (chartBottom - PLOT.top)
+}
+
+function buildIndicatorSegments(
+  points: TechnicalChartPoint[],
+  getValue: (point: TechnicalChartPoint) => number | undefined,
+  chartRight: number,
+  chartBottom: number,
+) {
+  const segments: string[] = []
+  let currentSegment: string[] = []
+
+  for (let index = 0; index < points.length; index += 1) {
+    const point = points[index]
+    const value = getValue(point)
+
+    if (value === undefined) {
+      if (currentSegment.length > 1) {
+        segments.push(currentSegment.join(' '))
+      }
+      currentSegment = []
+      continue
+    }
+
+    const x = mapIndexToX(index, points.length, chartRight)
+    const y = mapRsiToY(value, chartBottom)
+    currentSegment.push(`${x},${y}`)
+  }
+
+  if (currentSegment.length > 1) {
+    segments.push(currentSegment.join(' '))
+  }
+
+  return segments
 }
 
 function getXAxisLabels(

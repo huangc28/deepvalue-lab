@@ -122,6 +122,8 @@ function normalizeLegacyDailyPoints(
     low: number
     close: number
     volume?: number
+    rsi?: number
+    emaOnRsi?: number
   }>,
 ) {
   return points
@@ -138,6 +140,8 @@ function normalizeLegacyDailyPoints(
       low: point.low,
       close: point.close,
       volume: point.volume,
+      rsi: point.rsi,
+      emaOnRsi: point.emaOnRsi,
     }))
 }
 
@@ -222,12 +226,47 @@ function snapshotToChart(
       }
     }
 
-    return {
+    const result: TechnicalPriceChartData = {
       source: 'live',
       defaultTimeframe,
       availableTimeframes,
       seriesByTimeframe,
     }
+
+    // Phase 1 keeps per-point RSI/EMA on the legacy daily points path.
+    // Reattach those values to the normalized 1D series so rendering can
+    // consume one consistent chart model.
+    if (payload.points?.length && result.seriesByTimeframe['1D']) {
+      const indicatorsByDate = new Map<string, { rsi?: number; emaOnRsi?: number }>()
+
+      for (const point of payload.points) {
+        if (!point.date) {
+          continue
+        }
+
+        indicatorsByDate.set(point.date, {
+          rsi: point.rsi,
+          emaOnRsi: point.emaOnRsi,
+        })
+      }
+
+      result.seriesByTimeframe['1D'].points = result.seriesByTimeframe['1D'].points.map((point) => {
+        const dateKey = point.timestampUtc.slice(0, 10)
+        const indicators = indicatorsByDate.get(dateKey)
+
+        if (!indicators || (indicators.rsi === undefined && indicators.emaOnRsi === undefined)) {
+          return point
+        }
+
+        return {
+          ...point,
+          rsi: indicators.rsi,
+          emaOnRsi: indicators.emaOnRsi,
+        }
+      })
+    }
+
+    return result
   }
 
   const points = normalizeLegacyDailyPoints(payload.points)
