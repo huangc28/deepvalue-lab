@@ -53,9 +53,9 @@ export function TechnicalPriceChart({
 
   if (!activeSeries || activeSeries.points.length === 0) return null
 
-  const showRsiPane =
-    activeSeries.timeframe === '1D' &&
-    activeSeries.points.some((point) => point.rsi !== undefined || point.emaOnRsi !== undefined)
+  const showRsiPane = activeSeries.points.some(
+    (point) => point.rsi !== undefined || point.emaOnRsi !== undefined,
+  )
   const closes = activeSeries.points.map((point) => point.close)
   const highs = activeSeries.points.map((point) => point.high)
   const lows = activeSeries.points.map((point) => point.low)

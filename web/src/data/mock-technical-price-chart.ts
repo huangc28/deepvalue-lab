@@ -17,14 +17,15 @@ export function buildMockTechnicalPriceChart(
 ): TechnicalPriceChart {
   const seed = hashTicker(stock.ticker)
   const dailyPoints = buildSeries(stock, DAILY_HISTORY_POINTS, seed + DAILY_HISTORY_POINTS)
-  const intradayPoints = buildIntradaySeries(
+  const intradayRaw = buildIntradaySeries(
     stock,
     INTRADAY_POINTS,
     seed + INTRADAY_POINTS,
   )
-  const weeklyPoints = aggregateWeeklySeries(dailyPoints)
-  const hourlyPoints = aggregateSessionSeries(intradayPoints, 60)
-  const fourHourPoints = aggregateSessionSeries(intradayPoints, 240)
+  const intradayPoints = attachIndicators(intradayRaw)
+  const weeklyPoints = attachIndicators(aggregateWeeklySeries(dailyPoints))
+  const hourlyPoints = attachIndicators(aggregateSessionSeries(intradayRaw, 60))
+  const fourHourPoints = attachIndicators(aggregateSessionSeries(intradayRaw, 240))
 
   return {
     source: 'mock',
@@ -428,6 +429,17 @@ function calculateEma(values: Array<number | undefined>, period: number) {
   }
 
   return out
+}
+
+function attachIndicators(points: TechnicalChartPoint[]): TechnicalChartPoint[] {
+  const closes = points.map((p) => p.close)
+  const rsiSeries = calculateRsi(closes, MOCK_RSI_PERIOD)
+  const emaOnRsiSeries = calculateEma(rsiSeries, MOCK_EMA_ON_RSI_PERIOD)
+  return points.map((point, index) => ({
+    ...point,
+    rsi: rsiSeries[index],
+    emaOnRsi: emaOnRsiSeries[index],
+  }))
 }
 
 function gaussian(value: number, mean: number, deviation: number) {

@@ -88,7 +88,8 @@ Reason:
 
 - V1 supports a `1D-first` separate RSI pane inside the chart card.
 - The RSI pane is not a price overlay and must not be drawn on top of price candles.
-- In v1, non-`1D` timeframes remain price-only and do not render the RSI pane.
+- In the phase 1 rollout, non-`1D` timeframes remain price-only and do not render the RSI pane.
+- In later phases, the same RSI pane grammar may be enabled for other timeframes when per-timeframe indicator payloads exist.
 - The RSI pane visual grammar is fixed for v1:
   - scale: `0–100`
   - overbought zone: `65–100`
@@ -108,7 +109,6 @@ Reason:
 - alerts UI
 - user-drawn studies
 - indicator overlay parity with TradingView or Pine Script
-- non-`1D` RSI / EMA pane rendering
 - RSI tooltip or advanced hover interactions
 
 ## Frozen Copy

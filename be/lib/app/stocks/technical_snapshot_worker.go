@@ -266,6 +266,12 @@ func buildTechnicalPriceChartPayload(job TechnicalSnapshotJob, dailyBars, intrad
 	intraday1hSeriesPoints := buildIntradaySeriesPoints(aggregateIntradayBars(intraday15mBars, 60), 60)
 	intraday4hSeriesPoints := buildIntradaySeriesPoints(aggregateIntradayBars(intraday15mBars, 240), 240)
 
+	attachTimeframeRSI(intraday15mSeriesPoints, toPtr)
+	attachTimeframeRSI(intraday1hSeriesPoints, toPtr)
+	attachTimeframeRSI(intraday4hSeriesPoints, toPtr)
+	attachTimeframeRSI(dailySeriesPoints, toPtr)
+	attachTimeframeRSI(weeklySeriesPoints, toPtr)
+
 	seriesByTimeframe := make(map[ChartTimeframe]TimeframeSeries, 5)
 	availableTimeframes := make([]ChartTimeframe, 0, 5)
 	addSeries := func(series TimeframeSeries) {
@@ -346,6 +352,24 @@ func buildIntradaySeriesPoints(bars []massive.Bar, windowMinutes int) []OhlcPoin
 	}
 
 	return points
+}
+
+// attachTimeframeRSI computes RSI(22) and EMA-on-RSI(12) from each point's
+// Close and writes the results back in place. Values during warmup are left nil.
+func attachTimeframeRSI(points []OhlcPoint, toPtr func(float64) *float64) {
+	if len(points) == 0 {
+		return
+	}
+	closes := make([]float64, len(points))
+	for i, p := range points {
+		closes[i] = p.Close
+	}
+	rsi := indicators.RSI(closes, 22)
+	emaOnRsi := indicators.EMA(rsi, 12)
+	for i := range points {
+		points[i].RSI = toPtr(rsi[i])
+		points[i].EMAOnRSI = toPtr(emaOnRsi[i])
+	}
 }
 
 func filterRegularMarketSessionBars(bars []massive.Bar) []massive.Bar {

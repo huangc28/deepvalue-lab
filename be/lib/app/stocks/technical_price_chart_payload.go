@@ -47,14 +47,17 @@ type TimeframeSeries struct {
 }
 
 // OhlcPoint is a candle with explicit timestamp semantics.
+// RSI and EMAOnRSI are omitted during indicator warmup (not enough prior bars).
 type OhlcPoint struct {
-	TimestampUtc      string  `json:"timestampUtc"`
-	ExchangeTimestamp string  `json:"exchangeTimestamp"`
-	Open              float64 `json:"open"`
-	High              float64 `json:"high"`
-	Low               float64 `json:"low"`
-	Close             float64 `json:"close"`
-	Volume            float64 `json:"volume,omitempty"`
+	TimestampUtc      string   `json:"timestampUtc"`
+	ExchangeTimestamp string   `json:"exchangeTimestamp"`
+	Open              float64  `json:"open"`
+	High              float64  `json:"high"`
+	Low               float64  `json:"low"`
+	Close             float64  `json:"close"`
+	Volume            float64  `json:"volume,omitempty"`
+	RSI               *float64 `json:"rsi,omitempty"`
+	EMAOnRSI          *float64 `json:"emaOnRsi,omitempty"`
 }
 
 // IndicatorSnapshot holds the latest computed values and classification.

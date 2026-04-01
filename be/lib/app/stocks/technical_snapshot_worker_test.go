@@ -229,6 +229,209 @@ func TestBuildTechnicalPriceChartPayloadPhase3IntradayAndWeekly(t *testing.T) {
 	}
 }
 
+func TestTimeframeSeriesPointsCarryRSI(t *testing.T) {
+	job := TechnicalSnapshotJob{
+		Ticker:        "RSI",
+		ReportID:      "rsi-test",
+		PublishedAtMs: 1742860800000,
+	}
+
+	dailyBars := []massive.Bar{
+		{Date: "2026-03-23", Open: 100, High: 105, Low: 98, Close: 104, Volume: 1_200_000},
+		{Date: "2026-03-24", Open: 104, High: 108, Low: 101, Close: 107, Volume: 1_500_000},
+		{Date: "2026-03-25", Open: 107, High: 110, Low: 103, Close: 109, Volume: 900_000},
+		{Date: "2026-03-26", Open: 109, High: 112, Low: 108, Close: 111, Volume: 1_100_000},
+		{Date: "2026-03-27", Open: 111, High: 115, Low: 110, Close: 114, Volume: 1_300_000},
+		{Date: "2026-03-30", Open: 115, High: 118, Low: 113, Close: 117, Volume: 1_400_000},
+	}
+
+	// 26 regular-session 15M bars — RSI(22) has 4 valid values (indices 22-25), EMA(12) needs 12 so all nil.
+	intradayBars := buildIntradayBarsForTest(t)
+	weeklyBars := aggregateWeeklyBars(dailyBars)
+	payload := buildTechnicalPriceChartPayload(job, dailyBars, intradayBars, weeklyBars)
+
+	// 1D: 6 bars — all RSI nil (below RSI(22) warmup threshold).
+	series1d := payload.SeriesByTimeframe[ChartTimeframe1D]
+	for i, p := range series1d.Points {
+		if p.RSI != nil {
+			t.Fatalf("1D[%d]: expected nil RSI during warmup, got %v", i, *p.RSI)
+		}
+		if p.EMAOnRSI != nil {
+			t.Fatalf("1D[%d]: expected nil EMAOnRSI during warmup, got %v", i, *p.EMAOnRSI)
+		}
+	}
+
+	// 15M: 26 bars — RSI nil for indices 0-21, non-nil for 22-25.
+	series15m := payload.SeriesByTimeframe[ChartTimeframe15M]
+	if len(series15m.Points) != 26 {
+		t.Fatalf("expected 26 15M points, got %d", len(series15m.Points))
+	}
+	for i := 0; i < 22; i++ {
+		if series15m.Points[i].RSI != nil {
+			t.Fatalf("15M[%d]: expected nil RSI (warmup), got %v", i, *series15m.Points[i].RSI)
+		}
+	}
+	for i := 22; i < 26; i++ {
+		p := series15m.Points[i]
+		if p.RSI == nil {
+			t.Fatalf("15M[%d]: expected non-nil RSI after warmup", i)
+		}
+		if *p.RSI < 0 || *p.RSI > 100 {
+			t.Fatalf("15M[%d]: RSI %v out of [0,100]", i, *p.RSI)
+		}
+		// Only 4 valid RSI values — not enough to seed EMA(12), must stay nil.
+		if p.EMAOnRSI != nil {
+			t.Fatalf("15M[%d]: expected nil EMAOnRSI (insufficient RSI history), got %v", i, *p.EMAOnRSI)
+		}
+	}
+
+	// Verify RSI values appear in the JSON wire format for 15M.
+	raw, err := json.Marshal(payload)
+	if err != nil {
+		t.Fatalf("marshal payload: %v", err)
+	}
+	var wire struct {
+		SeriesByTimeframe map[string]struct {
+			Points []struct {
+				RSI      *float64 `json:"rsi"`
+				EMAOnRSI *float64 `json:"emaOnRsi"`
+			} `json:"points"`
+		} `json:"seriesByTimeframe"`
+	}
+	if err := json.Unmarshal(raw, &wire); err != nil {
+		t.Fatalf("unmarshal wire: %v", err)
+	}
+	pts15m := wire.SeriesByTimeframe["15M"].Points
+	if len(pts15m) != 26 {
+		t.Fatalf("wire 15M: expected 26 points, got %d", len(pts15m))
+	}
+	for i := 0; i < 22; i++ {
+		if pts15m[i].RSI != nil {
+			t.Fatalf("wire 15M[%d]: expected omitted rsi, got %v", i, *pts15m[i].RSI)
+		}
+	}
+	for i := 22; i < 26; i++ {
+		if pts15m[i].RSI == nil {
+			t.Fatalf("wire 15M[%d]: expected rsi present in JSON", i)
+		}
+	}
+}
+
+func TestTimeframeSeriesEMAAppearsWithSufficientHistory(t *testing.T) {
+	job := TechnicalSnapshotJob{
+		Ticker:        "EMA",
+		ReportID:      "ema-test",
+		PublishedAtMs: 1742860800000,
+	}
+
+	// 2 full trading days of 15M bars → 52 regular-session bars.
+	// RSI(22) first valid at index 22; EMA(12) seeds at index 33, valid from 33 onward.
+	intradayBars := buildMultiDayIntradayBarsForTest(t, 2)
+	payload := buildTechnicalPriceChartPayload(job, nil, intradayBars, nil)
+
+	series15m := payload.SeriesByTimeframe[ChartTimeframe15M]
+	if len(series15m.Points) < 34 {
+		t.Fatalf("expected ≥34 15M points for EMA validation, got %d", len(series15m.Points))
+	}
+
+	// Index 33 is the first EMA seed — must be non-nil.
+	if series15m.Points[33].EMAOnRSI == nil {
+		t.Fatalf("15M[33]: expected non-nil EMAOnRSI at EMA seed point")
+	}
+	// Everything after must also be non-nil.
+	for i := 33; i < len(series15m.Points); i++ {
+		p := series15m.Points[i]
+		if p.EMAOnRSI == nil {
+			t.Fatalf("15M[%d]: expected non-nil EMAOnRSI after seed, got nil", i)
+		}
+		if *p.EMAOnRSI < 0 || *p.EMAOnRSI > 100 {
+			t.Fatalf("15M[%d]: EMAOnRSI %v out of [0,100]", i, *p.EMAOnRSI)
+		}
+	}
+}
+
+// TestTimeframeRSIWarmupOmissionShortSeries verifies that per-timeframe RSI and
+// EMAOnRSI are nil (omitted from JSON) for every timeframe whose bar count is
+// below the RSI(22) warmup threshold. The single-day fixture produces:
+//
+//	1H → 7 bars, 4H → 2 bars, 1W → 2 bars, 1D → 6 bars — all under threshold.
+func TestTimeframeRSIWarmupOmissionShortSeries(t *testing.T) {
+	job := TechnicalSnapshotJob{
+		Ticker:        "WARM",
+		ReportID:      "warmup-omission",
+		PublishedAtMs: 1742860800000,
+	}
+
+	dailyBars := []massive.Bar{
+		{Date: "2026-03-23", Open: 100, High: 105, Low: 98, Close: 104, Volume: 1_200_000},
+		{Date: "2026-03-24", Open: 104, High: 108, Low: 101, Close: 107, Volume: 1_500_000},
+		{Date: "2026-03-25", Open: 107, High: 110, Low: 103, Close: 109, Volume: 900_000},
+		{Date: "2026-03-26", Open: 109, High: 112, Low: 108, Close: 111, Volume: 1_100_000},
+		{Date: "2026-03-27", Open: 111, High: 115, Low: 110, Close: 114, Volume: 1_300_000},
+		{Date: "2026-03-30", Open: 115, High: 118, Low: 113, Close: 117, Volume: 1_400_000},
+	}
+	intradayBars := buildIntradayBarsForTest(t)
+	weeklyBars := aggregateWeeklyBars(dailyBars)
+	payload := buildTechnicalPriceChartPayload(job, dailyBars, intradayBars, weeklyBars)
+
+	type caseSpec struct {
+		tf       ChartTimeframe
+		wantLen  int
+	}
+	// All four short timeframes must have fully nil RSI and EMAOnRSI.
+	cases := []caseSpec{
+		{ChartTimeframe1H, 7},
+		{ChartTimeframe4H, 2},
+		{ChartTimeframe1W, 2},
+		{ChartTimeframe1D, 6},
+	}
+
+	for _, tc := range cases {
+		series, ok := payload.SeriesByTimeframe[tc.tf]
+		if !ok {
+			t.Fatalf("%s: series missing from payload", tc.tf)
+		}
+		if len(series.Points) != tc.wantLen {
+			t.Fatalf("%s: expected %d points, got %d", tc.tf, tc.wantLen, len(series.Points))
+		}
+		for i, p := range series.Points {
+			if p.RSI != nil {
+				t.Fatalf("%s[%d]: expected nil RSI during warmup, got %v", tc.tf, i, *p.RSI)
+			}
+			if p.EMAOnRSI != nil {
+				t.Fatalf("%s[%d]: expected nil EMAOnRSI during warmup, got %v", tc.tf, i, *p.EMAOnRSI)
+			}
+		}
+	}
+
+	// Wire format: rsi and emaOnRsi must be absent (omitempty), not null.
+	raw, err := json.Marshal(payload)
+	if err != nil {
+		t.Fatalf("marshal payload: %v", err)
+	}
+	var wire struct {
+		SeriesByTimeframe map[string]struct {
+			Points []struct {
+				RSI      *float64 `json:"rsi"`
+				EMAOnRSI *float64 `json:"emaOnRsi"`
+			} `json:"points"`
+		} `json:"seriesByTimeframe"`
+	}
+	if err := json.Unmarshal(raw, &wire); err != nil {
+		t.Fatalf("unmarshal wire: %v", err)
+	}
+	for _, tf := range []string{"1H", "4H", "1W", "1D"} {
+		for i, p := range wire.SeriesByTimeframe[tf].Points {
+			if p.RSI != nil {
+				t.Fatalf("wire %s[%d]: expected rsi omitted, got %v", tf, i, *p.RSI)
+			}
+			if p.EMAOnRSI != nil {
+				t.Fatalf("wire %s[%d]: expected emaOnRsi omitted, got %v", tf, i, *p.EMAOnRSI)
+			}
+		}
+	}
+}
+
 func buildIntradayBarsForTest(t *testing.T) []massive.Bar {
 	t.Helper()
 
@@ -252,6 +455,40 @@ func buildIntradayBarsForTest(t *testing.T) []massive.Bar {
 		}
 		bars = append(bars, bar)
 		price += 1
+	}
+
+	return bars
+}
+
+// buildMultiDayIntradayBarsForTest generates `days` full trading days of 15M bars
+// starting 2026-03-24. Each day produces 26 regular-session bars (09:30–15:45 ET).
+func buildMultiDayIntradayBarsForTest(t *testing.T, days int) []massive.Bar {
+	t.Helper()
+
+	location := technicalChartLocation
+	bars := make([]massive.Bar, 0, days*26)
+	price := 100.0
+
+	// Use weekdays only: Mon 2026-03-23 onward (skip weekends).
+	baseDate := time.Date(2026, 3, 24, 0, 0, 0, 0, location) // Tuesday
+	for d := 0; d < days; d++ {
+		day := baseDate.AddDate(0, 0, d)
+		sessionStart := time.Date(day.Year(), day.Month(), day.Day(), 9, 30, 0, 0, location)
+		sessionEnd := time.Date(day.Year(), day.Month(), day.Day(), 16, 0, 0, 0, location)
+		for cursor := sessionStart; cursor.Before(sessionEnd); cursor = cursor.Add(15 * time.Minute) {
+			open := price
+			close := price + 1
+			bars = append(bars, massive.Bar{
+				TimestampMs: cursor.UTC().UnixMilli(),
+				Date:        cursor.Format("2006-01-02"),
+				Open:        open,
+				High:        close + 0.25,
+				Low:         open - 0.25,
+				Close:       close,
+				Volume:      100,
+			})
+			price += 1
+		}
 	}
 
 	return bars
