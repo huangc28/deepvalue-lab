@@ -40,7 +40,7 @@ import type {
   TechnicalChartSeries,
 } from '../types/stocks'
 
-const DAILY_VISIBLE_POINTS = 220
+const DAILY_VISIBLE_POINTS = 120
 const INTRADAY_15M_VISIBLE_POINTS = 240
 const INTRADAY_1H_VISIBLE_POINTS = 240
 const INTRADAY_4H_VISIBLE_POINTS = 144

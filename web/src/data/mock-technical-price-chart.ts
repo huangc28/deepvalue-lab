@@ -4,7 +4,7 @@ import type {
   TechnicalPriceChart,
 } from '../types/stocks'
 
-const DAILY_VISIBLE_POINTS = 220
+const DAILY_VISIBLE_POINTS = 120
 const DAILY_HISTORY_POINTS = 756
 const INTRADAY_POINTS = 960
 const INTRADAY_BARS_PER_SESSION = 26
