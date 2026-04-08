@@ -5,27 +5,27 @@ ticker: TSM
 company: Taiwan Semiconductor Manufacturing Company Limited
 sector: Technology / Semiconductor Foundry
 business_type: capital-intensive semiconductor infrastructure
-analyzed: 2026-04-01
-verdict: fair
-price_at_analysis: 337.95
+analyzed: 2026-04-08
+verdict: fair to slightly attractive
+price_at_analysis: 340.96
 ---
 
 ## What the Price Implied
 
-At $337.95, the market priced a healthy 2026 base case rather than stress: about $13 of ADR EPS, roughly $153B of revenue, around a 44% net margin, and about a 26x forward multiple. That means strong AI and packaging demand are already in the stock; the remaining upside depends more on execution beating dilution than on an easy rerating.
+At $340.96, the market is pricing in standard execution of the 2nm (N2) ramp and approximately 25-30% revenue growth. It reflects a ~23-24x forward multiple, which is historically fair for TSMC's infrastructure role but does not account for potential margin upside from packaging (CoWoS) or AI-driven yield beats.
 
 ## Key Modeling Decisions
 
-- Used 2026 ADR EPS x target P/E as the primary lens because TSMC is a capital-intensive infrastructure bottleneck owner, and trailing FCF is distorted by a 2026 capex plan of $52-56B.
-- Used trailing FCF yield only as a cautionary cross-check. A low FCF yield does not automatically make TSM broken; it tells you the capex wave is real and should cap how aggressive the multiple can get.
-- Kept bear / base / bull at $294 / $375 / $446 so the model carries both sides at once: AI durability on one side, and the overseas fab plus N2 margin-capex governor on the other.
+- Used 2026/2027 Blended ADR EPS x target P/E as the primary lens.
+- Captured "expedited premiums" for CoWoS and N2 yield success (70-80%) as upside drivers for gross margins in late 2026.
+- Maintained a record capex assumption ($52B-56B) which provides a long-term demand floor but caps near-term FCF.
+- Set base fair value at $385 (26x multiple) reflecting an infrastructure premium for the AI "toll booth" status.
 
 ## Risk Lessons
 
-- TSMC can deserve an infrastructure premium without deserving unlimited multiple expansion.
-- Monthly revenue confirmation should move scenario confidence first, not automatically move the target multiple.
-- Large board capex approvals strengthen the demand floor and simultaneously weaken near-term FCF-based bull cases.
-- When the stock already discounts roughly 26x forward earnings, the debate shifts from "is demand real?" to "how much of the good news is already paid for?"
+- Geopolitical risk remains the primary discount factor; however, the US-Iran cease-fire (April 2026) has temporarily reduced the equity risk premium.
+- Record capex is a double-edged sword: it confirms massive AI demand but requires disciplined execution to avoid near-term FCF compression.
+- Technical consolidation below the 50d SMA ($348) suggests the market is waiting for the April 16 earnings call to confirm the next leg of the AI supercycle.
 
 ## Business Type Tags
 
@@ -33,6 +33,6 @@ At $337.95, the market priced a healthy 2026 base case rather than stress: about
 
 ## Archive
 
-- Full report (2026-04-01): `research/archive/2026/04/01/TSM.analysis.md`
-- EN JSON (2026-04-01): `research/archive/2026/04/01/TSM.stock-detail.json`
-- zh-TW JSON (2026-04-01): `research/archive/2026/04/01/TSM.stock-detail-zh-TW.json`
+- Full report (2026-04-08): `research/archive/2026/04/08/TSM-analysis.md`
+- EN JSON (2026-04-08): `research/archive/2026/04/08/TSM-stock-detail.json`
+- zh-TW JSON (2026-04-08): `research/archive/2026/04/08/TSM-stock-detail-zh-TW.json`
