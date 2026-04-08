@@ -73,6 +73,11 @@ export interface TechnicalChartPoint {
   low: number
   close: number
   volume?: number
+  rsi?: number
+  emaOnRsi?: number
+  mrcCenter?: number
+  mrcUpper?: number
+  mrcLower?: number
 }
 
 export interface TechnicalChartSeries {
@@ -87,7 +92,9 @@ export interface TechnicalPriceChart {
   source: 'mock' | 'live'
   defaultTimeframe: TechnicalChartTimeframe
   availableTimeframes: TechnicalChartTimeframe[]
-  seriesByTimeframe: Partial<Record<TechnicalChartTimeframe, TechnicalChartSeries>>
+  seriesByTimeframe: Partial<
+    Record<TechnicalChartTimeframe, TechnicalChartSeries>
+  >
 }
 
 export interface LegacyTechnicalChartSeries {
@@ -139,12 +146,18 @@ export interface TechnicalPriceChartPayload {
   reportId: string
   defaultTimeframe: TechnicalChartTimeframe
   availableTimeframes: TechnicalChartTimeframe[]
-  seriesByTimeframe: Partial<Record<TechnicalChartTimeframe, TechnicalChartSeries>>
+  seriesByTimeframe: Partial<
+    Record<TechnicalChartTimeframe, TechnicalChartSeries>
+  >
   indicators: TechnicalIndicatorSummary
+  points?: LegacyTechnicalPricePoint[]
+  latest?: TechnicalIndicatorSummary
 }
 
-export interface LegacyTechnicalPricePoint
-  extends Omit<TechnicalPricePoint, 'timestampUtc' | 'exchangeTimestamp'> {
+export interface LegacyTechnicalPricePoint extends Omit<
+  TechnicalPricePoint,
+  'timestampUtc' | 'exchangeTimestamp'
+> {
   timestampUtc?: string
   exchangeTimestamp?: string
   date?: string
