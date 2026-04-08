@@ -98,7 +98,9 @@ Reason:
   - dashed guide lines: `65` / `55` / `45`
   - `RSI(22)` as the primary line
   - `EMA(12) on RSI` as the lower-emphasis secondary line
-- `HLC3` and `MRC` remain out of scope for chart visualization in v1.
+- `MRC` may render as a low-emphasis price-pane overlay on `1D` when daily snapshot bands exist.
+- `HLC3` remains out of scope for direct chart visualization.
+- Non-`1D` MRC visualization remains out of scope until a per-timeframe MRC payload exists.
 
 ## V1 Non-Scope
 

@@ -11,12 +11,17 @@ const INTRADAY_BARS_PER_SESSION = 26
 const WEEKLY_VISIBLE_POINTS = 84
 const MOCK_RSI_PERIOD = 22
 const MOCK_EMA_ON_RSI_PERIOD = 12
+const MOCK_MRC_PERIOD = 20
 
 export function buildMockTechnicalPriceChart(
   stock: StockDetail,
 ): TechnicalPriceChart {
   const seed = hashTicker(stock.ticker)
-  const dailyPoints = buildSeries(stock, DAILY_HISTORY_POINTS, seed + DAILY_HISTORY_POINTS)
+  const dailyPoints = buildSeries(
+    stock,
+    DAILY_HISTORY_POINTS,
+    seed + DAILY_HISTORY_POINTS,
+  )
   const intradayRaw = buildIntradaySeries(
     stock,
     INTRADAY_POINTS,
@@ -25,7 +30,9 @@ export function buildMockTechnicalPriceChart(
   const intradayPoints = attachIndicators(intradayRaw)
   const weeklyPoints = attachIndicators(aggregateWeeklySeries(dailyPoints))
   const hourlyPoints = attachIndicators(aggregateSessionSeries(intradayRaw, 60))
-  const fourHourPoints = attachIndicators(aggregateSessionSeries(intradayRaw, 240))
+  const fourHourPoints = attachIndicators(
+    aggregateSessionSeries(intradayRaw, 240),
+  )
 
   return {
     source: 'mock',
@@ -71,7 +78,11 @@ export function buildMockTechnicalPriceChart(
   }
 }
 
-function buildIntradaySeries(stock: StockDetail, points: number, seed: number): TechnicalChartPoint[] {
+function buildIntradaySeries(
+  stock: StockDetail,
+  points: number,
+  seed: number,
+): TechnicalChartPoint[] {
   const random = createPrng(seed)
   const sessionDays = Math.ceil(points / INTRADAY_BARS_PER_SESSION)
   const dates = buildDates(sessionDays)
@@ -98,24 +109,38 @@ function buildIntradaySeries(stock: StockDetail, points: number, seed: number): 
   const pointsOut: TechnicalChartPoint[] = []
   let globalIndex = 0
 
-  for (let dayIndex = 0; dayIndex < dates.length && globalIndex < points; dayIndex += 1) {
+  for (
+    let dayIndex = 0;
+    dayIndex < dates.length && globalIndex < points;
+    dayIndex += 1
+  ) {
     const date = dates[dayIndex]
-    for (let slot = 0; slot < INTRADAY_BARS_PER_SESSION && globalIndex < points; slot += 1) {
+    for (
+      let slot = 0;
+      slot < INTRADAY_BARS_PER_SESSION && globalIndex < points;
+      slot += 1
+    ) {
       const close = roundPrice(anchored[globalIndex])
-      const previousClose = roundPrice(anchored[Math.max(globalIndex - 1, 0)] ?? close)
+      const previousClose = roundPrice(
+        anchored[Math.max(globalIndex - 1, 0)] ?? close,
+      )
       const gap = (random() - 0.5) * close * 0.0025
-      const open =
-        roundPrice(
-          globalIndex === 0
-            ? close * (1 - 0.0015)
-            : previousClose + gap,
-        )
+      const open = roundPrice(
+        globalIndex === 0 ? close * (1 - 0.0015) : previousClose + gap,
+      )
       const intradayRange = Math.max(
         Math.abs(close - open) * 1.15,
         close * (0.0015 + random() * 0.0015),
       )
-      const high = roundPrice(Math.max(open, close) + intradayRange * (0.35 + random() * 0.35))
-      const low = roundPrice(Math.max(0.01, Math.min(open, close) - intradayRange * (0.35 + random() * 0.35)))
+      const high = roundPrice(
+        Math.max(open, close) + intradayRange * (0.35 + random() * 0.35),
+      )
+      const low = roundPrice(
+        Math.max(
+          0.01,
+          Math.min(open, close) - intradayRange * (0.35 + random() * 0.35),
+        ),
+      )
       const timestamp = buildIntradayTimestamp(date, slot)
 
       pointsOut.push({
@@ -134,7 +159,11 @@ function buildIntradaySeries(stock: StockDetail, points: number, seed: number): 
   return pointsOut
 }
 
-function buildSeries(stock: StockDetail, points: number, seed: number): TechnicalChartPoint[] {
+function buildSeries(
+  stock: StockDetail,
+  points: number,
+  seed: number,
+): TechnicalChartPoint[] {
   const random = createPrng(seed)
   const endPrice = stock.currentPrice
   const startPrice = getStartPrice(stock, points, random)
@@ -161,14 +190,26 @@ function buildSeries(stock: StockDetail, points: number, seed: number): Technica
   const rsiSeries = calculateRsi(roundedCloses, MOCK_RSI_PERIOD)
   const emaOnRsiSeries = calculateEma(rsiSeries, MOCK_EMA_ON_RSI_PERIOD)
 
-  return dates.map((date, index) => {
+  const dailyPoints = dates.map((date, index) => {
     const close = roundedCloses[index] ?? roundPrice(anchored[index])
     const previousClose = roundedCloses[Math.max(index - 1, 0)] ?? close
     const overnightGap = (random() - 0.5) * close * 0.012
-    const open = roundPrice(index === 0 ? close * (1 - 0.004) : previousClose + overnightGap)
-    const intradayRange = Math.max(Math.abs(close - open) * 1.35, close * (0.008 + random() * 0.01))
-    const high = roundPrice(Math.max(open, close) + intradayRange * (0.35 + random() * 0.45))
-    const low = roundPrice(Math.max(0.01, Math.min(open, close) - intradayRange * (0.35 + random() * 0.45)))
+    const open = roundPrice(
+      index === 0 ? close * (1 - 0.004) : previousClose + overnightGap,
+    )
+    const intradayRange = Math.max(
+      Math.abs(close - open) * 1.35,
+      close * (0.008 + random() * 0.01),
+    )
+    const high = roundPrice(
+      Math.max(open, close) + intradayRange * (0.35 + random() * 0.45),
+    )
+    const low = roundPrice(
+      Math.max(
+        0.01,
+        Math.min(open, close) - intradayRange * (0.35 + random() * 0.45),
+      ),
+    )
 
     return {
       timestampUtc: `${date}T20:00:00Z`,
@@ -181,9 +222,14 @@ function buildSeries(stock: StockDetail, points: number, seed: number): Technica
       emaOnRsi: emaOnRsiSeries[index],
     }
   })
+
+  return attachMeanReversionChannel(dailyPoints)
 }
 
-function aggregateSessionSeries(points: TechnicalChartPoint[], windowMinutes: number): TechnicalChartPoint[] {
+function aggregateSessionSeries(
+  points: TechnicalChartPoint[],
+  windowMinutes: number,
+): TechnicalChartPoint[] {
   if (points.length === 0) {
     return []
   }
@@ -226,7 +272,9 @@ function aggregateSessionSeries(points: TechnicalChartPoint[], windowMinutes: nu
   return aggregated
 }
 
-function aggregateWeeklySeries(points: TechnicalChartPoint[]): TechnicalChartPoint[] {
+function aggregateWeeklySeries(
+  points: TechnicalChartPoint[],
+): TechnicalChartPoint[] {
   if (points.length === 0) {
     return []
   }
@@ -247,6 +295,9 @@ function aggregateWeeklySeries(points: TechnicalChartPoint[]): TechnicalChartPoi
         ...point,
         rsi: undefined,
         emaOnRsi: undefined,
+        mrcCenter: undefined,
+        mrcUpper: undefined,
+        mrcLower: undefined,
       }
       continue
     }
@@ -345,7 +396,10 @@ function buildIntradayTimestamp(date: string, slot: number) {
 function getSessionBucketStart(barTime: Date, windowMinutes: number) {
   const sessionOpen = new Date(barTime)
   sessionOpen.setUTCHours(13, 30, 0, 0)
-  const elapsedMinutes = Math.max(0, Math.floor((barTime.getTime() - sessionOpen.getTime()) / 60000))
+  const elapsedMinutes = Math.max(
+    0,
+    Math.floor((barTime.getTime() - sessionOpen.getTime()) / 60000),
+  )
   const bucketIndex = Math.floor(elapsedMinutes / windowMinutes)
   return new Date(sessionOpen.getTime() + bucketIndex * windowMinutes * 60000)
 }
@@ -385,17 +439,22 @@ function calculateRsi(values: number[], period: number) {
 
   let averageGain = sumGain / period
   let averageLoss = sumLoss / period
-  out[period] = averageLoss === 0 ? 100 : roundIndicator(100 - (100 / (1 + (averageGain / averageLoss))))
+  out[period] =
+    averageLoss === 0
+      ? 100
+      : roundIndicator(100 - 100 / (1 + averageGain / averageLoss))
 
   for (let index = period + 1; index < values.length; index += 1) {
     const change = values[index]! - values[index - 1]!
     const gain = change > 0 ? change : 0
     const loss = change < 0 ? -change : 0
 
-    averageGain = ((averageGain * (period - 1)) + gain) / period
-    averageLoss = ((averageLoss * (period - 1)) + loss) / period
+    averageGain = (averageGain * (period - 1) + gain) / period
+    averageLoss = (averageLoss * (period - 1) + loss) / period
     out[index] =
-      averageLoss === 0 ? 100 : roundIndicator(100 - (100 / (1 + (averageGain / averageLoss))))
+      averageLoss === 0
+        ? 100
+        : roundIndicator(100 - 100 / (1 + averageGain / averageLoss))
   }
 
   return out
@@ -424,14 +483,16 @@ function calculateEma(values: Array<number | undefined>, period: number) {
       continue
     }
 
-    ema = (value * multiplier) + (ema * (1 - multiplier))
+    ema = value * multiplier + ema * (1 - multiplier)
     out[index] = roundIndicator(ema)
   }
 
   return out
 }
 
-function attachIndicators(points: TechnicalChartPoint[]): TechnicalChartPoint[] {
+function attachIndicators(
+  points: TechnicalChartPoint[],
+): TechnicalChartPoint[] {
   const closes = points.map((p) => p.close)
   const rsiSeries = calculateRsi(closes, MOCK_RSI_PERIOD)
   const emaOnRsiSeries = calculateEma(rsiSeries, MOCK_EMA_ON_RSI_PERIOD)
@@ -440,6 +501,49 @@ function attachIndicators(points: TechnicalChartPoint[]): TechnicalChartPoint[] 
     rsi: rsiSeries[index],
     emaOnRsi: emaOnRsiSeries[index],
   }))
+}
+
+function attachMeanReversionChannel(
+  points: TechnicalChartPoint[],
+): TechnicalChartPoint[] {
+  const hlc3Series = points.map((point) =>
+    roundIndicator((point.high + point.low + point.close) / 3),
+  )
+  const { center, upper, lower } = calculateMrc(hlc3Series, MOCK_MRC_PERIOD)
+
+  return points.map((point, index) => ({
+    ...point,
+    mrcCenter: center[index],
+    mrcUpper: upper[index],
+    mrcLower: lower[index],
+  }))
+}
+
+function calculateMrc(values: number[], period: number) {
+  const center = new Array<number | undefined>(values.length).fill(undefined)
+  const upper = new Array<number | undefined>(values.length).fill(undefined)
+  const lower = new Array<number | undefined>(values.length).fill(undefined)
+
+  if (period <= 0 || values.length < period) {
+    return { center, upper, lower }
+  }
+
+  for (let index = period - 1; index < values.length; index += 1) {
+    const window = values.slice(index - period + 1, index + 1)
+    const mean = window.reduce((sum, value) => sum + value, 0) / period
+    const variance =
+      window.reduce((sum, value) => {
+        const diff = value - mean
+        return sum + diff * diff
+      }, 0) / period
+    const stddev = Math.sqrt(variance)
+
+    center[index] = roundIndicator(mean)
+    upper[index] = roundIndicator(mean + 2 * stddev)
+    lower[index] = roundIndicator(mean - 2 * stddev)
+  }
+
+  return { center, upper, lower }
 }
 
 function gaussian(value: number, mean: number, deviation: number) {
@@ -465,13 +569,17 @@ function roundIndicator(value: number) {
 
 function getIsoWeekKey(dateString: string) {
   const date = new Date(`${dateString}T00:00:00Z`)
-  const target = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()))
+  const target = new Date(
+    Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()),
+  )
   const dayNum = target.getUTCDay() || 7
 
   target.setUTCDate(target.getUTCDate() + 4 - dayNum)
 
   const yearStart = new Date(Date.UTC(target.getUTCFullYear(), 0, 1))
-  const week = Math.ceil((((target.getTime() - yearStart.getTime()) / 86400000) + 1) / 7)
+  const week = Math.ceil(
+    ((target.getTime() - yearStart.getTime()) / 86400000 + 1) / 7,
+  )
 
   return `${target.getUTCFullYear()}-W${String(week).padStart(2, '0')}`
 }

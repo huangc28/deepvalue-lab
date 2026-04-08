@@ -272,8 +272,12 @@ After generating both `StockDetail` JSONs:
      --detail /abs/path/research/archive/YYYY/MM/DD/VST-stock-detail.json \
      --detail-zh /abs/path/research/archive/YYYY/MM/DD/VST-stock-detail-zh-TW.json \
      --base-url http://localhost:9000 \
-     --provenance codex-gpt-5
+     --provenance <agent>
    ```
+   Set `--provenance` to reflect the actual agent running the analysis:
+   - Gemini CLI → `gemini-2.5-pro`
+   - Codex CLI → `codex-gpt-5`
+   - Claude Code → `claude-sonnet`
 4. Use `--payload` first if you need to inspect the JSON request before sending it.
 5. Verify the response is `201` and includes `reportId`, `r2ReportKey`, `r2DetailKey`, and, when zh-TW JSON is sent, `r2DetailZhTWKey`.
 4. If the user declines, skip publish. The report and structured data remain in the conversation only.

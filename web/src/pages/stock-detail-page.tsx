@@ -45,7 +45,13 @@ const INTRADAY_15M_VISIBLE_POINTS = 240
 const INTRADAY_1H_VISIBLE_POINTS = 240
 const INTRADAY_4H_VISIBLE_POINTS = 144
 const WEEKLY_VISIBLE_POINTS = 84
-const TIMEFRAME_ORDER: TechnicalChartTimeframe[] = ['15M', '1H', '4H', '1D', '1W']
+const TIMEFRAME_ORDER: TechnicalChartTimeframe[] = [
+  '15M',
+  '1H',
+  '4H',
+  '1D',
+  '1W',
+]
 
 function isTimeframePayload(
   payload: TechnicalPriceChartPayload | LegacyTechnicalPriceChartPayload,
@@ -79,9 +85,13 @@ function getVisiblePointCount(timeframe: TechnicalChartTimeframe) {
 }
 
 function normalizeSeriesByTimeframe(
-  seriesByTimeframe: Partial<Record<TechnicalChartTimeframe, TechnicalChartSeries>>,
+  seriesByTimeframe: Partial<
+    Record<TechnicalChartTimeframe, TechnicalChartSeries>
+  >,
 ) {
-  const normalized: Partial<Record<TechnicalChartTimeframe, TechnicalChartSeries>> = {}
+  const normalized: Partial<
+    Record<TechnicalChartTimeframe, TechnicalChartSeries>
+  > = {}
 
   for (const [timeframe, series] of Object.entries(seriesByTimeframe) as Array<
     [TechnicalChartTimeframe, TechnicalChartSeries | undefined]
@@ -98,12 +108,16 @@ function normalizeSeriesByTimeframe(
 
 function resolveAvailableTimeframes(
   availableTimeframes: TechnicalChartTimeframe[] | undefined,
-  seriesByTimeframe: Partial<Record<TechnicalChartTimeframe, TechnicalChartSeries>>,
+  seriesByTimeframe: Partial<
+    Record<TechnicalChartTimeframe, TechnicalChartSeries>
+  >,
 ) {
   const filtered = (availableTimeframes ?? TIMEFRAME_ORDER).filter(
     (timeframe) => seriesByTimeframe[timeframe],
   )
-  const ordered = [...filtered].sort((left, right) => timeframeRank(left) - timeframeRank(right))
+  const ordered = [...filtered].sort(
+    (left, right) => timeframeRank(left) - timeframeRank(right),
+  )
 
   if (ordered.length > 0) {
     return ordered
@@ -124,14 +138,16 @@ function normalizeLegacyDailyPoints(
     volume?: number
     rsi?: number
     emaOnRsi?: number
+    mrcCenter?: number
+    mrcUpper?: number
+    mrcLower?: number
   }>,
 ) {
   return points
     .slice(-Math.min(DAILY_VISIBLE_POINTS, points.length))
     .map((point) => ({
       timestampUtc:
-        point.timestampUtc ??
-        `${point.date ?? '1970-01-01'}T00:00:00Z`,
+        point.timestampUtc ?? `${point.date ?? '1970-01-01'}T00:00:00Z`,
       exchangeTimestamp:
         point.exchangeTimestamp ??
         `${point.date ?? '1970-01-01'}T00:00:00-05:00`,
@@ -142,11 +158,18 @@ function normalizeLegacyDailyPoints(
       volume: point.volume,
       rsi: point.rsi,
       emaOnRsi: point.emaOnRsi,
+      mrcCenter: point.mrcCenter,
+      mrcUpper: point.mrcUpper,
+      mrcLower: point.mrcLower,
     }))
 }
 
-function normalizeLegacyChart(chart: LegacyTechnicalPriceChart): TechnicalPriceChartData | null {
-  const series = chart.series?.find((candidate) => candidate.timeframe === '1D') ?? chart.series?.[0]
+function normalizeLegacyChart(
+  chart: LegacyTechnicalPriceChart,
+): TechnicalPriceChartData | null {
+  const series =
+    chart.series?.find((candidate) => candidate.timeframe === '1D') ??
+    chart.series?.[0]
   if (!series) {
     return null
   }
@@ -175,15 +198,18 @@ function normalizeAnyChart(
   }
 
   if ('seriesByTimeframe' in chart) {
-    const seriesByTimeframe = normalizeSeriesByTimeframe(chart.seriesByTimeframe)
+    const seriesByTimeframe = normalizeSeriesByTimeframe(
+      chart.seriesByTimeframe,
+    )
     const availableTimeframes = resolveAvailableTimeframes(
       chart.availableTimeframes,
       seriesByTimeframe,
     )
-    const defaultTimeframe =
-      availableTimeframes.includes(chart.defaultTimeframe)
-        ? chart.defaultTimeframe
-        : availableTimeframes[0] ?? chart.defaultTimeframe
+    const defaultTimeframe = availableTimeframes.includes(
+      chart.defaultTimeframe,
+    )
+      ? chart.defaultTimeframe
+      : (availableTimeframes[0] ?? chart.defaultTimeframe)
 
     if (availableTimeframes.length === 0) {
       return {
@@ -207,15 +233,18 @@ function snapshotToChart(
   payload: TechnicalPriceChartPayload | LegacyTechnicalPriceChartPayload,
 ): TechnicalPriceChartData {
   if (isTimeframePayload(payload)) {
-    const seriesByTimeframe = normalizeSeriesByTimeframe(payload.seriesByTimeframe)
+    const seriesByTimeframe = normalizeSeriesByTimeframe(
+      payload.seriesByTimeframe,
+    )
     const availableTimeframes = resolveAvailableTimeframes(
       payload.availableTimeframes,
       seriesByTimeframe,
     )
-    const defaultTimeframe =
-      availableTimeframes.includes(payload.defaultTimeframe)
-        ? payload.defaultTimeframe
-        : availableTimeframes[0] ?? payload.defaultTimeframe
+    const defaultTimeframe = availableTimeframes.includes(
+      payload.defaultTimeframe,
+    )
+      ? payload.defaultTimeframe
+      : (availableTimeframes[0] ?? payload.defaultTimeframe)
 
     if (availableTimeframes.length === 0) {
       return {
@@ -233,11 +262,20 @@ function snapshotToChart(
       seriesByTimeframe,
     }
 
-    // Phase 1 keeps per-point RSI/EMA on the legacy daily points path.
-    // Reattach those values to the normalized 1D series so rendering can
-    // consume one consistent chart model.
+    // Daily overlay fields remain on the legacy points path while the
+    // timeframe contract expands. Reattach them to the normalized 1D
+    // series so rendering can consume one consistent chart model.
     if (payload.points?.length && result.seriesByTimeframe['1D']) {
-      const indicatorsByDate = new Map<string, { rsi?: number; emaOnRsi?: number }>()
+      const indicatorsByDate = new Map<
+        string,
+        {
+          rsi?: number
+          emaOnRsi?: number
+          mrcCenter?: number
+          mrcUpper?: number
+          mrcLower?: number
+        }
+      >()
 
       for (const point of payload.points) {
         if (!point.date) {
@@ -247,14 +285,26 @@ function snapshotToChart(
         indicatorsByDate.set(point.date, {
           rsi: point.rsi,
           emaOnRsi: point.emaOnRsi,
+          mrcCenter: point.mrcCenter,
+          mrcUpper: point.mrcUpper,
+          mrcLower: point.mrcLower,
         })
       }
 
-      result.seriesByTimeframe['1D'].points = result.seriesByTimeframe['1D'].points.map((point) => {
+      result.seriesByTimeframe['1D'].points = result.seriesByTimeframe[
+        '1D'
+      ].points.map((point) => {
         const dateKey = point.timestampUtc.slice(0, 10)
         const indicators = indicatorsByDate.get(dateKey)
 
-        if (!indicators || (indicators.rsi === undefined && indicators.emaOnRsi === undefined)) {
+        if (
+          !indicators ||
+          (indicators.rsi === undefined &&
+            indicators.emaOnRsi === undefined &&
+            indicators.mrcCenter === undefined &&
+            indicators.mrcUpper === undefined &&
+            indicators.mrcLower === undefined)
+        ) {
           return point
         }
 
@@ -262,6 +312,9 @@ function snapshotToChart(
           ...point,
           rsi: indicators.rsi,
           emaOnRsi: indicators.emaOnRsi,
+          mrcCenter: indicators.mrcCenter,
+          mrcUpper: indicators.mrcUpper,
+          mrcLower: indicators.mrcLower,
         }
       })
     }
@@ -308,11 +361,15 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
       }
     : mockStock
   const useMockHistory = !liveStock && !!mockStock
-  const stockFallbackChart = normalizeAnyChart(stock?.technicalPriceChart ?? undefined)
+  const stockFallbackChart = normalizeAnyChart(
+    stock?.technicalPriceChart ?? undefined,
+  )
   const reportsQuery = useStockReports(ticker, locale, Boolean(liveStock))
   const historicalReports = reportsQuery.data ?? []
   const latestReportId =
-    historicalReports.find((r) => r.latest)?.reportId ?? historicalReports[0]?.reportId ?? null
+    historicalReports.find((r) => r.latest)?.reportId ??
+    historicalReports[0]?.reportId ??
+    null
   const snapshotQuery = useTechnicalSnapshot(
     ticker,
     latestReportId,
@@ -329,7 +386,7 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
   const resolvedSelectedId =
     selectedId && reportSummaryMap.has(selectedId)
       ? selectedId
-      : historicalReports[0]?.reportId ?? null
+      : (historicalReports[0]?.reportId ?? null)
   const resolvedCompareId =
     compareId &&
     compareId !== resolvedSelectedId &&
@@ -393,10 +450,13 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
     )
   }
 
-  if (error || !stock) return <ErrorState label={`value-deck://stocks/${ticker}`} />
+  if (error || !stock)
+    return <ErrorState label={`value-deck://stocks/${ticker}`} />
 
   const nearestScenario = getNearestScenario(stock)
-  const historyItems = useMockHistory ? (stock.history ?? mockStock?.history ?? []) : []
+  const historyItems = useMockHistory
+    ? (stock.history ?? mockStock?.history ?? [])
+    : []
 
   return (
     <div className="flex flex-col gap-8">
@@ -603,7 +663,9 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
               [m.detail.pricedIn, text(stock.currentPriceImplies)],
               [
                 m.detail.nextStep,
-                text(stock.monitorNext[0] ?? 'Review the next material update.'),
+                text(
+                  stock.monitorNext[0] ?? 'Review the next material update.',
+                ),
               ],
               [
                 m.detail.whatBreaksThis,
@@ -659,7 +721,10 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
         >
           <InfoList
             items={[
-              [m.detail.currentStatus, m.status.thesisValue[stock.thesisStatus]],
+              [
+                m.detail.currentStatus,
+                m.status.thesisValue[stock.thesisStatus],
+              ],
               [
                 m.detail.whatRemainsTrue,
                 text(stock.thesisBullets[0] ?? stock.thesisStatement),
@@ -720,9 +785,13 @@ export function StockDetailPage({ ticker }: StockDetailPageProps) {
           description={m.detail.historyDescription}
         >
           <HistoricalRevisionLedger
-            reports={useMockHistory ? mockStock?.historicalReports : reportsQuery.data}
+            reports={
+              useMockHistory ? mockStock?.historicalReports : reportsQuery.data
+            }
             reportDetails={
-              useMockHistory ? mockStock?.historicalReportDetails : liveReportDetails
+              useMockHistory
+                ? mockStock?.historicalReportDetails
+                : liveReportDetails
             }
             legacyItems={historyItems}
             mode={useMockHistory ? 'legacy' : 'live'}
@@ -806,7 +875,6 @@ function HeroInsightCard({
     </div>
   )
 }
-
 
 function ResearchSection({
   fileLabel,
@@ -1081,9 +1149,7 @@ function NewsToModelCard({
       className="w-full cursor-pointer rounded-[1.1rem] border border-[var(--line-subtle)] bg-[var(--surface-muted)] px-4 py-4 text-left transition hover:border-[var(--line-strong)]"
     >
       <div className="flex items-start justify-between gap-3">
-        <p className="text-sm leading-7 text-[var(--ink-secondary)]">
-          {event}
-        </p>
+        <p className="text-sm leading-7 text-[var(--ink-secondary)]">{event}</p>
         <span className="mt-1 shrink-0 rounded-full border border-[var(--line-subtle)] bg-[var(--surface-chip)] px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-[var(--ink-muted)]">
           {scenario}
         </span>
