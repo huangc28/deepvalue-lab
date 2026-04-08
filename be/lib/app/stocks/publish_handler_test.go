@@ -67,6 +67,12 @@ type nopPublisher struct{}
 
 func (nopPublisher) Publish(_ context.Context, _ string, _ []byte) error { return nil }
 
+type failingPublisher struct {
+	err error
+}
+
+func (p failingPublisher) Publish(_ context.Context, _ string, _ []byte) error { return p.err }
+
 func TestPublishHandler_ENOnlyKeepsZhTWDefaults(t *testing.T) {
 	queries := &fakePublishQueries{}
 	storage := newFakePublishStorage()
@@ -225,6 +231,49 @@ func TestPublishHandler_InvalidStockDetailZhTWReturns422(t *testing.T) {
 	}
 }
 
+func TestPublishHandler_EnqueueFailureMarksSnapshotFailedAndReturns500(t *testing.T) {
+	queries := &fakePublishQueries{}
+	storage := newFakePublishStorage()
+	handler := &PublishHandler{
+		queries:   queries,
+		r2Client:  storage,
+		publisher: failingPublisher{err: context.DeadlineExceeded},
+		logger:    zap.NewNop(),
+	}
+
+	body := map[string]any{
+		"report": map[string]any{
+			"markdown":   "# report",
+			"provenance": "unit-test",
+		},
+		"stockDetail": sampleStockDetail("TSM", "Taiwan Semiconductor", "Foundry"),
+	}
+
+	req := httptest.NewRequest(http.MethodPost, "/v1/stocks/tsm/reports", mustJSONBody(t, body))
+	rec := httptest.NewRecorder()
+
+	handler.Handle(rec, req)
+
+	if rec.Code != http.StatusInternalServerError {
+		t.Fatalf("expected 500, got %d body=%s", rec.Code, rec.Body.String())
+	}
+	if len(queries.upsertTechnicalSnapshotCalls) != 2 {
+		t.Fatalf("expected pending + failed technical snapshot upserts, got %d", len(queries.upsertTechnicalSnapshotCalls))
+	}
+
+	pendingArg := queries.upsertTechnicalSnapshotCalls[0]
+	failedArg := queries.upsertTechnicalSnapshotCalls[1]
+	if pendingArg.Status != "pending" {
+		t.Fatalf("expected first status pending, got %q", pendingArg.Status)
+	}
+	if failedArg.Status != "failed" {
+		t.Fatalf("expected second status failed, got %q", failedArg.Status)
+	}
+	if !strings.Contains(failedArg.ErrorMessage, "enqueue technical snapshot job") {
+		t.Fatalf("expected enqueue error message, got %q", failedArg.ErrorMessage)
+	}
+}
+
 func mustJSONBody(t *testing.T, v any) *bytes.Reader {
 	t.Helper()
 	data, err := json.Marshal(v)
@@ -242,11 +291,11 @@ func sampleStockDetail(ticker, companyName, businessType string) map[string]any 
 		"businessType":         businessType,
 		"currentPrice":         100,
 		"valuationStatus":      "fair",
-		"newsImpactStatus":     "neutral",
+		"newsImpactStatus":     "unchanged",
 		"thesisStatus":         "intact",
 		"technicalEntryStatus": "neutral",
-		"actionState":          "watch",
-		"dashboardBucket":      "core",
+		"actionState":          "fairly valued",
+		"dashboardBucket":      "needs-review",
 		"baseFairValue":        120,
 		"bearFairValue":        80,
 		"bullFairValue":        150,

@@ -29,7 +29,7 @@ properties:
             metadata:
               queueName: technical_snapshot_jobs
               mode: QueueLength
-              value: "5"
+              value: "1"
               protocol: http
             auth:
               - secretRef: rabbitmq-management-url

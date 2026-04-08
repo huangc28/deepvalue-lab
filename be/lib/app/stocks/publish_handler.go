@@ -216,8 +216,20 @@ func (h *PublishHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		h.logger.Error("marshal technical snapshot job", zap.String("ticker", ticker), zap.String("report_id", reportID), zap.Error(err))
-	} else if err := h.publisher.Publish(r.Context(), TechnicalSnapshotJobQueue, jobBody); err != nil {
-		h.logger.Warn("enqueue technical snapshot job", zap.String("ticker", ticker), zap.String("report_id", reportID), zap.Error(err))
+		if upsertErr := h.markTechnicalSnapshotFailed(r.Context(), ticker, reportID, publishedAtMs, fmt.Sprintf("marshal technical snapshot job: %s", err.Error())); upsertErr != nil {
+			h.logger.Error("mark technical snapshot failed after marshal error", zap.String("ticker", ticker), zap.String("report_id", reportID), zap.Error(upsertErr))
+		}
+		render.ChiErr(w, r, http.StatusInternalServerError, fmt.Errorf("failed to enqueue technical snapshot job"))
+		return
+	}
+
+	if err := h.publisher.Publish(r.Context(), TechnicalSnapshotJobQueue, jobBody); err != nil {
+		h.logger.Error("enqueue technical snapshot job", zap.String("ticker", ticker), zap.String("report_id", reportID), zap.Error(err))
+		if upsertErr := h.markTechnicalSnapshotFailed(r.Context(), ticker, reportID, publishedAtMs, fmt.Sprintf("enqueue technical snapshot job: %s", err.Error())); upsertErr != nil {
+			h.logger.Error("mark technical snapshot failed after enqueue error", zap.String("ticker", ticker), zap.String("report_id", reportID), zap.Error(upsertErr))
+		}
+		render.ChiErr(w, r, http.StatusInternalServerError, fmt.Errorf("failed to enqueue technical snapshot job"))
+		return
 	}
 
 	if err := h.queries.UpsertSubscription(r.Context(), turso_models.UpsertSubscriptionParams{
@@ -236,6 +248,20 @@ func (h *PublishHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		"r2DetailZhTWKey": r2DetailZhTWKey,
 		"ticker":          ticker,
 		"publishedAtMs":   publishedAtMs,
+	})
+}
+
+func (h *PublishHandler) markTechnicalSnapshotFailed(ctx context.Context, ticker, reportID string, publishedAtMs int64, errMsg string) error {
+	return h.queries.UpsertTechnicalSnapshot(ctx, turso_models.UpsertTechnicalSnapshotParams{
+		Ticker:            ticker,
+		ReportID:          reportID,
+		Status:            "failed",
+		Source:            "",
+		Provider:          "",
+		R2SnapshotKey:     "",
+		R2SnapshotZhTwKey: "",
+		ErrorMessage:      errMsg,
+		PublishedAtMs:     publishedAtMs,
 	})
 }
 
