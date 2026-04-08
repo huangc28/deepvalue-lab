@@ -20,8 +20,8 @@ properties:
           - name: LOG_LEVEL
             value: info
     scale:
-      minReplicas: 0
-      maxReplicas: 3
+      minReplicas: 1
+      maxReplicas: 1
       rules:
         - name: rabbitmq-scaler
           custom:
