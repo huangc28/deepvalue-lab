@@ -3,6 +3,7 @@ package rabbitmq
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"strings"
 	"time"
 
@@ -20,6 +21,10 @@ func NewConnection(cfg *config.Config, lc fx.Lifecycle, logger *zap.Logger) (*am
 		return nil, fmt.Errorf("rabbitmq: RABBITMQ_URL is required")
 	}
 
+	logger.Info("connecting rabbitmq",
+		zap.String("target", summarizeURL(url)),
+	)
+
 	conn, err := amqp.Dial(url)
 	if err != nil {
 		return nil, fmt.Errorf("rabbitmq: dial: %w", err)
@@ -33,6 +38,30 @@ func NewConnection(cfg *config.Config, lc fx.Lifecycle, logger *zap.Logger) (*am
 	})
 
 	return conn, nil
+}
+
+func summarizeURL(raw string) string {
+	parsed, err := url.Parse(raw)
+	if err != nil {
+		return "invalid"
+	}
+
+	host := parsed.Hostname()
+	if host == "" {
+		host = parsed.Host
+	}
+
+	port := parsed.Port()
+	vhost := strings.TrimPrefix(parsed.Path, "/")
+	if vhost == "" {
+		vhost = "(default)"
+	}
+
+	if port != "" {
+		return fmt.Sprintf("%s://%s:%s/%s", parsed.Scheme, host, port, vhost)
+	}
+
+	return fmt.Sprintf("%s://%s/%s", parsed.Scheme, host, vhost)
 }
 
 // Publisher publishes messages to a durable queue.
