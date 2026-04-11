@@ -34,6 +34,7 @@ import type {
   HistoricalReportDetail,
   LegacyTechnicalPriceChart,
   LegacyTechnicalPriceChartPayload,
+  TechnicalMrcPoint,
   TechnicalPriceChart as TechnicalPriceChartData,
   TechnicalPriceChartPayload,
   TechnicalChartTimeframe,
@@ -145,23 +146,38 @@ function normalizeLegacyDailyPoints(
 ) {
   return points
     .slice(-Math.min(DAILY_VISIBLE_POINTS, points.length))
-    .map((point) => ({
-      timestampUtc:
-        point.timestampUtc ?? `${point.date ?? '1970-01-01'}T00:00:00Z`,
-      exchangeTimestamp:
-        point.exchangeTimestamp ??
-        `${point.date ?? '1970-01-01'}T00:00:00-05:00`,
-      open: point.open,
-      high: point.high,
-      low: point.low,
-      close: point.close,
-      volume: point.volume,
-      rsi: point.rsi,
-      emaOnRsi: point.emaOnRsi,
-      mrcCenter: point.mrcCenter,
-      mrcUpper: point.mrcUpper,
-      mrcLower: point.mrcLower,
-    }))
+    .map((point) => {
+      // Build degraded mrc shape from legacy fields (no inner bands available)
+      const legacyMrc: TechnicalMrcPoint | undefined =
+        point.mrcCenter !== undefined ||
+        point.mrcUpper !== undefined ||
+        point.mrcLower !== undefined
+          ? {
+              center: point.mrcCenter,
+              outerUpper: point.mrcUpper,
+              outerLower: point.mrcLower,
+            }
+          : undefined
+
+      return {
+        timestampUtc:
+          point.timestampUtc ?? `${point.date ?? '1970-01-01'}T00:00:00Z`,
+        exchangeTimestamp:
+          point.exchangeTimestamp ??
+          `${point.date ?? '1970-01-01'}T00:00:00-05:00`,
+        open: point.open,
+        high: point.high,
+        low: point.low,
+        close: point.close,
+        volume: point.volume,
+        rsi: point.rsi,
+        emaOnRsi: point.emaOnRsi,
+        mrc: legacyMrc,
+        mrcCenter: point.mrcCenter,
+        mrcUpper: point.mrcUpper,
+        mrcLower: point.mrcLower,
+      }
+    })
 }
 
 function normalizeLegacyChart(
@@ -262,6 +278,11 @@ function snapshotToChart(
       seriesByTimeframe,
     }
 
+    // v2 snapshots embed mrc directly in seriesByTimeframe points — no reattachment needed.
+    if (payload.snapshotVersion === 'technical-chart.v2') {
+      return result
+    }
+
     // Daily overlay fields remain on the legacy points path while the
     // timeframe contract expands. Reattach them to the normalized 1D
     // series so rendering can consume one consistent chart model.
@@ -308,10 +329,23 @@ function snapshotToChart(
           return point
         }
 
+        // Build degraded mrc shape from reattached legacy fields (no inner bands)
+        const legacyMrc: TechnicalMrcPoint | undefined =
+          indicators.mrcCenter !== undefined ||
+          indicators.mrcUpper !== undefined ||
+          indicators.mrcLower !== undefined
+            ? {
+                center: indicators.mrcCenter,
+                outerUpper: indicators.mrcUpper,
+                outerLower: indicators.mrcLower,
+              }
+            : undefined
+
         return {
           ...point,
           rsi: indicators.rsi,
           emaOnRsi: indicators.emaOnRsi,
+          mrc: legacyMrc,
           mrcCenter: indicators.mrcCenter,
           mrcUpper: indicators.mrcUpper,
           mrcLower: indicators.mrcLower,

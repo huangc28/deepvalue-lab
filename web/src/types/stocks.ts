@@ -65,6 +65,33 @@ export interface SourceReference {
   url?: string
 }
 
+// Canonical MRC types (TradingView-aligned, Phase 2+)
+export type MrcZoneClassification =
+  | 'inside_mean'
+  | 'inner_upper_zone'
+  | 'inner_lower_zone'
+  | 'outer_upper_zone'
+  | 'outer_lower_zone'
+  | 'outside_upper'
+  | 'outside_lower'
+
+export interface TechnicalMrcMetadata {
+  algorithmVersion: 'tradingview-mrc-v1'
+  source: 'hlc3'
+  smoother: 'SuperSmoother'
+  length: number
+  innerMultiplier: number
+  outerMultiplier: number
+}
+
+export interface TechnicalMrcPoint {
+  center?: number
+  innerUpper?: number
+  innerLower?: number
+  outerUpper?: number
+  outerLower?: number
+}
+
 export interface TechnicalChartPoint {
   timestampUtc: string
   exchangeTimestamp: string
@@ -75,6 +102,9 @@ export interface TechnicalChartPoint {
   volume?: number
   rsi?: number
   emaOnRsi?: number
+  // Canonical MRC shape (snapshotVersion: technical-chart.v2+)
+  mrc?: TechnicalMrcPoint
+  // Legacy approximate MRC fields — kept for backward compat during migration
   mrcCenter?: number
   mrcUpper?: number
   mrcLower?: number
@@ -85,6 +115,8 @@ export interface TechnicalChartSeries {
   timezone: string
   sessionMode: 'market-hours' | 'extended' | 'unknown'
   lookbackLabel: string
+  // Populated for canonical MRC snapshots (snapshotVersion: technical-chart.v2+)
+  mrcMeta?: TechnicalMrcMetadata
   points: TechnicalChartPoint[]
 }
 
@@ -129,6 +161,9 @@ export interface TechnicalPricePoint {
   hlc3?: number
   rsi?: number
   emaOnRsi?: number
+  // Canonical MRC shape (snapshotVersion: technical-chart.v2+)
+  mrc?: TechnicalMrcPoint
+  // Legacy approximate MRC fields — kept for backward compat during migration
   mrcCenter?: number
   mrcUpper?: number
   mrcLower?: number
@@ -144,6 +179,8 @@ export interface TechnicalPriceChartPayload {
   source: 'massive' | 'mock'
   ticker: string
   reportId: string
+  // 'technical-chart.v2' signals canonical MRC payload; absent = legacy
+  snapshotVersion?: string
   defaultTimeframe: TechnicalChartTimeframe
   availableTimeframes: TechnicalChartTimeframe[]
   seriesByTimeframe: Partial<

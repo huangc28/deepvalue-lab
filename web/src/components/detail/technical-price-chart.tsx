@@ -3,9 +3,11 @@ import { useState } from 'react'
 import { useI18n } from '../../i18n/context'
 import { cx } from '../../lib/cx'
 import type {
+  MrcZoneClassification,
   TechnicalChartPoint,
   TechnicalChartTimeframe,
   TechnicalEntryStatus,
+  TechnicalMrcPoint,
   TechnicalPriceChart,
 } from '../../types/stocks'
 
@@ -57,18 +59,25 @@ export function TechnicalPriceChart({
   )
   const showMrcOverlay = activeSeries.points.some(
     (point) =>
+      point.mrc?.center !== undefined ||
+      point.mrc?.outerUpper !== undefined ||
       point.mrcCenter !== undefined ||
-      point.mrcUpper !== undefined ||
-      point.mrcLower !== undefined,
+      point.mrcUpper !== undefined,
+  )
+  // True when canonical v2 inner bands are available in the data
+  const hasCanonicalInnerBands = activeSeries.points.some(
+    (point) =>
+      point.mrc?.innerUpper !== undefined ||
+      point.mrc?.innerLower !== undefined,
   )
   const closes = activeSeries.points.map((point) => point.close)
   const highs = activeSeries.points.map((point) => point.high)
   const lows = activeSeries.points.map((point) => point.low)
   const mrcUpperValues = activeSeries.points
-    .map((point) => point.mrcUpper)
+    .map((point) => point.mrc?.outerUpper ?? point.mrcUpper)
     .filter((value): value is number => value !== undefined)
   const mrcLowerValues = activeSeries.points
-    .map((point) => point.mrcLower)
+    .map((point) => point.mrc?.outerLower ?? point.mrcLower)
     .filter((value): value is number => value !== undefined)
   const periodHigh = Math.max(...highs, ...mrcUpperValues)
   const periodLow = Math.min(...lows, ...mrcLowerValues)
@@ -119,10 +128,11 @@ export function TechnicalPriceChart({
         rsiPaneBottom,
       )
     : []
+  // Outer bands — prefer canonical mrc fields, fall back to legacy for old snapshots
   const mrcUpperSegments = showMrcOverlay
     ? buildPriceSegments(
         activeSeries.points,
-        (point) => point.mrcUpper,
+        (point) => point.mrc?.outerUpper ?? point.mrcUpper,
         chartRight,
         yMin,
         yMax,
@@ -132,7 +142,7 @@ export function TechnicalPriceChart({
   const mrcCenterSegments = showMrcOverlay
     ? buildPriceSegments(
         activeSeries.points,
-        (point) => point.mrcCenter,
+        (point) => point.mrc?.center ?? point.mrcCenter,
         chartRight,
         yMin,
         yMax,
@@ -142,13 +152,41 @@ export function TechnicalPriceChart({
   const mrcLowerSegments = showMrcOverlay
     ? buildPriceSegments(
         activeSeries.points,
-        (point) => point.mrcLower,
+        (point) => point.mrc?.outerLower ?? point.mrcLower,
         chartRight,
         yMin,
         yMax,
         priceChartBottom,
       )
     : []
+  // Inner bands — only present in canonical v2 snapshots
+  const mrcInnerUpperSegments = hasCanonicalInnerBands
+    ? buildPriceSegments(
+        activeSeries.points,
+        (point) => point.mrc?.innerUpper,
+        chartRight,
+        yMin,
+        yMax,
+        priceChartBottom,
+      )
+    : []
+  const mrcInnerLowerSegments = hasCanonicalInnerBands
+    ? buildPriceSegments(
+        activeSeries.points,
+        (point) => point.mrc?.innerLower,
+        chartRight,
+        yMin,
+        yMax,
+        priceChartBottom,
+      )
+    : []
+
+  // Zone classification for the latest canonical point
+  const latestMrc = latestPoint?.mrc
+  const latestMrcZone: MrcZoneClassification | undefined =
+    latestMrc && latestPoint
+      ? classifyMrcZone(latestPoint.close, latestMrc)
+      : undefined
 
   return (
     <div className="overflow-hidden rounded-[1.15rem] border border-[rgba(94,110,138,0.26)] bg-[#0d0f18] shadow-[0_14px_34px_rgba(0,0,0,0.28)]">
@@ -221,6 +259,18 @@ export function TechnicalPriceChart({
             label={m.detail.technicalChartLow}
             value={formatCurrency(periodLow)}
           />
+          {latestMrcZone && (
+            <InlineMetric
+              label="MRC"
+              value={formatMrcZoneLabel(latestMrcZone)}
+            />
+          )}
+          {latestMrc?.center !== undefined && (
+            <InlineMetric
+              label="CTR"
+              value={formatCurrency(latestMrc.center)}
+            />
+          )}
         </div>
       </div>
 
@@ -276,21 +326,22 @@ export function TechnicalPriceChart({
 
             {showMrcOverlay && (
               <g>
+                {/* Outer bands — stretch/exhaustion boundaries */}
                 {mrcUpperSegments.map((segment, index) =>
                   segment.singlePoint ? (
                     <circle
-                      key={`mrc-upper-point-${index}`}
+                      key={`mrc-outer-upper-point-${index}`}
                       cx={segment.points.split(',')[0]}
                       cy={segment.points.split(',')[1]}
                       r="1.4"
-                      fill="rgba(217, 167, 108, 0.24)"
+                      fill="rgba(217, 167, 108, 0.20)"
                     />
                   ) : (
                     <polyline
-                      key={`mrc-upper-segment-${index}`}
+                      key={`mrc-outer-upper-segment-${index}`}
                       points={segment.points}
                       fill="none"
-                      stroke="rgba(217, 167, 108, 0.24)"
+                      stroke="rgba(217, 167, 108, 0.20)"
                       strokeWidth="1"
                       strokeLinejoin="round"
                       strokeLinecap="round"
@@ -300,24 +351,68 @@ export function TechnicalPriceChart({
                 {mrcLowerSegments.map((segment, index) =>
                   segment.singlePoint ? (
                     <circle
-                      key={`mrc-lower-point-${index}`}
+                      key={`mrc-outer-lower-point-${index}`}
                       cx={segment.points.split(',')[0]}
                       cy={segment.points.split(',')[1]}
                       r="1.4"
-                      fill="rgba(217, 167, 108, 0.24)"
+                      fill="rgba(217, 167, 108, 0.20)"
                     />
                   ) : (
                     <polyline
-                      key={`mrc-lower-segment-${index}`}
+                      key={`mrc-outer-lower-segment-${index}`}
                       points={segment.points}
                       fill="none"
-                      stroke="rgba(217, 167, 108, 0.24)"
+                      stroke="rgba(217, 167, 108, 0.20)"
                       strokeWidth="1"
                       strokeLinejoin="round"
                       strokeLinecap="round"
                     />
                   ),
                 )}
+                {/* Inner bands — canonical v2 only, lower emphasis than center */}
+                {mrcInnerUpperSegments.map((segment, index) =>
+                  segment.singlePoint ? (
+                    <circle
+                      key={`mrc-inner-upper-point-${index}`}
+                      cx={segment.points.split(',')[0]}
+                      cy={segment.points.split(',')[1]}
+                      r="1.4"
+                      fill="rgba(245, 197, 134, 0.30)"
+                    />
+                  ) : (
+                    <polyline
+                      key={`mrc-inner-upper-segment-${index}`}
+                      points={segment.points}
+                      fill="none"
+                      stroke="rgba(245, 197, 134, 0.30)"
+                      strokeWidth="0.9"
+                      strokeLinejoin="round"
+                      strokeLinecap="round"
+                    />
+                  ),
+                )}
+                {mrcInnerLowerSegments.map((segment, index) =>
+                  segment.singlePoint ? (
+                    <circle
+                      key={`mrc-inner-lower-point-${index}`}
+                      cx={segment.points.split(',')[0]}
+                      cy={segment.points.split(',')[1]}
+                      r="1.4"
+                      fill="rgba(245, 197, 134, 0.30)"
+                    />
+                  ) : (
+                    <polyline
+                      key={`mrc-inner-lower-segment-${index}`}
+                      points={segment.points}
+                      fill="none"
+                      stroke="rgba(245, 197, 134, 0.30)"
+                      strokeWidth="0.9"
+                      strokeLinejoin="round"
+                      strokeLinecap="round"
+                    />
+                  ),
+                )}
+                {/* Centerline — primary anchor, solid for canonical, dashed for legacy */}
                 {mrcCenterSegments.map((segment, index) =>
                   segment.singlePoint ? (
                     <circle
@@ -325,16 +420,16 @@ export function TechnicalPriceChart({
                       cx={segment.points.split(',')[0]}
                       cy={segment.points.split(',')[1]}
                       r="1.4"
-                      fill="rgba(245, 197, 134, 0.42)"
+                      fill="rgba(245, 197, 134, 0.55)"
                     />
                   ) : (
                     <polyline
                       key={`mrc-center-segment-${index}`}
                       points={segment.points}
                       fill="none"
-                      stroke="rgba(245, 197, 134, 0.42)"
-                      strokeWidth="1.05"
-                      strokeDasharray="4 4"
+                      stroke="rgba(245, 197, 134, 0.55)"
+                      strokeWidth="1.2"
+                      strokeDasharray={hasCanonicalInnerBands ? undefined : '4 4'}
                       strokeLinejoin="round"
                       strokeLinecap="round"
                     />
@@ -826,4 +921,38 @@ function formatAxisPrice(value: number) {
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value))
+}
+
+function classifyMrcZone(
+  close: number,
+  mrc: TechnicalMrcPoint,
+): MrcZoneClassification | undefined {
+  const { center, innerUpper, innerLower, outerUpper, outerLower } = mrc
+  if (center === undefined) return undefined
+  if (outerUpper !== undefined && close > outerUpper) return 'outside_upper'
+  if (outerLower !== undefined && close < outerLower) return 'outside_lower'
+  if (innerUpper !== undefined && close > innerUpper) return 'outer_upper_zone'
+  if (innerLower !== undefined && close < innerLower) return 'outer_lower_zone'
+  if (close > center) return 'inner_upper_zone'
+  if (close < center) return 'inner_lower_zone'
+  return 'inside_mean'
+}
+
+function formatMrcZoneLabel(zone: MrcZoneClassification): string {
+  switch (zone) {
+    case 'inside_mean':
+      return 'AT MEAN'
+    case 'inner_upper_zone':
+      return 'INNER ↑'
+    case 'inner_lower_zone':
+      return 'INNER ↓'
+    case 'outer_upper_zone':
+      return 'OUTER ↑'
+    case 'outer_lower_zone':
+      return 'OUTER ↓'
+    case 'outside_upper':
+      return 'ABOVE OUTER'
+    case 'outside_lower':
+      return 'BELOW OUTER'
+  }
 }
