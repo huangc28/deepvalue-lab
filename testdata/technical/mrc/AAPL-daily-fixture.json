@@ -1,0 +1,34 @@
+{
+  "_comment": "PLACEHOLDER — replace all values below with real TradingView captures before Phase 0 can close. See README.md for capture instructions.",
+  "status": "PENDING_CAPTURE",
+  "meta": {
+    "ticker": "AAPL",
+    "timeframe": "1D",
+    "source": "tradingview-manual-capture",
+    "captureDate": "PENDING",
+    "scriptTitle": "PENDING — provide TradingView script title",
+    "scriptUrl": "PENDING — provide TradingView script URL or 'built-in'",
+    "parameters": {
+      "source": "hlc3",
+      "smoother": "SuperSmoother",
+      "length": 200,
+      "innerMultiplier": 1.0,
+      "outerMultiplier": 2.415
+    }
+  },
+  "points": [
+    {
+      "_comment": "Each entry: completed daily bar from TradingView. Minimum 30 fully-warmed points (all 5 bands non-null). Dates in YYYY-MM-DD. Values at full TradingView precision.",
+      "date": "PENDING",
+      "open": null,
+      "high": null,
+      "low": null,
+      "close": null,
+      "center": null,
+      "innerUpper": null,
+      "innerLower": null,
+      "outerUpper": null,
+      "outerLower": null
+    }
+  ]
+}
