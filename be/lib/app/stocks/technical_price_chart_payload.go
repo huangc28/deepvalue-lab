@@ -1,5 +1,49 @@
 package stocks
 
+// SnapshotVersion identifies the technical chart payload format version.
+// Consumers use this to distinguish canonical MRC snapshots (v2) from legacy approximate ones.
+// v2 snapshots carry MRC data inside seriesByTimeframe[*].points[*].mrc and include mrcMeta
+// per timeframe. Legacy snapshots omit this field or carry a different value.
+const SnapshotVersion = "technical-chart.v2"
+
+// MRCAlgorithmVersion is the algorithm identifier embedded in MRCMetadata.
+const MRCAlgorithmVersion = "tradingview-mrc-v1"
+
+// mrctvLength is the canonical SuperSmoother period for the TradingView-aligned MRC.
+// innerMult and outerMult are the canonical band multipliers.
+const (
+	mrctvLength         = 200
+	mrctvInnerMultiplier = 1.0
+	mrctvOuterMultiplier = 2.415
+)
+
+// MRCMetadata describes the algorithm and parameters used to compute canonical MRC values.
+// Emitted once per timeframe series that carries canonical MRC data.
+type MRCMetadata struct {
+	// AlgorithmVersion is a stable identifier for the computation method.
+	AlgorithmVersion string `json:"algorithmVersion"`
+	// Source is the price series input to the meanline smoother ("hlc3").
+	Source string `json:"source"`
+	// Smoother identifies the filter type ("SuperSmoother" = Ehlers 2-pole IIR).
+	Smoother string `json:"smoother"`
+	// Length is the SuperSmoother period applied to both meanLine and meanRange.
+	Length int `json:"length"`
+	// InnerMultiplier is the band width multiplier for the inner channel.
+	InnerMultiplier float64 `json:"innerMultiplier"`
+	// OuterMultiplier is the band width multiplier for the outer channel (≈ Silver Ratio).
+	OuterMultiplier float64 `json:"outerMultiplier"`
+}
+
+// MRCPoint holds the five canonical TradingView-aligned MRC band values for one bar.
+// Embedded as a pointer in OhlcPoint; nil during SuperSmoother warmup (first Length bars).
+type MRCPoint struct {
+	Center     float64 `json:"center"`
+	InnerUpper float64 `json:"innerUpper"`
+	InnerLower float64 `json:"innerLower"`
+	OuterUpper float64 `json:"outerUpper"`
+	OuterLower float64 `json:"outerLower"`
+}
+
 // ChartTimeframe identifies the candle interval exposed by the technical chart.
 type ChartTimeframe string
 
@@ -25,7 +69,11 @@ const (
 //
 // The timeframe-aware fields are additive so older consumers can keep using
 // the legacy daily points path during the frontend transition.
+//
+// SnapshotVersion == "technical-chart.v2" indicates canonical MRC is present in
+// seriesByTimeframe. Consumers should check this field before reading mrc fields.
 type TechnicalPriceChartPayload struct {
+	SnapshotVersion     string                             `json:"snapshotVersion,omitempty"`
 	Source              string                             `json:"source"`
 	Ticker              string                             `json:"ticker"`
 	ReportID            string                             `json:"reportId"`
@@ -38,26 +86,30 @@ type TechnicalPriceChartPayload struct {
 }
 
 // TimeframeSeries is the canonical OHLC series for one chart timeframe.
+// MRCMeta is present when this series carries canonical TradingView-aligned MRC data
+// in each point's MRC field.
 type TimeframeSeries struct {
 	Timeframe     ChartTimeframe `json:"timeframe"`
 	Timezone      string         `json:"timezone"`
 	SessionMode   SessionMode    `json:"sessionMode"`
 	LookbackLabel string         `json:"lookbackLabel"`
+	MRCMeta       *MRCMetadata   `json:"mrcMeta,omitempty"`
 	Points        []OhlcPoint    `json:"points"`
 }
 
 // OhlcPoint is a candle with explicit timestamp semantics.
-// RSI and EMAOnRSI are omitted during indicator warmup (not enough prior bars).
+// RSI, EMAOnRSI, and MRC are omitted during indicator warmup (not enough prior bars).
 type OhlcPoint struct {
-	TimestampUtc      string   `json:"timestampUtc"`
-	ExchangeTimestamp string   `json:"exchangeTimestamp"`
-	Open              float64  `json:"open"`
-	High              float64  `json:"high"`
-	Low               float64  `json:"low"`
-	Close             float64  `json:"close"`
-	Volume            float64  `json:"volume,omitempty"`
-	RSI               *float64 `json:"rsi,omitempty"`
-	EMAOnRSI          *float64 `json:"emaOnRsi,omitempty"`
+	TimestampUtc      string    `json:"timestampUtc"`
+	ExchangeTimestamp string    `json:"exchangeTimestamp"`
+	Open              float64   `json:"open"`
+	High              float64   `json:"high"`
+	Low               float64   `json:"low"`
+	Close             float64   `json:"close"`
+	Volume            float64   `json:"volume,omitempty"`
+	RSI               *float64  `json:"rsi,omitempty"`
+	EMAOnRSI          *float64  `json:"emaOnRsi,omitempty"`
+	MRC               *MRCPoint `json:"mrc,omitempty"`
 }
 
 // IndicatorSnapshot holds the latest computed values and classification.

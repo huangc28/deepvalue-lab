@@ -272,6 +272,20 @@ func buildTechnicalPriceChartPayload(job TechnicalSnapshotJob, dailyBars, intrad
 	attachTimeframeRSI(dailySeriesPoints, toPtr)
 	attachTimeframeRSI(weeklySeriesPoints, toPtr)
 
+	// Canonical TradingView-aligned MRC — daily and weekly only.
+	// Warmup: first mrctvLength bars are omitted (nil) to avoid heavily-biased seed values.
+	attachTimeframeMRC(dailySeriesPoints, mrctvLength, round2)
+	attachTimeframeMRC(weeklySeriesPoints, mrctvLength, round2)
+
+	canonicalMRCMeta := &MRCMetadata{
+		AlgorithmVersion: MRCAlgorithmVersion,
+		Source:           "hlc3",
+		Smoother:         "SuperSmoother",
+		Length:           mrctvLength,
+		InnerMultiplier:  mrctvInnerMultiplier,
+		OuterMultiplier:  mrctvOuterMultiplier,
+	}
+
 	seriesByTimeframe := make(map[ChartTimeframe]TimeframeSeries, 5)
 	availableTimeframes := make([]ChartTimeframe, 0, 5)
 	addSeries := func(series TimeframeSeries) {
@@ -308,6 +322,7 @@ func buildTechnicalPriceChartPayload(job TechnicalSnapshotJob, dailyBars, intrad
 		Timezone:      technicalChartTimezone,
 		SessionMode:   SessionModeMarketHours,
 		LookbackLabel: technicalChartLookback,
+		MRCMeta:       canonicalMRCMeta,
 		Points:        dailySeriesPoints,
 	})
 	addSeries(TimeframeSeries{
@@ -315,10 +330,12 @@ func buildTechnicalPriceChartPayload(job TechnicalSnapshotJob, dailyBars, intrad
 		Timezone:      technicalChartTimezone,
 		SessionMode:   SessionModeMarketHours,
 		LookbackLabel: "1W",
+		MRCMeta:       canonicalMRCMeta,
 		Points:        weeklySeriesPoints,
 	})
 
 	return TechnicalPriceChartPayload{
+		SnapshotVersion:     SnapshotVersion,
 		Source:              "massive",
 		Ticker:              job.Ticker,
 		ReportID:            job.ReportID,
@@ -369,6 +386,40 @@ func attachTimeframeRSI(points []OhlcPoint, toPtr func(float64) *float64) {
 	for i := range points {
 		points[i].RSI = toPtr(rsi[i])
 		points[i].EMAOnRSI = toPtr(emaOnRsi[i])
+	}
+}
+
+// attachTimeframeMRC computes the canonical TradingView-aligned MRC using SuperSmoother
+// from each point's High/Low/Close and writes the results back in place.
+// Points at index < warmup are left with MRC = nil to avoid heavily-biased seed values.
+// round2 is applied to each band value before storing.
+func attachTimeframeMRC(points []OhlcPoint, warmup int, round2 func(float64) float64) {
+	n := len(points)
+	if n == 0 {
+		return
+	}
+	highs := make([]float64, n)
+	lows := make([]float64, n)
+	closes := make([]float64, n)
+	for i, p := range points {
+		highs[i] = p.High
+		lows[i] = p.Low
+		closes[i] = p.Close
+	}
+	mrcPoints := indicators.MRCTV(highs, lows, closes, mrctvLength, mrctvInnerMultiplier, mrctvOuterMultiplier)
+	for i, m := range mrcPoints {
+		if i < warmup {
+			// Skip warmup bars; MRC stays nil.
+			continue
+		}
+		pt := &MRCPoint{
+			Center:     round2(m.Center),
+			InnerUpper: round2(m.InnerUpper),
+			InnerLower: round2(m.InnerLower),
+			OuterUpper: round2(m.OuterUpper),
+			OuterLower: round2(m.OuterLower),
+		}
+		points[i].MRC = pt
 	}
 }
 

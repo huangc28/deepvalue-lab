@@ -121,11 +121,120 @@ func EMA(values []float64, period int) []float64 {
 	return out
 }
 
+// TrueRange computes True Range for each bar.
+// First bar (no prior close): TrueRange = high - low.
+// Subsequent bars: max(high-low, |high-prevClose|, |low-prevClose|).
+func TrueRange(highs, lows, closes []float64) []float64 {
+	n := len(closes)
+	out := make([]float64, n)
+	if n == 0 {
+		return out
+	}
+	out[0] = highs[0] - lows[0]
+	for i := 1; i < n; i++ {
+		hl := highs[i] - lows[i]
+		hpc := math.Abs(highs[i] - closes[i-1])
+		lpc := math.Abs(lows[i] - closes[i-1])
+		out[i] = math.Max(hl, math.Max(hpc, lpc))
+	}
+	return out
+}
+
+// SuperSmoother applies the John Ehlers 2-pole SuperSmoother IIR filter to src with the given period.
+//
+// Coefficients follow Ehlers (2013) "Cycle Analytics for Traders":
+//
+//	a1 = exp(-sqrt(2) * π / period)
+//	b1 = 2 * a1 * cos(sqrt(2) * π / period)
+//	c2 = b1
+//	c3 = -a1²
+//	c1 = 1 - c2 - c3
+//	ss[i] = c1 * (src[i] + src[i-1]) / 2 + c2 * ss[i-1] + c3 * ss[i-2]
+//
+// Seeded from src[0] using the Pine Script nz() fallback convention:
+// bars before the series starts are treated as if they equal the first src value.
+// This matches the fareidzulkifli MRI Variant Pine implementation.
+func SuperSmoother(src []float64, period int) []float64 {
+	n := len(src)
+	out := make([]float64, n)
+	if n == 0 || period <= 0 {
+		return out
+	}
+
+	a1 := math.Exp(-math.Sqrt2 * math.Pi / float64(period))
+	b1 := 2 * a1 * math.Cos(math.Sqrt2*math.Pi/float64(period))
+	c2 := b1
+	c3 := -a1 * a1
+	c1 := 1 - c2 - c3
+
+	// bar 0: all prior ss and src values fall back to src[0]
+	// simplifies to: out[0] = src[0] * (c1 + c2 + c3) = src[0]
+	out[0] = src[0]
+	if n > 1 {
+		// bar 1: ss[-1] = out[0], ss[-2] falls back to src[1] (Pine nz convention)
+		out[1] = c1*(src[1]+src[0])/2 + c2*out[0] + c3*src[1]
+	}
+	for i := 2; i < n; i++ {
+		out[i] = c1*(src[i]+src[i-1])/2 + c2*out[i-1] + c3*out[i-2]
+	}
+	return out
+}
+
+// MRCTVPoint holds the five canonical TradingView-aligned MRC band values for one bar.
+// Produced by MRCTV; caller should treat the first `period` values as warmup.
+type MRCTVPoint struct {
+	Center     float64
+	InnerUpper float64
+	InnerLower float64
+	OuterUpper float64
+	OuterLower float64
+}
+
+// MRCTV computes the TradingView-aligned Mean Reversion Channel using SuperSmoother.
+//
+// Provisional algorithm (fareidzulkifli MRI Variant — pending fixture-grade confirmation):
+//
+//	meanLine  = SuperSmoother(hlc3, period)
+//	meanRange = SuperSmoother(TrueRange, period)
+//	innerUpper = meanLine + meanRange * innerMult
+//	innerLower = meanLine - meanRange * innerMult
+//	outerUpper = meanLine + meanRange * outerMult
+//	outerLower = meanLine - meanRange * outerMult
+//
+// Canonical parameters: period=200, innerMult=1.0, outerMult=2.415.
+// SuperSmoother implementation source: Ehlers (2013), coefficients confirmed via Pine reconstruction.
+// Algorithm status: PROVISIONAL — parity cannot be declared complete without fixture-grade TradingView artifacts.
+func MRCTV(highs, lows, closes []float64, period int, innerMult, outerMult float64) []MRCTVPoint {
+	n := len(closes)
+	out := make([]MRCTVPoint, n)
+	if n == 0 {
+		return out
+	}
+	hlc3 := HLC3(highs, lows, closes)
+	tr := TrueRange(highs, lows, closes)
+	meanLine := SuperSmoother(hlc3, period)
+	meanRange := SuperSmoother(tr, period)
+	for i := range out {
+		ml := meanLine[i]
+		mr := meanRange[i]
+		out[i] = MRCTVPoint{
+			Center:     ml,
+			InnerUpper: ml + mr*innerMult,
+			InnerLower: ml - mr*innerMult,
+			OuterUpper: ml + mr*outerMult,
+			OuterLower: ml - mr*outerMult,
+		}
+	}
+	return out
+}
+
 // MRC computes the Mean Reversion Channel over `period` bars using `series` as input (typically HLC3).
 // Centerline: SMA(series, period)
 // Upper: center + 2 * rolling population stddev(series, period)
 // Lower: center - 2 * rolling population stddev(series, period)
 // Returns three same-length slices (center, upper, lower); first `period-1` elements are NaN.
+//
+// Deprecated: This is the legacy approximate MRC. Use MRCTV for the TradingView-aligned implementation.
 func MRC(series []float64, period int) (center, upper, lower []float64) {
 	n := len(series)
 	center = make([]float64, n)

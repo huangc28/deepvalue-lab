@@ -432,6 +432,231 @@ func TestTimeframeRSIWarmupOmissionShortSeries(t *testing.T) {
 	}
 }
 
+// TestSnapshotVersionIsV2 verifies the top-level snapshotVersion field is set.
+func TestSnapshotVersionIsV2(t *testing.T) {
+	job := TechnicalSnapshotJob{Ticker: "VER", ReportID: "v2", PublishedAtMs: 1742860800000}
+	dailyBars := []massive.Bar{
+		{Date: "2026-03-23", Open: 100, High: 105, Low: 98, Close: 104, Volume: 1_000_000},
+	}
+	payload := buildTechnicalPriceChartPayload(job, dailyBars, nil, nil)
+	if payload.SnapshotVersion != SnapshotVersion {
+		t.Errorf("snapshotVersion: got %q, want %q", payload.SnapshotVersion, SnapshotVersion)
+	}
+
+	// Verify it appears in the wire format.
+	raw, err := json.Marshal(payload)
+	if err != nil {
+		t.Fatalf("marshal: %v", err)
+	}
+	var wire struct {
+		SnapshotVersion string `json:"snapshotVersion"`
+	}
+	if err := json.Unmarshal(raw, &wire); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if wire.SnapshotVersion != SnapshotVersion {
+		t.Errorf("wire snapshotVersion: got %q, want %q", wire.SnapshotVersion, SnapshotVersion)
+	}
+}
+
+// TestMRCMetaPresentOnDailyAndWeeklyOnly verifies that MRCMeta is set on 1D and 1W series
+// but not on intraday timeframes.
+func TestMRCMetaPresentOnDailyAndWeeklyOnly(t *testing.T) {
+	job := TechnicalSnapshotJob{Ticker: "META", ReportID: "meta-test", PublishedAtMs: 1742860800000}
+	dailyBars := []massive.Bar{
+		{Date: "2026-03-23", Open: 100, High: 105, Low: 98, Close: 104, Volume: 1_200_000},
+		{Date: "2026-03-24", Open: 104, High: 108, Low: 101, Close: 107, Volume: 1_500_000},
+		{Date: "2026-03-25", Open: 107, High: 110, Low: 103, Close: 109, Volume: 900_000},
+		{Date: "2026-03-26", Open: 109, High: 112, Low: 108, Close: 111, Volume: 1_100_000},
+		{Date: "2026-03-27", Open: 111, High: 115, Low: 110, Close: 114, Volume: 1_300_000},
+		{Date: "2026-03-30", Open: 115, High: 118, Low: 113, Close: 117, Volume: 1_400_000},
+	}
+	intradayBars := buildIntradayBarsForTest(t)
+	weeklyBars := aggregateWeeklyBars(dailyBars)
+	payload := buildTechnicalPriceChartPayload(job, dailyBars, intradayBars, weeklyBars)
+
+	// 1D and 1W must have MRCMeta.
+	for _, tf := range []ChartTimeframe{ChartTimeframe1D, ChartTimeframe1W} {
+		s := payload.SeriesByTimeframe[tf]
+		if s.MRCMeta == nil {
+			t.Errorf("%s: expected MRCMeta to be set, got nil", tf)
+			continue
+		}
+		if s.MRCMeta.AlgorithmVersion != MRCAlgorithmVersion {
+			t.Errorf("%s: MRCMeta.AlgorithmVersion = %q, want %q", tf, s.MRCMeta.AlgorithmVersion, MRCAlgorithmVersion)
+		}
+		if s.MRCMeta.Source != "hlc3" {
+			t.Errorf("%s: MRCMeta.Source = %q, want hlc3", tf, s.MRCMeta.Source)
+		}
+		if s.MRCMeta.Smoother != "SuperSmoother" {
+			t.Errorf("%s: MRCMeta.Smoother = %q, want SuperSmoother", tf, s.MRCMeta.Smoother)
+		}
+		if s.MRCMeta.Length != mrctvLength {
+			t.Errorf("%s: MRCMeta.Length = %d, want %d", tf, s.MRCMeta.Length, mrctvLength)
+		}
+		if s.MRCMeta.InnerMultiplier != mrctvInnerMultiplier {
+			t.Errorf("%s: MRCMeta.InnerMultiplier = %f, want %f", tf, s.MRCMeta.InnerMultiplier, mrctvInnerMultiplier)
+		}
+		if s.MRCMeta.OuterMultiplier != mrctvOuterMultiplier {
+			t.Errorf("%s: MRCMeta.OuterMultiplier = %f, want %f", tf, s.MRCMeta.OuterMultiplier, mrctvOuterMultiplier)
+		}
+	}
+
+	// Intraday timeframes must NOT have MRCMeta.
+	for _, tf := range []ChartTimeframe{ChartTimeframe15M, ChartTimeframe1H, ChartTimeframe4H} {
+		s := payload.SeriesByTimeframe[tf]
+		if s.MRCMeta != nil {
+			t.Errorf("%s: expected MRCMeta to be nil on intraday series, got %+v", tf, s.MRCMeta)
+		}
+	}
+}
+
+// TestMRCWarmupOmissionShortSeries verifies that MRC points are nil on all bars of a
+// short series (fewer bars than warmup period).
+func TestMRCWarmupOmissionShortSeries(t *testing.T) {
+	job := TechnicalSnapshotJob{Ticker: "WARM", ReportID: "mrc-warmup", PublishedAtMs: 1742860800000}
+	dailyBars := []massive.Bar{
+		{Date: "2026-03-23", Open: 100, High: 105, Low: 98, Close: 104, Volume: 1_200_000},
+		{Date: "2026-03-24", Open: 104, High: 108, Low: 101, Close: 107, Volume: 1_500_000},
+		{Date: "2026-03-25", Open: 107, High: 110, Low: 103, Close: 109, Volume: 900_000},
+	}
+	payload := buildTechnicalPriceChartPayload(job, dailyBars, nil, nil)
+
+	series1d := payload.SeriesByTimeframe[ChartTimeframe1D]
+	for i, p := range series1d.Points {
+		if p.MRC != nil {
+			t.Errorf("1D[%d]: expected nil MRC during warmup (only %d bars < %d warmup), got %+v",
+				i, len(dailyBars), mrctvLength, p.MRC)
+		}
+	}
+
+	// Wire format: mrc must be absent (omitempty) for warmup bars.
+	raw, err := json.Marshal(payload)
+	if err != nil {
+		t.Fatalf("marshal: %v", err)
+	}
+	var wire struct {
+		SeriesByTimeframe map[string]struct {
+			Points []struct {
+				MRC *struct{} `json:"mrc"`
+			} `json:"points"`
+		} `json:"seriesByTimeframe"`
+	}
+	if err := json.Unmarshal(raw, &wire); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	for i, p := range wire.SeriesByTimeframe["1D"].Points {
+		if p.MRC != nil {
+			t.Errorf("wire 1D[%d]: expected mrc omitted during warmup", i)
+		}
+	}
+}
+
+// TestMRCNonNilAfterWarmup verifies that canonical MRC values are present after the
+// warmup period when enough bars are provided, and that band ordering holds.
+func TestMRCNonNilAfterWarmup(t *testing.T) {
+	job := TechnicalSnapshotJob{Ticker: "LONG", ReportID: "mrc-long", PublishedAtMs: 1742860800000}
+
+	// Build 250 daily bars — enough to pass the 200-bar SuperSmoother warmup.
+	n := 250
+	dailyBars := make([]massive.Bar, n)
+	baseDate := time.Date(2020, 1, 2, 0, 0, 0, 0, time.UTC)
+	price := 100.0
+	for i := range dailyBars {
+		close := price + float64(i%7)*0.5
+		dailyBars[i] = massive.Bar{
+			Date:   baseDate.AddDate(0, 0, i).Format("2006-01-02"),
+			Open:   close - 1,
+			High:   close + 2,
+			Low:    close - 2,
+			Close:  close,
+			Volume: 1_000_000,
+		}
+	}
+
+	payload := buildTechnicalPriceChartPayload(job, dailyBars, nil, nil)
+	series1d := payload.SeriesByTimeframe[ChartTimeframe1D]
+
+	if len(series1d.Points) != n {
+		t.Fatalf("expected %d daily points, got %d", n, len(series1d.Points))
+	}
+
+	// First mrctvLength points must be nil.
+	for i := 0; i < mrctvLength; i++ {
+		if series1d.Points[i].MRC != nil {
+			t.Errorf("1D[%d]: expected nil MRC during warmup, got non-nil", i)
+		}
+	}
+
+	// Points after warmup must be non-nil with valid band ordering.
+	for i := mrctvLength; i < n; i++ {
+		p := series1d.Points[i]
+		if p.MRC == nil {
+			t.Errorf("1D[%d]: expected non-nil MRC after warmup", i)
+			continue
+		}
+		if p.MRC.OuterLower > p.MRC.InnerLower+1e-6 {
+			t.Errorf("1D[%d]: outerLower %f > innerLower %f", i, p.MRC.OuterLower, p.MRC.InnerLower)
+		}
+		if p.MRC.InnerLower > p.MRC.Center+1e-6 {
+			t.Errorf("1D[%d]: innerLower %f > center %f", i, p.MRC.InnerLower, p.MRC.Center)
+		}
+		if p.MRC.Center > p.MRC.InnerUpper+1e-6 {
+			t.Errorf("1D[%d]: center %f > innerUpper %f", i, p.MRC.Center, p.MRC.InnerUpper)
+		}
+		if p.MRC.InnerUpper > p.MRC.OuterUpper+1e-6 {
+			t.Errorf("1D[%d]: innerUpper %f > outerUpper %f", i, p.MRC.InnerUpper, p.MRC.OuterUpper)
+		}
+	}
+
+	// Wire format: mrc must appear for post-warmup bars.
+	raw, err := json.Marshal(payload)
+	if err != nil {
+		t.Fatalf("marshal: %v", err)
+	}
+	var wire struct {
+		SeriesByTimeframe map[string]struct {
+			MRCMeta *struct {
+				AlgorithmVersion string  `json:"algorithmVersion"`
+				Length           int     `json:"length"`
+				OuterMultiplier  float64 `json:"outerMultiplier"`
+			} `json:"mrcMeta"`
+			Points []struct {
+				MRC *struct {
+					Center     float64 `json:"center"`
+					InnerUpper float64 `json:"innerUpper"`
+					InnerLower float64 `json:"innerLower"`
+					OuterUpper float64 `json:"outerUpper"`
+					OuterLower float64 `json:"outerLower"`
+				} `json:"mrc"`
+			} `json:"points"`
+		} `json:"seriesByTimeframe"`
+	}
+	if err := json.Unmarshal(raw, &wire); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+
+	wire1d := wire.SeriesByTimeframe["1D"]
+	if wire1d.MRCMeta == nil {
+		t.Fatalf("wire 1D: expected mrcMeta, got nil")
+	}
+	if wire1d.MRCMeta.AlgorithmVersion != MRCAlgorithmVersion {
+		t.Errorf("wire 1D mrcMeta.algorithmVersion: got %q, want %q", wire1d.MRCMeta.AlgorithmVersion, MRCAlgorithmVersion)
+	}
+	if wire1d.MRCMeta.Length != mrctvLength {
+		t.Errorf("wire 1D mrcMeta.length: got %d, want %d", wire1d.MRCMeta.Length, mrctvLength)
+	}
+	if wire1d.MRCMeta.OuterMultiplier != mrctvOuterMultiplier {
+		t.Errorf("wire 1D mrcMeta.outerMultiplier: got %f, want %f", wire1d.MRCMeta.OuterMultiplier, mrctvOuterMultiplier)
+	}
+
+	for i := mrctvLength; i < n; i++ {
+		if wire1d.Points[i].MRC == nil {
+			t.Errorf("wire 1D[%d]: expected mrc present in JSON after warmup", i)
+		}
+	}
+}
+
 func buildIntradayBarsForTest(t *testing.T) []massive.Bar {
 	t.Helper()
 
