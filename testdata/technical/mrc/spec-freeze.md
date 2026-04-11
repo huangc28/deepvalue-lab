@@ -8,12 +8,24 @@ Owner: DeepValue Lab
 
 | Field | Value | Status |
 |---|---|---|
-| TradingView script title | PENDING | User must provide |
-| TradingView script URL | PENDING | User must provide |
+| TradingView script title | Mean Reversion Channel - (fareid's MRI Variant) | CANDIDATE — pending user confirmation |
+| TradingView script URL | https://www.tradingview.com/script/5uaoczeP-Mean-Reversion-Channel-fareid-s-MRI-Variant/ | CANDIDATE — pending user confirmation |
+| Script ID | 5uaoczeP | CANDIDATE — pending user confirmation |
+| Author | fareidzulkifli (aliases: Kwiskr, Farade) | CANDIDATE — pending user confirmation |
 | Capture date | PENDING | User must provide when capturing fixtures |
 | Screenshot artifact path | PENDING | Commit to `testdata/technical/mrc/screenshots/` |
 
-When the user provides the script reference, update this table and mark Status → CONFIRMED.
+### How the candidate was identified
+
+Worker-2 ran 5 parallel Gemini CLI searches (2026-04-11) against the parameter string
+`MRC (hlc3, SuperSmoother, 200, 1, 2.415, 60, On Hover, Auto, D, W)`.
+4 of 5 completed searches converged independently on the same author and script ID.
+The 2.415 outer multiplier (Silver Ratio = 1+sqrt(2)) was confirmed as specific to
+fareidzulkifli's implementation.
+
+**Action required:** User should open the candidate URL, confirm it matches their indicator, then update Status → CONFIRMED and capture fixtures.
+
+When the user confirms the script reference, update Status → CONFIRMED in the table above.
 
 ## Frozen parameter table
 
@@ -57,8 +69,8 @@ The chosen implementation source must be documented here before Phase 1 closes:
 
 | Field | Value |
 |---|---|
-| Implementation source | PENDING — document Ehlers reference or Pine behavior used |
-| Coefficients formula | 2-pole Butterworth-style filter as per Ehlers (2013) |
+| Implementation source | Ehlers (2013) *Cycle Analytics for Traders* — 2-pole SuperSmoother. Gemini-reconstructed Pine Script confirms coefficient `1.414 = sqrt(2)`. |
+| Coefficients formula | 2-pole Butterworth-style filter as per Ehlers (2013) — confirmed via Pine Script reconstruction |
 
 Standard Ehlers 2-pole SuperSmoother coefficients for period `N`:
 ```
@@ -116,7 +128,7 @@ Suggested criteria for selection:
 
 | Criterion | Status |
 |---|---|
-| Exact TradingView script URL/title documented | PENDING |
+| Exact TradingView script URL/title documented | CANDIDATE IDENTIFIED — user confirmation required |
 | Screenshot/export artifact committed or path noted | PENDING |
 | Parameter table frozen | DONE |
 | Representative ticker chosen | PENDING |

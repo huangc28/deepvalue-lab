@@ -6,8 +6,8 @@
     "timeframe": "1D",
     "source": "tradingview-manual-capture",
     "captureDate": "PENDING",
-    "scriptTitle": "PENDING — provide TradingView script title",
-    "scriptUrl": "PENDING — provide TradingView script URL or 'built-in'",
+    "scriptTitle": "Mean Reversion Channel - (fareid's MRI Variant) [CANDIDATE — pending user confirmation]",
+    "scriptUrl": "https://www.tradingview.com/script/5uaoczeP-Mean-Reversion-Channel-fareid-s-MRI-Variant/ [CANDIDATE — pending user confirmation]",
     "parameters": {
       "source": "hlc3",
       "smoother": "SuperSmoother",
