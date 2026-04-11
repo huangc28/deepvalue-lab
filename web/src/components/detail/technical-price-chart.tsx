@@ -180,12 +180,51 @@ export function TechnicalPriceChart({
         priceChartBottom,
       )
     : []
+  // Zone fills — subtle closed polygons between band pairs for canonical v2 snapshots
+  const outerUpperFillPath = hasCanonicalInnerBands
+    ? buildBandFill(
+        activeSeries.points,
+        (point) => point.mrc?.outerUpper,
+        (point) => point.mrc?.innerUpper,
+        chartRight,
+        yMin,
+        yMax,
+        priceChartBottom,
+      )
+    : ''
+  const outerLowerFillPath = hasCanonicalInnerBands
+    ? buildBandFill(
+        activeSeries.points,
+        (point) => point.mrc?.innerLower,
+        (point) => point.mrc?.outerLower,
+        chartRight,
+        yMin,
+        yMax,
+        priceChartBottom,
+      )
+    : ''
+  const innerZoneFillPath = hasCanonicalInnerBands
+    ? buildBandFill(
+        activeSeries.points,
+        (point) => point.mrc?.innerUpper,
+        (point) => point.mrc?.innerLower,
+        chartRight,
+        yMin,
+        yMax,
+        priceChartBottom,
+      )
+    : ''
 
   // Zone classification for the latest canonical point
   const latestMrc = latestPoint?.mrc
   const latestMrcZone: MrcZoneClassification | undefined =
     latestMrc && latestPoint
       ? classifyMrcZone(latestPoint.close, latestMrc)
+      : undefined
+  // Stretch % from centerline — positive means price above mean
+  const mrcStretchPct =
+    latestMrc?.center !== undefined && latestPoint !== undefined
+      ? ((latestPoint.close - latestMrc.center) / latestMrc.center) * 100
       : undefined
 
   return (
@@ -263,12 +302,26 @@ export function TechnicalPriceChart({
             <InlineMetric
               label="MRC"
               value={formatMrcZoneLabel(latestMrcZone)}
+              tone={getMrcZoneTone(latestMrcZone)}
             />
           )}
           {latestMrc?.center !== undefined && (
             <InlineMetric
               label="CTR"
               value={formatCurrency(latestMrc.center)}
+            />
+          )}
+          {mrcStretchPct !== undefined && (
+            <InlineMetric
+              label="Δ CTR"
+              value={`${mrcStretchPct > 0 ? '+' : ''}${mrcStretchPct.toFixed(1)}%`}
+              tone={
+                mrcStretchPct > 4
+                  ? 'negative'
+                  : mrcStretchPct < -4
+                    ? 'positive'
+                    : 'neutral'
+              }
             />
           )}
         </div>
@@ -326,7 +379,29 @@ export function TechnicalPriceChart({
 
             {showMrcOverlay && (
               <g>
-                {/* Outer bands — stretch/exhaustion boundaries */}
+                {/* Zone fills — rendered first so lines sit on top */}
+                {innerZoneFillPath && (
+                  <path
+                    d={innerZoneFillPath}
+                    fill="rgba(245,197,134,0.05)"
+                    stroke="none"
+                  />
+                )}
+                {outerUpperFillPath && (
+                  <path
+                    d={outerUpperFillPath}
+                    fill="rgba(217,150,90,0.08)"
+                    stroke="none"
+                  />
+                )}
+                {outerLowerFillPath && (
+                  <path
+                    d={outerLowerFillPath}
+                    fill="rgba(217,150,90,0.08)"
+                    stroke="none"
+                  />
+                )}
+                {/* Outer bands — stretch/exhaustion boundaries, most visible after center */}
                 {mrcUpperSegments.map((segment, index) =>
                   segment.singlePoint ? (
                     <circle
@@ -334,15 +409,16 @@ export function TechnicalPriceChart({
                       cx={segment.points.split(',')[0]}
                       cy={segment.points.split(',')[1]}
                       r="1.4"
-                      fill="rgba(217, 167, 108, 0.20)"
+                      fill="rgba(217,150,90,0.50)"
                     />
                   ) : (
                     <polyline
                       key={`mrc-outer-upper-segment-${index}`}
                       points={segment.points}
                       fill="none"
-                      stroke="rgba(217, 167, 108, 0.20)"
-                      strokeWidth="1"
+                      stroke="rgba(217,150,90,0.50)"
+                      strokeWidth="1.2"
+                      strokeDasharray="5 3"
                       strokeLinejoin="round"
                       strokeLinecap="round"
                     />
@@ -355,37 +431,39 @@ export function TechnicalPriceChart({
                       cx={segment.points.split(',')[0]}
                       cy={segment.points.split(',')[1]}
                       r="1.4"
-                      fill="rgba(217, 167, 108, 0.20)"
+                      fill="rgba(217,150,90,0.50)"
                     />
                   ) : (
                     <polyline
                       key={`mrc-outer-lower-segment-${index}`}
                       points={segment.points}
                       fill="none"
-                      stroke="rgba(217, 167, 108, 0.20)"
-                      strokeWidth="1"
+                      stroke="rgba(217,150,90,0.50)"
+                      strokeWidth="1.2"
+                      strokeDasharray="5 3"
                       strokeLinejoin="round"
                       strokeLinecap="round"
                     />
                   ),
                 )}
-                {/* Inner bands — canonical v2 only, lower emphasis than center */}
+                {/* Inner bands — canonical v2 only, secondary boundary markers */}
                 {mrcInnerUpperSegments.map((segment, index) =>
                   segment.singlePoint ? (
                     <circle
                       key={`mrc-inner-upper-point-${index}`}
                       cx={segment.points.split(',')[0]}
                       cy={segment.points.split(',')[1]}
-                      r="1.4"
-                      fill="rgba(245, 197, 134, 0.30)"
+                      r="1.2"
+                      fill="rgba(245,197,134,0.28)"
                     />
                   ) : (
                     <polyline
                       key={`mrc-inner-upper-segment-${index}`}
                       points={segment.points}
                       fill="none"
-                      stroke="rgba(245, 197, 134, 0.30)"
-                      strokeWidth="0.9"
+                      stroke="rgba(245,197,134,0.28)"
+                      strokeWidth="1.0"
+                      strokeDasharray="3 4"
                       strokeLinejoin="round"
                       strokeLinecap="round"
                     />
@@ -397,38 +475,39 @@ export function TechnicalPriceChart({
                       key={`mrc-inner-lower-point-${index}`}
                       cx={segment.points.split(',')[0]}
                       cy={segment.points.split(',')[1]}
-                      r="1.4"
-                      fill="rgba(245, 197, 134, 0.30)"
+                      r="1.2"
+                      fill="rgba(245,197,134,0.28)"
                     />
                   ) : (
                     <polyline
                       key={`mrc-inner-lower-segment-${index}`}
                       points={segment.points}
                       fill="none"
-                      stroke="rgba(245, 197, 134, 0.30)"
-                      strokeWidth="0.9"
+                      stroke="rgba(245,197,134,0.28)"
+                      strokeWidth="1.0"
+                      strokeDasharray="3 4"
                       strokeLinejoin="round"
                       strokeLinecap="round"
                     />
                   ),
                 )}
-                {/* Centerline — primary anchor, solid for canonical, dashed for legacy */}
+                {/* Centerline — primary anchor, highest emphasis */}
                 {mrcCenterSegments.map((segment, index) =>
                   segment.singlePoint ? (
                     <circle
                       key={`mrc-center-point-${index}`}
                       cx={segment.points.split(',')[0]}
                       cy={segment.points.split(',')[1]}
-                      r="1.4"
-                      fill="rgba(245, 197, 134, 0.55)"
+                      r="1.6"
+                      fill="rgba(245,197,134,0.82)"
                     />
                   ) : (
                     <polyline
                       key={`mrc-center-segment-${index}`}
                       points={segment.points}
                       fill="none"
-                      stroke="rgba(245, 197, 134, 0.55)"
-                      strokeWidth="1.2"
+                      stroke="rgba(245,197,134,0.82)"
+                      strokeWidth="1.5"
                       strokeDasharray={hasCanonicalInnerBands ? undefined : '4 4'}
                       strokeLinejoin="round"
                       strokeLinecap="round"
@@ -745,6 +824,40 @@ function buildIndicatorSegments(
   return segments
 }
 
+function buildBandFill(
+  points: TechnicalChartPoint[],
+  getUpper: (point: TechnicalChartPoint) => number | undefined,
+  getLower: (point: TechnicalChartPoint) => number | undefined,
+  chartRight: number,
+  min: number,
+  max: number,
+  chartBottom: number,
+): string {
+  const upperCoords: string[] = []
+  const lowerCoords: string[] = []
+
+  for (let index = 0; index < points.length; index += 1) {
+    const u = getUpper(points[index])
+    const l = getLower(points[index])
+    if (u !== undefined && l !== undefined) {
+      const x = mapIndexToX(index, points.length, chartRight)
+      upperCoords.push(`${x},${mapPriceToY(u, min, max, chartBottom)}`)
+      lowerCoords.push(`${x},${mapPriceToY(l, min, max, chartBottom)}`)
+    }
+  }
+
+  if (upperCoords.length < 2) return ''
+
+  const forward = upperCoords
+    .map((c, i) => `${i === 0 ? 'M' : 'L'}${c}`)
+    .join(' ')
+  const backward = lowerCoords
+    .reverse()
+    .map((c) => `L${c}`)
+    .join(' ')
+  return `${forward} ${backward} Z`
+}
+
 function buildPriceSegments(
   points: TechnicalChartPoint[],
   getValue: (point: TechnicalChartPoint) => number | undefined,
@@ -936,6 +1049,14 @@ function classifyMrcZone(
   if (close > center) return 'inner_upper_zone'
   if (close < center) return 'inner_lower_zone'
   return 'inside_mean'
+}
+
+function getMrcZoneTone(
+  zone: MrcZoneClassification,
+): 'neutral' | 'positive' | 'negative' {
+  if (zone === 'outside_upper' || zone === 'outer_upper_zone') return 'negative'
+  if (zone === 'outside_lower' || zone === 'outer_lower_zone') return 'positive'
+  return 'neutral'
 }
 
 function formatMrcZoneLabel(zone: MrcZoneClassification): string {
