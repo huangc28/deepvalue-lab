@@ -139,6 +139,7 @@ function normalizeLegacyDailyPoints(
     volume?: number
     rsi?: number
     emaOnRsi?: number
+    mrc?: TechnicalMrcPoint
     mrcCenter?: number
     mrcUpper?: number
     mrcLower?: number
@@ -147,7 +148,8 @@ function normalizeLegacyDailyPoints(
   return points
     .slice(-Math.min(DAILY_VISIBLE_POINTS, points.length))
     .map((point) => {
-      // Build degraded mrc shape from legacy fields (no inner bands available)
+      // Preserve canonical mrc when already present; otherwise build the
+      // degraded legacy shape (no inner bands available).
       const legacyMrc: TechnicalMrcPoint | undefined =
         point.mrcCenter !== undefined ||
         point.mrcUpper !== undefined ||
@@ -172,7 +174,7 @@ function normalizeLegacyDailyPoints(
         volume: point.volume,
         rsi: point.rsi,
         emaOnRsi: point.emaOnRsi,
-        mrc: legacyMrc,
+        mrc: point.mrc ?? legacyMrc,
         mrcCenter: point.mrcCenter,
         mrcUpper: point.mrcUpper,
         mrcLower: point.mrcLower,
@@ -329,7 +331,8 @@ function snapshotToChart(
           return point
         }
 
-        // Build degraded mrc shape from reattached legacy fields (no inner bands)
+        // Preserve canonical mrc already embedded on timeframe points; only
+        // fall back to the degraded legacy shape when needed.
         const legacyMrc: TechnicalMrcPoint | undefined =
           indicators.mrcCenter !== undefined ||
           indicators.mrcUpper !== undefined ||
@@ -345,7 +348,7 @@ function snapshotToChart(
           ...point,
           rsi: indicators.rsi,
           emaOnRsi: indicators.emaOnRsi,
-          mrc: legacyMrc,
+          mrc: point.mrc ?? legacyMrc,
           mrcCenter: indicators.mrcCenter,
           mrcUpper: indicators.mrcUpper,
           mrcLower: indicators.mrcLower,
