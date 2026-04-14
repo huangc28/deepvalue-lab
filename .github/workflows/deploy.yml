@@ -109,7 +109,7 @@ jobs:
     env:
       AZURE_ACR_NAME: ${{ vars.AZURE_ACR_NAME }}
       VITE_API_URL: ${{ vars.VITE_API_URL }}
-      WEB_IMAGE: ${{ vars.AZURE_ACR_NAME }}.azurecr.io/web:latest
+      WEB_IMAGE_REPOSITORY: ${{ vars.AZURE_ACR_NAME }}.azurecr.io/web
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -129,6 +129,7 @@ jobs:
       - name: Build web image
         run: |
           set -eu
+          WEB_IMAGE="${WEB_IMAGE_REPOSITORY}:${IMAGE_TAG}"
           docker build \
             --no-cache \
             --platform linux/amd64 \
@@ -139,6 +140,7 @@ jobs:
       - name: Push web image
         run: |
           set -eu
+          WEB_IMAGE="${WEB_IMAGE_REPOSITORY}:${IMAGE_TAG}"
           docker push "${WEB_IMAGE}"
 
       - name: Verify web image in ACR
@@ -152,6 +154,7 @@ jobs:
 
       - name: Summarize web build
         run: |
+          WEB_IMAGE="${WEB_IMAGE_REPOSITORY}:${IMAGE_TAG}"
           {
             echo "### Web image"
             echo "- pushed \`${WEB_IMAGE}\`"
@@ -164,7 +167,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AZURE_ACR_NAME: ${{ vars.AZURE_ACR_NAME }}
-      BE_IMAGE: ${{ vars.AZURE_ACR_NAME }}.azurecr.io/be:latest
+      BE_IMAGE_REPOSITORY: ${{ vars.AZURE_ACR_NAME }}.azurecr.io/be
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -184,6 +187,7 @@ jobs:
       - name: Build backend image
         run: |
           set -eu
+          BE_IMAGE="${BE_IMAGE_REPOSITORY}:${IMAGE_TAG}"
           docker build \
             --no-cache \
             --platform linux/amd64 \
@@ -193,6 +197,7 @@ jobs:
       - name: Push backend image
         run: |
           set -eu
+          BE_IMAGE="${BE_IMAGE_REPOSITORY}:${IMAGE_TAG}"
           docker push "${BE_IMAGE}"
 
       - name: Verify backend image in ACR
@@ -206,6 +211,7 @@ jobs:
 
       - name: Summarize backend build
         run: |
+          BE_IMAGE="${BE_IMAGE_REPOSITORY}:${IMAGE_TAG}"
           {
             echo "### Backend image"
             echo "- pushed \`${BE_IMAGE}\`"
@@ -217,7 +223,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AZURE_ACR_NAME: ${{ vars.AZURE_ACR_NAME }}
-      WORKER_IMAGE: ${{ vars.AZURE_ACR_NAME }}.azurecr.io/worker:latest
+      WORKER_IMAGE_REPOSITORY: ${{ vars.AZURE_ACR_NAME }}.azurecr.io/worker
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -237,6 +243,7 @@ jobs:
       - name: Build worker image
         run: |
           set -eu
+          WORKER_IMAGE="${WORKER_IMAGE_REPOSITORY}:${IMAGE_TAG}"
           docker build \
             --no-cache \
             --platform linux/amd64 \
@@ -247,6 +254,7 @@ jobs:
       - name: Push worker image
         run: |
           set -eu
+          WORKER_IMAGE="${WORKER_IMAGE_REPOSITORY}:${IMAGE_TAG}"
           docker push "${WORKER_IMAGE}"
 
       - name: Verify worker image in ACR
@@ -260,6 +268,7 @@ jobs:
 
       - name: Summarize worker build
         run: |
+          WORKER_IMAGE="${WORKER_IMAGE_REPOSITORY}:${IMAGE_TAG}"
           {
             echo "### Worker image"
             echo "- pushed \`${WORKER_IMAGE}\`"
