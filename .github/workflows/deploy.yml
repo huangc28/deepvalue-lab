@@ -109,7 +109,7 @@ jobs:
     env:
       AZURE_ACR_NAME: ${{ vars.AZURE_ACR_NAME }}
       VITE_API_URL: ${{ vars.VITE_API_URL }}
-      WEB_IMAGE: ${{ vars.AZURE_ACR_NAME }}.azurecr.io/web:${{ env.IMAGE_TAG }}
+      WEB_IMAGE: ${{ vars.AZURE_ACR_NAME }}.azurecr.io/web:latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -164,7 +164,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AZURE_ACR_NAME: ${{ vars.AZURE_ACR_NAME }}
-      BE_IMAGE: ${{ vars.AZURE_ACR_NAME }}.azurecr.io/be:${{ env.IMAGE_TAG }}
+      BE_IMAGE: ${{ vars.AZURE_ACR_NAME }}.azurecr.io/be:latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -217,7 +217,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AZURE_ACR_NAME: ${{ vars.AZURE_ACR_NAME }}
-      WORKER_IMAGE: ${{ vars.AZURE_ACR_NAME }}.azurecr.io/worker:${{ env.IMAGE_TAG }}
+      WORKER_IMAGE: ${{ vars.AZURE_ACR_NAME }}.azurecr.io/worker:latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
