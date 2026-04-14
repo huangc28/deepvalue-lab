@@ -2,6 +2,8 @@ FROM golang:1.25.0 AS builder
 
 WORKDIR /src
 
+# Keep the backend Docker context stable so backend-including deploy
+# rehearsals can prove the API and worker lanes still move together.
 COPY go.mod go.sum ./
 RUN go mod download
 
