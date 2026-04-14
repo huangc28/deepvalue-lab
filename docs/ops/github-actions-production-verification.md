@@ -110,3 +110,38 @@ The following checks passed during Phase 4 validation:
 Related successful runs:
 - Phase 3 deploy wiring: `24405271904`
 - Post-concurrency-fix regression: `24405661704`
+
+## Cutover Status
+
+As of 2026-04-14, standard production releases should use GitHub Actions.
+Local manual production deploy commands are now fallback / emergency-only.
+
+## Phase 5 Rehearsal Evidence
+
+Two explicit cutover rehearsals were completed after the workflow and
+verification package were in place:
+
+### Web-only rehearsal
+
+- Commit: `6d01cb27f6a20fe37a8e51fd6afc1b69d5cb0df9`
+- Run: `24407792426`
+- Outcome:
+  - `Phase 2 Build Web` and `Phase 3 Deploy Web` succeeded
+  - backend and worker build/deploy jobs were skipped
+  - Azure reported:
+    - `value-deck-web--w8-1-6d01cb2`
+    - `GIT_SHA=6d01cb27f6a20fe37a8e51fd6afc1b69d5cb0df9`
+  - backend and worker remained on the prior shared deployment SHA
+
+### Backend-including rehearsal
+
+- Commit: `d828e932cc8279cf1b55cba48d9e45c068710116`
+- Run: `24407952049`
+- Outcome:
+  - `Phase 2 Build Backend`, `Phase 2 Build Worker`, `Phase 3 Deploy Backend`, and `Phase 3 Deploy Worker` succeeded
+  - web build/deploy jobs were skipped
+  - Azure reported:
+    - `value-deck-be--b9-1-d828e93`
+    - `value-deck-worker--k9-1-d828e93`
+    - `GIT_SHA=d828e932cc8279cf1b55cba48d9e45c068710116` on both apps
+  - web remained on the prior web-only deployment SHA
