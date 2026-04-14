@@ -79,7 +79,8 @@ Expected log evidence:
 
 ### 6. Commit traceability
 
-Confirm all three apps report the deployed `GIT_SHA` and latest revision:
+Confirm the apps targeted by the current deploy report the expected
+`GIT_SHA` and latest revision:
 
 ```bash
 for app in value-deck-web value-deck-be value-deck-worker; do
@@ -89,8 +90,9 @@ done
 ```
 
 Expected:
-- all three apps report the same deploy commit SHA
-- latest revision names match the workflow's revision suffix pattern
+- each app changed by the current deploy reports the expected commit SHA
+- untouched apps may legitimately remain on an older SHA after a partial deploy
+- latest revision names match the workflow's revision suffix pattern for the apps that moved
 
 ## Evidence From 2026-04-14
 
