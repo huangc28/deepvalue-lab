@@ -16,20 +16,21 @@ tests within the documented tolerances.
 | Parameter table frozen | DONE (see spec-freeze.md) |
 | Provisional algorithm documented | DONE (see spec-freeze.md) |
 | Representative ticker chosen | PENDING — user to confirm |
-| TradingView script URL/title | PENDING — user to provide |
-| Screenshot artifact committed | PENDING — user to provide |
+| TradingView script URL/title | OBSERVED IN LIVE TRADINGVIEW LAYOUT (2026-04-14) — see spec-freeze.md |
+| Screenshot artifact committed | DONE — see `screenshots/tradingview-sndk-1d-2026-04-14.png` and `screenshots/tradingview-sndk-1w-2026-04-14.png` |
 | Daily fixture data | PENDING — user to capture from TradingView |
 | Weekly fixture data | PENDING — user to capture from TradingView |
 | Tolerance table confirmed | DONE (see spec-freeze.md) |
 
 ## Phase 0 exit criteria checklist
 
-- [ ] Exact TradingView script URL/title and capture date documented in spec-freeze.md
-- [ ] Screenshot or parameter dialog export committed or path noted
+- [x] Exact TradingView script title and capture date documented in spec-freeze.md
+- [x] Screenshot artifact path noted
+- [ ] Exact TradingView script URL documented
 - [ ] Representative ticker chosen and written into spec-freeze.md
 - [ ] Daily fixture file committed (see format below)
 - [ ] Weekly fixture file committed (see format below)
-- [ ] At least one visual comparison performed confirming fixture matches live TradingView
+- [x] At least one visual comparison artifact captured from live TradingView
 
 ## Fixture file format
 

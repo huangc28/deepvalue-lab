@@ -98,9 +98,10 @@ Reason:
   - dashed guide lines: `65` / `55` / `45`
   - `RSI(22)` as the primary line
   - `EMA(12) on RSI` as the lower-emphasis secondary line
-- `MRC` may render as a low-emphasis price-pane overlay on `1D` when daily snapshot bands exist.
-- `HLC3` remains out of scope for direct chart visualization.
-- Non-`1D` MRC visualization remains out of scope until a per-timeframe MRC payload exists.
+- Canonical snapshots use TradingView-aligned MRC as the primary price-pane grammar rather than a low-emphasis decoration.
+- The same MRC reading model now applies across any supported timeframe payload (`1D` / `1W` today), with centerline, inner bands, outer bands, and zone fills when canonical `mrc` data is present.
+- Legacy snapshots still degrade intentionally to the older outer-band-only approximation path; they are a migration fallback, not the intended final UX.
+- `HLC3` remains a computation input for the backend indicator pipeline, not a required always-on chart line.
 
 ## V1 Non-Scope
 
@@ -110,7 +111,7 @@ Reason:
 - compare mode inside the chart
 - alerts UI
 - user-drawn studies
-- indicator overlay parity with TradingView or Pine Script
+- final numerical TradingView parity signoff without fixture-grade evidence
 - RSI tooltip or advanced hover interactions
 
 ## Frozen Copy

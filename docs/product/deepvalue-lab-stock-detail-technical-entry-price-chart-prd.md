@@ -125,8 +125,8 @@ The chart needs historical OHLC data:
 The technical pipeline must support:
 - `RSI` with length `22`
 - `EMA` on RSI with length `12`
-- `HLC3` for MRC-compatible logic
-- MRC-compatible centerline and band values
+- `HLC3` as the TradingView-aligned MRC source input
+- TradingView-aligned MRC centerline plus inner / outer band values
 - technical entry classification such as `favorable`, `neutral`, or `stretched`
 
 ### Calculation Rule
@@ -137,8 +137,8 @@ Massive may expose built-in RSI and EMA endpoints, but DeepValue should still tr
 
 Important constraint:
 - the DeepValue spec uses `EMA on RSI`, not `EMA on price`
-- `HLC3` can be derived from OHLC data
-- MRC-compatible logic should be computed in DeepValue's own pipeline to preserve interpretation consistency
+- `HLC3` can be derived from OHLC data and remains a backend computation input rather than a required chart line
+- TradingView-aligned MRC logic should be computed in DeepValue's own pipeline to preserve interpretation consistency
 
 Report technical prose and stored technical snapshots are separate concerns:
 - report prose captures analysis-time judgment and remains part of the research archive
@@ -342,19 +342,20 @@ As of 2026-03-26:
   - locale fallback rules are implemented for snapshot artifacts
   - `pending -> ready -> failed` backend lifecycle is fully implemented
   - frontend consumes the real snapshot endpoint via `useTechnicalSnapshot` hook (polls every 5s while `pending`, stops on `ready` or `failed`)
-  - `snapshotToChart()` transforms `TechnicalPriceChartPayload` into range-specific series (1M=22, 3M=66, 6M=132, 1Y=all)
+  - `snapshotToChart()` now normalizes timeframe-aware technical snapshots, prefers canonical `technical-chart.v2` MRC payloads, and keeps a degraded legacy fallback during migration
   - stock-detail page renders in priority order: live snapshot chart (ready) → pending fallback → failed fallback → mock chart → no-data fallback
   - i18n messages added for pending/failed states in both `en` and `zh-TW`
 
 - Phase 4 `Indicator Calculation Pipeline` is complete:
-  - RSI(22) via Wilder smoothing, EMA(12) on RSI, HLC3, MRC (SMA centerline ± 2σ) implemented in `be/lib/pkg/indicators/`
+  - Historical first pass shipped RSI(22), EMA(12) on RSI, HLC3, and an approximate `SMA ± 2σ` MRC path in `be/lib/pkg/indicators/`
+  - Current target state is the TradingView-aligned MRC replacement tracked in `.omx/plans/2026-04-11-tradingview-mrc-feature-plan.md` and the vault PRD `decisions/tradingview-mrc-replacement-prd.md`
   - Indicators computed in-memory from the same bars fetched from Massive — no frontend recomputation
   - Per-point values rounded to 2dp; warmup positions serialized as omitempty (nil pointer)
   - RSI classified as `oversold` / `neutral` / `overbought` in `TechnicalIndicatorSummary`
   - Full `TechnicalPriceChartPayload` built and stored to R2; snapshot marked `ready` in one worker pass
   - NaN serialization bug fixed: EMA seeds from first non-NaN RSI value; summary fields default to 0 if no valid value found
 
-No remaining frontend integration work from the previous pass. All phases are complete.
+This document's original v1 rollout is no longer the full end-state roadmap for MRC. The chart now renders the canonical MRC overlay grammar in main, while final numerical parity remains gated on fixture-grade TradingView evidence. As of 2026-04-14, live TradingView legend evidence and `SNDK` 1D/1W screenshot artifacts are stored under `testdata/technical/mrc/screenshots/`, but committed daily/weekly fixture exports are still missing.
 
 ## Task Breakdown
 
@@ -444,7 +445,7 @@ Definition of done:
 - [x] Implement RSI with length `22`.
 - [x] Implement EMA on RSI with length `12`.
 - [x] Implement HLC3 from OHLC data.
-- [x] Implement the MRC-compatible centerline and band calculation using the approved approximation.
+- [x] Implement the first-pass MRC-compatible centerline and band calculation using the approved approximation.
 - [x] Confirm the indicator pipeline computes on the same historical series used by the chart.
 - [x] Confirm rounding and formatting rules for indicator values.
 - [x] Confirm indicator output includes a readable zone/status classification for the technical section.
@@ -491,7 +492,7 @@ Definition of done:
 - [ ] Enable production chart rendering only after one full end-to-end ticker pass has been verified.
 - [ ] Keep continuous daily monitoring as a separate later system, not part of the v1 report-linked chart path.
 - [ ] Document the rollback path if provider data or indicator output is inconsistent.
-- [ ] Add a follow-up task for RSI/MRC overlay parity if the first release ships with price-only rendering.
+- [x] Superseded: the chart now ships with RSI + MRC overlays, and TradingView parity is tracked as a release gate rather than a later follow-up.
 
 Definition of done:
 - the feature can be released incrementally with a clear rollback path and no hidden dependency on unfinished indicator work or later monitoring refreshes.

@@ -1,19 +1,19 @@
 # MRC Canonical Spec Freeze
 
 Date: 2026-04-11
-Status: PROVISIONAL — parameter table frozen; TradingView script reference PENDING user input
+Status: PROVISIONAL — parameter table frozen; TradingView script title/params observed live on 2026-04-14, fixture-grade parity still pending
 Owner: DeepValue Lab
 
 ## Evidence source
 
 | Field | Value | Status |
 |---|---|---|
-| TradingView script title | Mean Reversion Channel - (fareid's MRI Variant) | CANDIDATE — pending user confirmation |
-| TradingView script URL | https://www.tradingview.com/script/5uaoczeP-Mean-Reversion-Channel-fareid-s-MRI-Variant/ | CANDIDATE — pending user confirmation |
-| Script ID | 5uaoczeP | CANDIDATE — pending user confirmation |
-| Author | fareidzulkifli (aliases: Kwiskr, Farade) | CANDIDATE — pending user confirmation |
-| Capture date | PENDING | User must provide when capturing fixtures |
-| Screenshot artifact path | PENDING | Commit to `testdata/technical/mrc/screenshots/` |
+| TradingView script title | Mean Reversion Channel - MRI Variant | OBSERVED LIVE in TradingView layout via chrome-devtools-mcp on 2026-04-14 |
+| TradingView script URL | Candidate public script remains `https://www.tradingview.com/script/5uaoczeP-Mean-Reversion-Channel-fareid-s-MRI-Variant/` | CANDIDATE ONLY — live layout did not expose a canonical URL |
+| Script ID | 5uaoczeP | CANDIDATE ONLY — inferred from prior source discovery, not directly exposed in live layout |
+| Author | fareidzulkifli (aliases: Kwiskr, Farade) | CANDIDATE ONLY — not directly exposed in live layout |
+| Capture date | 2026-04-14 | CONFIRMED |
+| Screenshot artifact path | `testdata/technical/mrc/screenshots/tradingview-sndk-1d-2026-04-14.png`; `testdata/technical/mrc/screenshots/tradingview-sndk-1w-2026-04-14.png` | CONFIRMED |
 
 ### How the candidate was identified
 
@@ -23,9 +23,15 @@ Worker-2 ran 5 parallel Gemini CLI searches (2026-04-11) against the parameter s
 The 2.415 outer multiplier (Silver Ratio = 1+sqrt(2)) was confirmed as specific to
 fareidzulkifli's implementation.
 
-**Action required:** User should open the candidate URL, confirm it matches their indicator, then update Status → CONFIRMED and capture fixtures.
+Observed directly from the live TradingView chart on 2026-04-14:
+- indicator title shown in the chart legend: `Mean Reversion Channel - MRI Variant`
+- parameters shown in the legend: `hlc3`, `SuperSmoother`, `200`, `1`, `2.415`, `60`, `On Hover`, `Auto`, `D`, `W`
+- screenshot artifacts committed under `testdata/technical/mrc/screenshots/`
 
-When the user confirms the script reference, update Status → CONFIRMED in the table above.
+What remains unconfirmed:
+- exact canonical public script URL exposed by the live layout
+- exact author / script ID provenance for release-signoff purposes
+- fixture-grade daily / weekly exported values
 
 ## Frozen parameter table
 
@@ -117,7 +123,8 @@ These tolerances apply to pre-display values, not rounded display values.
 
 ## Representative ticker
 
-PENDING — user to confirm the ticker to use for fixture validation.
+`SNDK` is now the observed evidence ticker from the 2026-04-14 TradingView captures.
+Fixture validation ticker selection is therefore no longer blocked, but fixture files are still missing.
 
 Suggested criteria for selection:
 - Highly liquid US equity with a long continuous daily history (10+ years).
@@ -128,15 +135,23 @@ Suggested criteria for selection:
 
 | Criterion | Status |
 |---|---|
-| Exact TradingView script URL/title documented | CANDIDATE IDENTIFIED — user confirmation required |
-| Screenshot/export artifact committed or path noted | PENDING |
+| Exact TradingView script title documented | DONE |
+| Exact TradingView script URL documented | PENDING — only candidate public URL is known |
+| Screenshot/export artifact committed or path noted | DONE |
 | Parameter table frozen | DONE |
-| Representative ticker chosen | PENDING |
+| Representative ticker chosen | DONE (`SNDK`) |
 | Daily fixture file committed (30+ warmed points) | PENDING |
 | Weekly fixture file committed (30+ warmed points) | PENDING |
 | Tolerance table written | DONE |
-| Manual visual comparison performed | PENDING |
+| Manual visual comparison artifact captured | DONE |
 
-Phase 0 is BLOCKED on the user providing a TradingView screenshot or script reference.
-All other deliverables (fixture directory, format, parameter spec, tolerance table, algorithm
-hypothesis, and fixture README) are complete and committed.
+Phase 0 is no longer blocked on basic evidence capture. It is now blocked specifically on
+fixture-grade daily/weekly value capture plus exact script-URL provenance if release signoff
+requires a canonical public script reference rather than a live-layout observation.
+
+Observed live legend values on 2026-04-14 for `SNDK`:
+- `1D`: Mean `505.45`, R1 `653.40`, S1 `357.50`, R2 `862.74`, S2 `148.16`
+- `1W`: Mean `214.50`, R1 `277.38`, S1 `151.62`, R2 `366.35`, S2 `62.65`
+
+These values are evidence artifacts only. They are not fixture-grade parity files because they
+cover visible legend values rather than a committed 30+ point daily/weekly export window.
