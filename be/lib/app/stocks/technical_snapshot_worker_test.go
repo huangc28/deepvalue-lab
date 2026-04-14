@@ -375,8 +375,8 @@ func TestTimeframeRSIWarmupOmissionShortSeries(t *testing.T) {
 	payload := buildTechnicalPriceChartPayload(job, dailyBars, intradayBars, weeklyBars)
 
 	type caseSpec struct {
-		tf       ChartTimeframe
-		wantLen  int
+		tf      ChartTimeframe
+		wantLen int
 	}
 	// All four short timeframes must have fully nil RSI and EMAOnRSI.
 	cases := []caseSpec{
@@ -459,9 +459,10 @@ func TestSnapshotVersionIsV2(t *testing.T) {
 	}
 }
 
-// TestMRCMetaPresentOnDailyAndWeeklyOnly verifies that MRCMeta is set on 1D and 1W series
-// but not on intraday timeframes.
-func TestMRCMetaPresentOnDailyAndWeeklyOnly(t *testing.T) {
+// TestMRCMetaAbsentDuringLegacyRollback verifies that the chart payload no longer
+// advertises canonical MRC metadata while the visual path is pinned to the
+// legacy approximation.
+func TestMRCMetaAbsentDuringLegacyRollback(t *testing.T) {
 	job := TechnicalSnapshotJob{Ticker: "META", ReportID: "meta-test", PublishedAtMs: 1742860800000}
 	dailyBars := []massive.Bar{
 		{Date: "2026-03-23", Open: 100, High: 105, Low: 98, Close: 104, Volume: 1_200_000},
@@ -475,44 +476,95 @@ func TestMRCMetaPresentOnDailyAndWeeklyOnly(t *testing.T) {
 	weeklyBars := aggregateWeeklyBars(dailyBars)
 	payload := buildTechnicalPriceChartPayload(job, dailyBars, intradayBars, weeklyBars)
 
-	// 1D and 1W must have MRCMeta.
-	for _, tf := range []ChartTimeframe{ChartTimeframe1D, ChartTimeframe1W} {
-		s := payload.SeriesByTimeframe[tf]
-		if s.MRCMeta == nil {
-			t.Errorf("%s: expected MRCMeta to be set, got nil", tf)
-			continue
-		}
-		if s.MRCMeta.AlgorithmVersion != MRCAlgorithmVersion {
-			t.Errorf("%s: MRCMeta.AlgorithmVersion = %q, want %q", tf, s.MRCMeta.AlgorithmVersion, MRCAlgorithmVersion)
-		}
-		if s.MRCMeta.Source != "hlc3" {
-			t.Errorf("%s: MRCMeta.Source = %q, want hlc3", tf, s.MRCMeta.Source)
-		}
-		if s.MRCMeta.Smoother != "SuperSmoother" {
-			t.Errorf("%s: MRCMeta.Smoother = %q, want SuperSmoother", tf, s.MRCMeta.Smoother)
-		}
-		if s.MRCMeta.Length != mrctvLength {
-			t.Errorf("%s: MRCMeta.Length = %d, want %d", tf, s.MRCMeta.Length, mrctvLength)
-		}
-		if s.MRCMeta.InnerMultiplier != mrctvInnerMultiplier {
-			t.Errorf("%s: MRCMeta.InnerMultiplier = %f, want %f", tf, s.MRCMeta.InnerMultiplier, mrctvInnerMultiplier)
-		}
-		if s.MRCMeta.OuterMultiplier != mrctvOuterMultiplier {
-			t.Errorf("%s: MRCMeta.OuterMultiplier = %f, want %f", tf, s.MRCMeta.OuterMultiplier, mrctvOuterMultiplier)
-		}
-	}
-
-	// Intraday timeframes must NOT have MRCMeta.
-	for _, tf := range []ChartTimeframe{ChartTimeframe15M, ChartTimeframe1H, ChartTimeframe4H} {
+	for _, tf := range []ChartTimeframe{
+		ChartTimeframe15M,
+		ChartTimeframe1H,
+		ChartTimeframe4H,
+		ChartTimeframe1D,
+		ChartTimeframe1W,
+	} {
 		s := payload.SeriesByTimeframe[tf]
 		if s.MRCMeta != nil {
-			t.Errorf("%s: expected MRCMeta to be nil on intraday series, got %+v", tf, s.MRCMeta)
+			t.Errorf("%s: expected MRCMeta to be nil during legacy rollback, got %+v", tf, s.MRCMeta)
 		}
 	}
 }
 
-// TestMRCWarmupOmissionShortSeries verifies that MRC points are nil on all bars of a
-// short series (fewer bars than warmup period).
+func TestIntraday1HLegacyMRCNonNilAfterWarmup(t *testing.T) {
+	job := TechnicalSnapshotJob{Ticker: "INTRA", ReportID: "1h-mrc", PublishedAtMs: 1742860800000}
+
+	// 40 trading days of 15M bars produce about 280 hourly bars, enough to
+	// clear the legacy 20-bar MRC warmup on the derived 1H series.
+	intradayBars := buildMultiDayIntradayBarsForTest(t, 40)
+	payload := buildTechnicalPriceChartPayload(job, nil, intradayBars, nil)
+
+	series1h := payload.SeriesByTimeframe[ChartTimeframe1H]
+	if len(series1h.Points) <= legacyMRCPeriod {
+		t.Fatalf("expected > %d hourly points, got %d", legacyMRCPeriod, len(series1h.Points))
+	}
+	if series1h.MRCMeta != nil {
+		t.Fatalf("expected 1H MRCMeta to be absent during legacy rollback")
+	}
+
+	for i := 0; i < legacyMRCPeriod-1; i++ {
+		p := series1h.Points[i]
+		if p.MRCCenter != nil || p.MRCUpper != nil || p.MRCLower != nil {
+			t.Fatalf("1H[%d]: expected nil legacy MRC during warmup, got %+v", i, p)
+		}
+	}
+
+	for i := legacyMRCPeriod - 1; i < len(series1h.Points); i++ {
+		p := series1h.Points[i]
+		if p.MRCCenter == nil || p.MRCUpper == nil || p.MRCLower == nil {
+			t.Fatalf("1H[%d]: expected non-nil legacy MRC after warmup", i)
+		}
+		if *p.MRCLower > *p.MRCCenter+1e-6 {
+			t.Fatalf("1H[%d]: lower %f > center %f", i, *p.MRCLower, *p.MRCCenter)
+		}
+		if *p.MRCCenter > *p.MRCUpper+1e-6 {
+			t.Fatalf("1H[%d]: center %f > upper %f", i, *p.MRCCenter, *p.MRCUpper)
+		}
+	}
+
+	raw, err := json.Marshal(payload)
+	if err != nil {
+		t.Fatalf("marshal: %v", err)
+	}
+	var wire struct {
+		SeriesByTimeframe map[string]struct {
+			MRCMeta *struct {
+				AlgorithmVersion string `json:"algorithmVersion"`
+			} `json:"mrcMeta"`
+			Points []struct {
+				MRC       *struct{} `json:"mrc"`
+				MRCCenter *float64  `json:"mrcCenter"`
+				MRCUpper  *float64  `json:"mrcUpper"`
+				MRCLower  *float64  `json:"mrcLower"`
+			} `json:"points"`
+		} `json:"seriesByTimeframe"`
+	}
+	if err := json.Unmarshal(raw, &wire); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if wire.SeriesByTimeframe["1H"].MRCMeta != nil {
+		t.Fatalf("wire 1H: expected no mrcMeta during legacy rollback")
+	}
+	if wire.SeriesByTimeframe["15M"].MRCMeta != nil {
+		t.Fatalf("wire 15M: expected no mrcMeta")
+	}
+	for i := legacyMRCPeriod - 1; i < len(wire.SeriesByTimeframe["1H"].Points); i++ {
+		p := wire.SeriesByTimeframe["1H"].Points[i]
+		if p.MRC != nil {
+			t.Fatalf("wire 1H[%d]: expected canonical mrc to be absent during legacy rollback", i)
+		}
+		if p.MRCCenter == nil || p.MRCUpper == nil || p.MRCLower == nil {
+			t.Fatalf("wire 1H[%d]: expected legacy mrc fields after warmup", i)
+		}
+	}
+}
+
+// TestMRCWarmupOmissionShortSeries verifies that legacy MRC fields are nil on
+// all bars of a short series (fewer bars than the 20-bar warmup period).
 func TestMRCWarmupOmissionShortSeries(t *testing.T) {
 	job := TechnicalSnapshotJob{Ticker: "WARM", ReportID: "mrc-warmup", PublishedAtMs: 1742860800000}
 	dailyBars := []massive.Bar{
@@ -524,13 +576,13 @@ func TestMRCWarmupOmissionShortSeries(t *testing.T) {
 
 	series1d := payload.SeriesByTimeframe[ChartTimeframe1D]
 	for i, p := range series1d.Points {
-		if p.MRC != nil {
-			t.Errorf("1D[%d]: expected nil MRC during warmup (only %d bars < %d warmup), got %+v",
-				i, len(dailyBars), mrctvLength, p.MRC)
+		if p.MRCCenter != nil || p.MRCUpper != nil || p.MRCLower != nil {
+			t.Errorf("1D[%d]: expected nil legacy MRC during warmup (only %d bars < %d warmup), got %+v",
+				i, len(dailyBars), legacyMRCPeriod, p)
 		}
 	}
 
-	// Wire format: mrc must be absent (omitempty) for warmup bars.
+	// Wire format: legacy mrc fields must be absent (omitempty) for warmup bars.
 	raw, err := json.Marshal(payload)
 	if err != nil {
 		t.Fatalf("marshal: %v", err)
@@ -538,7 +590,9 @@ func TestMRCWarmupOmissionShortSeries(t *testing.T) {
 	var wire struct {
 		SeriesByTimeframe map[string]struct {
 			Points []struct {
-				MRC *struct{} `json:"mrc"`
+				MRCCenter *float64 `json:"mrcCenter"`
+				MRCUpper  *float64 `json:"mrcUpper"`
+				MRCLower  *float64 `json:"mrcLower"`
 			} `json:"points"`
 		} `json:"seriesByTimeframe"`
 	}
@@ -546,19 +600,19 @@ func TestMRCWarmupOmissionShortSeries(t *testing.T) {
 		t.Fatalf("unmarshal: %v", err)
 	}
 	for i, p := range wire.SeriesByTimeframe["1D"].Points {
-		if p.MRC != nil {
-			t.Errorf("wire 1D[%d]: expected mrc omitted during warmup", i)
+		if p.MRCCenter != nil || p.MRCUpper != nil || p.MRCLower != nil {
+			t.Errorf("wire 1D[%d]: expected legacy mrc omitted during warmup", i)
 		}
 	}
 }
 
-// TestMRCNonNilAfterWarmup verifies that canonical MRC values are present after the
-// warmup period when enough bars are provided, and that band ordering holds.
+// TestMRCNonNilAfterWarmup verifies that legacy MRC values are present after
+// the warmup period when enough bars are provided, and that band ordering holds.
 func TestMRCNonNilAfterWarmup(t *testing.T) {
 	job := TechnicalSnapshotJob{Ticker: "LONG", ReportID: "mrc-long", PublishedAtMs: 1742860800000}
 
-	// Build 250 daily bars — enough to pass the 200-bar SuperSmoother warmup.
-	n := 250
+	// Build 40 daily bars — enough to pass the 20-bar legacy MRC warmup.
+	n := 40
 	dailyBars := make([]massive.Bar, n)
 	baseDate := time.Date(2020, 1, 2, 0, 0, 0, 0, time.UTC)
 	price := 100.0
@@ -581,54 +635,40 @@ func TestMRCNonNilAfterWarmup(t *testing.T) {
 		t.Fatalf("expected %d daily points, got %d", n, len(series1d.Points))
 	}
 
-	// First mrctvLength points must be nil.
-	for i := 0; i < mrctvLength; i++ {
-		if series1d.Points[i].MRC != nil {
-			t.Errorf("1D[%d]: expected nil MRC during warmup, got non-nil", i)
+	// First legacyMRCPeriod-1 points must be nil.
+	for i := 0; i < legacyMRCPeriod-1; i++ {
+		if series1d.Points[i].MRCCenter != nil || series1d.Points[i].MRCUpper != nil || series1d.Points[i].MRCLower != nil {
+			t.Errorf("1D[%d]: expected nil legacy MRC during warmup, got non-nil", i)
 		}
 	}
 
 	// Points after warmup must be non-nil with valid band ordering.
-	for i := mrctvLength; i < n; i++ {
+	for i := legacyMRCPeriod - 1; i < n; i++ {
 		p := series1d.Points[i]
-		if p.MRC == nil {
-			t.Errorf("1D[%d]: expected non-nil MRC after warmup", i)
+		if p.MRCCenter == nil || p.MRCUpper == nil || p.MRCLower == nil {
+			t.Errorf("1D[%d]: expected non-nil legacy MRC after warmup", i)
 			continue
 		}
-		if p.MRC.OuterLower > p.MRC.InnerLower+1e-6 {
-			t.Errorf("1D[%d]: outerLower %f > innerLower %f", i, p.MRC.OuterLower, p.MRC.InnerLower)
+		if *p.MRCLower > *p.MRCCenter+1e-6 {
+			t.Errorf("1D[%d]: lower %f > center %f", i, *p.MRCLower, *p.MRCCenter)
 		}
-		if p.MRC.InnerLower > p.MRC.Center+1e-6 {
-			t.Errorf("1D[%d]: innerLower %f > center %f", i, p.MRC.InnerLower, p.MRC.Center)
-		}
-		if p.MRC.Center > p.MRC.InnerUpper+1e-6 {
-			t.Errorf("1D[%d]: center %f > innerUpper %f", i, p.MRC.Center, p.MRC.InnerUpper)
-		}
-		if p.MRC.InnerUpper > p.MRC.OuterUpper+1e-6 {
-			t.Errorf("1D[%d]: innerUpper %f > outerUpper %f", i, p.MRC.InnerUpper, p.MRC.OuterUpper)
+		if *p.MRCCenter > *p.MRCUpper+1e-6 {
+			t.Errorf("1D[%d]: center %f > upper %f", i, *p.MRCCenter, *p.MRCUpper)
 		}
 	}
 
-	// Wire format: mrc must appear for post-warmup bars.
+	// Wire format: legacy mrc fields must appear for post-warmup bars.
 	raw, err := json.Marshal(payload)
 	if err != nil {
 		t.Fatalf("marshal: %v", err)
 	}
 	var wire struct {
 		SeriesByTimeframe map[string]struct {
-			MRCMeta *struct {
-				AlgorithmVersion string  `json:"algorithmVersion"`
-				Length           int     `json:"length"`
-				OuterMultiplier  float64 `json:"outerMultiplier"`
-			} `json:"mrcMeta"`
 			Points []struct {
-				MRC *struct {
-					Center     float64 `json:"center"`
-					InnerUpper float64 `json:"innerUpper"`
-					InnerLower float64 `json:"innerLower"`
-					OuterUpper float64 `json:"outerUpper"`
-					OuterLower float64 `json:"outerLower"`
-				} `json:"mrc"`
+				MRC       *struct{} `json:"mrc"`
+				MRCCenter *float64  `json:"mrcCenter"`
+				MRCUpper  *float64  `json:"mrcUpper"`
+				MRCLower  *float64  `json:"mrcLower"`
 			} `json:"points"`
 		} `json:"seriesByTimeframe"`
 	}
@@ -637,22 +677,13 @@ func TestMRCNonNilAfterWarmup(t *testing.T) {
 	}
 
 	wire1d := wire.SeriesByTimeframe["1D"]
-	if wire1d.MRCMeta == nil {
-		t.Fatalf("wire 1D: expected mrcMeta, got nil")
-	}
-	if wire1d.MRCMeta.AlgorithmVersion != MRCAlgorithmVersion {
-		t.Errorf("wire 1D mrcMeta.algorithmVersion: got %q, want %q", wire1d.MRCMeta.AlgorithmVersion, MRCAlgorithmVersion)
-	}
-	if wire1d.MRCMeta.Length != mrctvLength {
-		t.Errorf("wire 1D mrcMeta.length: got %d, want %d", wire1d.MRCMeta.Length, mrctvLength)
-	}
-	if wire1d.MRCMeta.OuterMultiplier != mrctvOuterMultiplier {
-		t.Errorf("wire 1D mrcMeta.outerMultiplier: got %f, want %f", wire1d.MRCMeta.OuterMultiplier, mrctvOuterMultiplier)
-	}
-
-	for i := mrctvLength; i < n; i++ {
-		if wire1d.Points[i].MRC == nil {
-			t.Errorf("wire 1D[%d]: expected mrc present in JSON after warmup", i)
+	for i := legacyMRCPeriod - 1; i < n; i++ {
+		p := wire1d.Points[i]
+		if p.MRC != nil {
+			t.Errorf("wire 1D[%d]: expected canonical mrc to be absent during legacy rollback", i)
+		}
+		if p.MRCCenter == nil || p.MRCUpper == nil || p.MRCLower == nil {
+			t.Errorf("wire 1D[%d]: expected legacy mrc fields present in JSON after warmup", i)
 		}
 	}
 }

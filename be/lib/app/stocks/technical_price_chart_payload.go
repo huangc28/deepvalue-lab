@@ -12,7 +12,7 @@ const MRCAlgorithmVersion = "tradingview-mrc-v1"
 // mrctvLength is the canonical SuperSmoother period for the TradingView-aligned MRC.
 // innerMult and outerMult are the canonical band multipliers.
 const (
-	mrctvLength         = 200
+	mrctvLength          = 200
 	mrctvInnerMultiplier = 1.0
 	mrctvOuterMultiplier = 2.415
 )
@@ -98,7 +98,7 @@ type TimeframeSeries struct {
 }
 
 // OhlcPoint is a candle with explicit timestamp semantics.
-// RSI, EMAOnRSI, and MRC are omitted during indicator warmup (not enough prior bars).
+// RSI, EMAOnRSI, and legacy MRC fields are omitted during indicator warmup.
 type OhlcPoint struct {
 	TimestampUtc      string    `json:"timestampUtc"`
 	ExchangeTimestamp string    `json:"exchangeTimestamp"`
@@ -110,6 +110,9 @@ type OhlcPoint struct {
 	RSI               *float64  `json:"rsi,omitempty"`
 	EMAOnRSI          *float64  `json:"emaOnRsi,omitempty"`
 	MRC               *MRCPoint `json:"mrc,omitempty"`
+	MRCCenter         *float64  `json:"mrcCenter,omitempty"`
+	MRCUpper          *float64  `json:"mrcUpper,omitempty"`
+	MRCLower          *float64  `json:"mrcLower,omitempty"`
 }
 
 // IndicatorSnapshot holds the latest computed values and classification.

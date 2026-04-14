@@ -20,6 +20,7 @@ import (
 const (
 	technicalChartTimezone = "America/New_York"
 	technicalChartLookback = "1D"
+	legacyMRCPeriod        = 20
 )
 
 var technicalChartLocation = loadTechnicalChartLocation()
@@ -272,19 +273,11 @@ func buildTechnicalPriceChartPayload(job TechnicalSnapshotJob, dailyBars, intrad
 	attachTimeframeRSI(dailySeriesPoints, toPtr)
 	attachTimeframeRSI(weeklySeriesPoints, toPtr)
 
-	// Canonical TradingView-aligned MRC — daily and weekly only.
-	// Warmup: first mrctvLength bars are omitted (nil) to avoid heavily-biased seed values.
-	attachTimeframeMRC(dailySeriesPoints, mrctvLength, round2)
-	attachTimeframeMRC(weeklySeriesPoints, mrctvLength, round2)
-
-	canonicalMRCMeta := &MRCMetadata{
-		AlgorithmVersion: MRCAlgorithmVersion,
-		Source:           "hlc3",
-		Smoother:         "SuperSmoother",
-		Length:           mrctvLength,
-		InnerMultiplier:  mrctvInnerMultiplier,
-		OuterMultiplier:  mrctvOuterMultiplier,
-	}
+	// Roll chart rendering back to the legacy MRC approximation so visual
+	// validation can compare against the older behavior again.
+	attachTimeframeLegacyMRC(intraday1hSeriesPoints, legacyMRCPeriod, toPtr)
+	attachTimeframeLegacyMRC(dailySeriesPoints, legacyMRCPeriod, toPtr)
+	attachTimeframeLegacyMRC(weeklySeriesPoints, legacyMRCPeriod, toPtr)
 
 	seriesByTimeframe := make(map[ChartTimeframe]TimeframeSeries, 5)
 	availableTimeframes := make([]ChartTimeframe, 0, 5)
@@ -322,7 +315,6 @@ func buildTechnicalPriceChartPayload(job TechnicalSnapshotJob, dailyBars, intrad
 		Timezone:      technicalChartTimezone,
 		SessionMode:   SessionModeMarketHours,
 		LookbackLabel: technicalChartLookback,
-		MRCMeta:       canonicalMRCMeta,
 		Points:        dailySeriesPoints,
 	})
 	addSeries(TimeframeSeries{
@@ -330,7 +322,6 @@ func buildTechnicalPriceChartPayload(job TechnicalSnapshotJob, dailyBars, intrad
 		Timezone:      technicalChartTimezone,
 		SessionMode:   SessionModeMarketHours,
 		LookbackLabel: "1W",
-		MRCMeta:       canonicalMRCMeta,
 		Points:        weeklySeriesPoints,
 	})
 
@@ -389,13 +380,12 @@ func attachTimeframeRSI(points []OhlcPoint, toPtr func(float64) *float64) {
 	}
 }
 
-// attachTimeframeMRC computes the canonical TradingView-aligned MRC using SuperSmoother
-// from each point's High/Low/Close and writes the results back in place.
-// Points at index < warmup are left with MRC = nil to avoid heavily-biased seed values.
-// round2 is applied to each band value before storing.
-func attachTimeframeMRC(points []OhlcPoint, warmup int, round2 func(float64) float64) {
+// attachTimeframeLegacyMRC computes the older HLC3-based MRC approximation
+// (SMA(20) +/- 2 sigma) from each point's High/Low/Close and writes the
+// center/outer bands back in place.
+func attachTimeframeLegacyMRC(points []OhlcPoint, period int, toPtr func(float64) *float64) {
 	n := len(points)
-	if n == 0 {
+	if n == 0 || period <= 0 {
 		return
 	}
 	highs := make([]float64, n)
@@ -406,20 +396,12 @@ func attachTimeframeMRC(points []OhlcPoint, warmup int, round2 func(float64) flo
 		lows[i] = p.Low
 		closes[i] = p.Close
 	}
-	mrcPoints := indicators.MRCTV(highs, lows, closes, mrctvLength, mrctvInnerMultiplier, mrctvOuterMultiplier)
-	for i, m := range mrcPoints {
-		if i < warmup {
-			// Skip warmup bars; MRC stays nil.
-			continue
-		}
-		pt := &MRCPoint{
-			Center:     round2(m.Center),
-			InnerUpper: round2(m.InnerUpper),
-			InnerLower: round2(m.InnerLower),
-			OuterUpper: round2(m.OuterUpper),
-			OuterLower: round2(m.OuterLower),
-		}
-		points[i].MRC = pt
+	hlc3 := indicators.HLC3(highs, lows, closes)
+	center, upper, lower := indicators.MRC(hlc3, period)
+	for i := range points {
+		points[i].MRCCenter = toPtr(center[i])
+		points[i].MRCUpper = toPtr(upper[i])
+		points[i].MRCLower = toPtr(lower[i])
 	}
 }
 
