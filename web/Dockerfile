@@ -4,6 +4,8 @@ WORKDIR /src
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
+# Keep this build arg explicit so production web-only deploy rehearsals
+# continue proving the frontend points at the intended API host.
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
