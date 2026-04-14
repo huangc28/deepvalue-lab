@@ -17,6 +17,77 @@ env:
   IMAGE_TAG: latest
 
 jobs:
+  detect_changes:
+    name: Detect Changed Services
+    runs-on: ubuntu-latest
+    outputs:
+      deploy_web: ${{ steps.detect.outputs.deploy_web }}
+      deploy_be: ${{ steps.detect.outputs.deploy_be }}
+      deploy_worker: ${{ steps.detect.outputs.deploy_worker }}
+      changed_files: ${{ steps.detect.outputs.changed_files }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed paths
+        id: detect
+        run: |
+          set -eu
+
+          BEFORE_SHA="${{ github.event.before }}"
+          CURRENT_SHA="${{ github.sha }}"
+
+          if [ -z "${BEFORE_SHA}" ] || [ "${BEFORE_SHA}" = "0000000000000000000000000000000000000000" ]; then
+            CHANGED_FILES="$(git ls-tree -r --name-only "${CURRENT_SHA}")"
+          else
+            CHANGED_FILES="$(git diff --name-only "${BEFORE_SHA}" "${CURRENT_SHA}")"
+          fi
+
+          printf '%s\n' "${CHANGED_FILES}" > /tmp/changed-files.txt
+
+          deploy_all=false
+          deploy_web=false
+          deploy_be=false
+          deploy_worker=false
+
+          if grep -Eq '^(\.github/workflows/|web/azure/|be/azure/)' /tmp/changed-files.txt; then
+            deploy_all=true
+          fi
+
+          if [ "${deploy_all}" = true ] || grep -Eq '^web/' /tmp/changed-files.txt; then
+            deploy_web=true
+          fi
+
+          if [ "${deploy_all}" = true ] || grep -Eq '^be/' /tmp/changed-files.txt; then
+            deploy_be=true
+            deploy_worker=true
+          fi
+
+          {
+            echo "deploy_web=${deploy_web}"
+            echo "deploy_be=${deploy_be}"
+            echo "deploy_worker=${deploy_worker}"
+            echo "changed_files<<EOF"
+            cat /tmp/changed-files.txt
+            echo "EOF"
+          } >> "${GITHUB_OUTPUT}"
+
+      - name: Summarize detected changes
+        run: |
+          {
+            echo "### Change detection"
+            echo "- deploy_web: \`${{ steps.detect.outputs.deploy_web }}\`"
+            echo "- deploy_be: \`${{ steps.detect.outputs.deploy_be }}\`"
+            echo "- deploy_worker: \`${{ steps.detect.outputs.deploy_worker }}\`"
+            echo ""
+            echo "Changed files:"
+            echo '```text'
+            printf '%s\n' "${{ steps.detect.outputs.changed_files }}"
+            echo '```'
+          } >> "${GITHUB_STEP_SUMMARY}"
+
   foundation:
     name: Phase 1 Foundation
     runs-on: ubuntu-latest
@@ -104,7 +175,10 @@ jobs:
 
   build_web:
     name: Phase 2 Build Web
-    needs: foundation
+    needs:
+      - detect_changes
+      - foundation
+    if: needs.detect_changes.outputs.deploy_web == 'true'
     runs-on: ubuntu-latest
     env:
       AZURE_ACR_NAME: ${{ vars.AZURE_ACR_NAME }}
@@ -163,7 +237,10 @@ jobs:
 
   build_be:
     name: Phase 2 Build Backend
-    needs: foundation
+    needs:
+      - detect_changes
+      - foundation
+    if: needs.detect_changes.outputs.deploy_be == 'true'
     runs-on: ubuntu-latest
     env:
       AZURE_ACR_NAME: ${{ vars.AZURE_ACR_NAME }}
@@ -219,7 +296,10 @@ jobs:
 
   build_worker:
     name: Phase 2 Build Worker
-    needs: foundation
+    needs:
+      - detect_changes
+      - foundation
+    if: needs.detect_changes.outputs.deploy_worker == 'true'
     runs-on: ubuntu-latest
     env:
       AZURE_ACR_NAME: ${{ vars.AZURE_ACR_NAME }}
@@ -272,4 +352,238 @@ jobs:
           {
             echo "### Worker image"
             echo "- pushed \`${WORKER_IMAGE}\`"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+  deploy_web:
+    name: Phase 3 Deploy Web
+    needs:
+      - detect_changes
+      - build_web
+    if: needs.detect_changes.outputs.deploy_web == 'true'
+    runs-on: ubuntu-latest
+    env:
+      AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+      AZURE_CONTAINER_APP_WEB: ${{ vars.AZURE_CONTAINER_APP_WEB }}
+      WEB_IMAGE_REPOSITORY: ${{ vars.AZURE_ACR_NAME }}.azurecr.io/web
+    steps:
+      - name: Azure login via OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Install Azure Container Apps extension
+        run: |
+          az extension add --name containerapp --upgrade
+
+      - name: Update web Container App
+        run: |
+          set -eu
+          SHORT_SHA="${GITHUB_SHA::7}"
+          REVISION_SUFFIX="w${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}-${SHORT_SHA}"
+          WEB_IMAGE="${WEB_IMAGE_REPOSITORY}:${IMAGE_TAG}"
+
+          echo "REVISION_SUFFIX=${REVISION_SUFFIX}" >> "${GITHUB_ENV}"
+
+          az containerapp update \
+            --name "${AZURE_CONTAINER_APP_WEB}" \
+            --resource-group "${AZURE_RESOURCE_GROUP}" \
+            --image "${WEB_IMAGE}" \
+            --revision-suffix "${REVISION_SUFFIX}" \
+            --set-env-vars "GIT_SHA=${GITHUB_SHA}"
+
+      - name: Verify web revision and traceability
+        run: |
+          set -eu
+          for _ in $(seq 1 12); do
+            REVISION_NAME="$(
+              az containerapp revision list \
+                --name "${AZURE_CONTAINER_APP_WEB}" \
+                --resource-group "${AZURE_RESOURCE_GROUP}" \
+                --query "[?contains(name, '${REVISION_SUFFIX}')].name | [0]" \
+                --output tsv
+            )"
+
+            ACTUAL_GIT_SHA="$(
+              az containerapp show \
+                --name "${AZURE_CONTAINER_APP_WEB}" \
+                --resource-group "${AZURE_RESOURCE_GROUP}" \
+                --query "properties.template.containers[0].env[?name=='GIT_SHA'].value | [0]" \
+                --output tsv
+            )"
+
+            if [ -n "${REVISION_NAME}" ] && [ "${ACTUAL_GIT_SHA}" = "${GITHUB_SHA}" ]; then
+              exit 0
+            fi
+
+            sleep 5
+          done
+
+          echo "::error title=Web deploy verification failed::Revision suffix or GIT_SHA traceability was not observable after update"
+          exit 1
+
+      - name: Summarize web deploy
+        run: |
+          {
+            echo "### Web deploy"
+            echo "- app: \`${AZURE_CONTAINER_APP_WEB}\`"
+            echo "- revision suffix: \`${REVISION_SUFFIX}\`"
+            echo "- git sha: \`${GITHUB_SHA}\`"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+  deploy_be:
+    name: Phase 3 Deploy Backend
+    needs:
+      - detect_changes
+      - build_be
+    if: needs.detect_changes.outputs.deploy_be == 'true'
+    runs-on: ubuntu-latest
+    env:
+      AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+      AZURE_CONTAINER_APP_BE: ${{ vars.AZURE_CONTAINER_APP_BE }}
+      BE_IMAGE_REPOSITORY: ${{ vars.AZURE_ACR_NAME }}.azurecr.io/be
+    steps:
+      - name: Azure login via OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Install Azure Container Apps extension
+        run: |
+          az extension add --name containerapp --upgrade
+
+      - name: Update backend Container App
+        run: |
+          set -eu
+          SHORT_SHA="${GITHUB_SHA::7}"
+          REVISION_SUFFIX="b${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}-${SHORT_SHA}"
+          BE_IMAGE="${BE_IMAGE_REPOSITORY}:${IMAGE_TAG}"
+
+          echo "REVISION_SUFFIX=${REVISION_SUFFIX}" >> "${GITHUB_ENV}"
+
+          az containerapp update \
+            --name "${AZURE_CONTAINER_APP_BE}" \
+            --resource-group "${AZURE_RESOURCE_GROUP}" \
+            --image "${BE_IMAGE}" \
+            --revision-suffix "${REVISION_SUFFIX}" \
+            --set-env-vars "GIT_SHA=${GITHUB_SHA}"
+
+      - name: Verify backend revision and traceability
+        run: |
+          set -eu
+          for _ in $(seq 1 12); do
+            REVISION_NAME="$(
+              az containerapp revision list \
+                --name "${AZURE_CONTAINER_APP_BE}" \
+                --resource-group "${AZURE_RESOURCE_GROUP}" \
+                --query "[?contains(name, '${REVISION_SUFFIX}')].name | [0]" \
+                --output tsv
+            )"
+
+            ACTUAL_GIT_SHA="$(
+              az containerapp show \
+                --name "${AZURE_CONTAINER_APP_BE}" \
+                --resource-group "${AZURE_RESOURCE_GROUP}" \
+                --query "properties.template.containers[0].env[?name=='GIT_SHA'].value | [0]" \
+                --output tsv
+            )"
+
+            if [ -n "${REVISION_NAME}" ] && [ "${ACTUAL_GIT_SHA}" = "${GITHUB_SHA}" ]; then
+              exit 0
+            fi
+
+            sleep 5
+          done
+
+          echo "::error title=Backend deploy verification failed::Revision suffix or GIT_SHA traceability was not observable after update"
+          exit 1
+
+      - name: Summarize backend deploy
+        run: |
+          {
+            echo "### Backend deploy"
+            echo "- app: \`${AZURE_CONTAINER_APP_BE}\`"
+            echo "- revision suffix: \`${REVISION_SUFFIX}\`"
+            echo "- git sha: \`${GITHUB_SHA}\`"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+  deploy_worker:
+    name: Phase 3 Deploy Worker
+    needs:
+      - detect_changes
+      - build_worker
+    if: needs.detect_changes.outputs.deploy_worker == 'true'
+    runs-on: ubuntu-latest
+    env:
+      AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+      AZURE_CONTAINER_APP_WORKER: ${{ vars.AZURE_CONTAINER_APP_WORKER }}
+      WORKER_IMAGE_REPOSITORY: ${{ vars.AZURE_ACR_NAME }}.azurecr.io/worker
+    steps:
+      - name: Azure login via OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Install Azure Container Apps extension
+        run: |
+          az extension add --name containerapp --upgrade
+
+      - name: Update worker Container App
+        run: |
+          set -eu
+          SHORT_SHA="${GITHUB_SHA::7}"
+          REVISION_SUFFIX="k${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}-${SHORT_SHA}"
+          WORKER_IMAGE="${WORKER_IMAGE_REPOSITORY}:${IMAGE_TAG}"
+
+          echo "REVISION_SUFFIX=${REVISION_SUFFIX}" >> "${GITHUB_ENV}"
+
+          az containerapp update \
+            --name "${AZURE_CONTAINER_APP_WORKER}" \
+            --resource-group "${AZURE_RESOURCE_GROUP}" \
+            --image "${WORKER_IMAGE}" \
+            --revision-suffix "${REVISION_SUFFIX}" \
+            --set-env-vars "GIT_SHA=${GITHUB_SHA}"
+
+      - name: Verify worker revision and traceability
+        run: |
+          set -eu
+          for _ in $(seq 1 12); do
+            REVISION_NAME="$(
+              az containerapp revision list \
+                --name "${AZURE_CONTAINER_APP_WORKER}" \
+                --resource-group "${AZURE_RESOURCE_GROUP}" \
+                --query "[?contains(name, '${REVISION_SUFFIX}')].name | [0]" \
+                --output tsv
+            )"
+
+            ACTUAL_GIT_SHA="$(
+              az containerapp show \
+                --name "${AZURE_CONTAINER_APP_WORKER}" \
+                --resource-group "${AZURE_RESOURCE_GROUP}" \
+                --query "properties.template.containers[0].env[?name=='GIT_SHA'].value | [0]" \
+                --output tsv
+            )"
+
+            if [ -n "${REVISION_NAME}" ] && [ "${ACTUAL_GIT_SHA}" = "${GITHUB_SHA}" ]; then
+              exit 0
+            fi
+
+            sleep 5
+          done
+
+          echo "::error title=Worker deploy verification failed::Revision suffix or GIT_SHA traceability was not observable after update"
+          exit 1
+
+      - name: Summarize worker deploy
+        run: |
+          {
+            echo "### Worker deploy"
+            echo "- app: \`${AZURE_CONTAINER_APP_WORKER}\`"
+            echo "- revision suffix: \`${REVISION_SUFFIX}\`"
+            echo "- git sha: \`${GITHUB_SHA}\`"
           } >> "${GITHUB_STEP_SUMMARY}"
