@@ -24,3 +24,4 @@ research/archive/2026/03/16/amzn-analysis.md
 .omc/
 be/.omc/
 web/.omc/
+.claude/settings.local.json
