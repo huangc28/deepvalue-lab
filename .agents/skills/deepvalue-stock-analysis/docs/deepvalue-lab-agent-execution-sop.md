@@ -1,6 +1,6 @@
 # DeepValue Lab Agent Execution SOP
 
-Updated: 2026-03-20
+Updated: 2026-04-15
 
 ## 1. Purpose
 
@@ -156,6 +156,14 @@ Current rule:
 
 The report must follow the DeepValue Lab report contract in the required order.
 
+The report must also include the prefatory `Quick Take For General Readers` block before Section 1.
+
+When writing the English markdown report:
+
+- open multi-sentence analytical sections with a plain-language lead before technical detail
+- explain important acronyms and shorthand on first use when a motivated general reader may not know them
+- preserve professional judgment without making the report depend on unexplained jargon
+
 Do not improvise section order.
 Do not omit required sections.
 
@@ -190,6 +198,7 @@ Save the artifacts to:
 
 Before treating the task as finished, check that the report includes:
 
+- quick take for general readers
 - business classification
 - thesis
 - variant perception
@@ -213,6 +222,7 @@ Also verify that:
 - the English `StockDetail` JSON exists
 - the zh-TW `StockDetail` JSON exists
 - all required artifacts were saved to the research archive
+- the English report has a reader-orientation layer, not only specialist shorthand
 
 ### Step 14: Perform A Benchmark Quality Check
 
@@ -226,6 +236,7 @@ Minimum benchmark checks:
 - if the report uses EV-based multiples, is the bridge to per-share value explicit enough to follow
 - are all material claims in the body supported by the listed sources
 - does the conclusion clearly separate company quality from price attractiveness
+- can a motivated general reader explain the setup after reading the top of the report
 
 If any of these fail, the report may be complete by section count but is still below standard.
 
@@ -238,6 +249,7 @@ The final report should:
 - be explicit about price versus value
 - be explicit about what the market already prices in
 - avoid vague praise detached from valuation
+- give a motivated general reader a fast orientation path at the top of the report
 
 The final report should not:
 
@@ -245,6 +257,7 @@ The final report should not:
 - stop at valuation only
 - summarize news without translating it
 - use technicals as valuation proof
+- bury the call in jargon before the reader understands the setup
 
 ## 5. Writeback Rules
 
@@ -278,6 +291,7 @@ The agent failed the SOP if it:
 - did not load the local methodology first
 - used stale or unsupported facts
 - skipped required sections
+- omitted the reader-orientation layer in the English report
 - selected an obviously mismatched valuation method
 - summarized news without model translation
 - omitted thesis status

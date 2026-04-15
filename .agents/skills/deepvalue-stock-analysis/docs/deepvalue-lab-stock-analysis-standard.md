@@ -10,6 +10,7 @@ Its purpose is to make a new AI agent capable of producing reports with consiste
 - verifying all current facts with fresh official or current sources
 - following a fixed analytical order
 - producing a report that is useful for real investment decisions rather than generic summary
+- producing a report that a motivated general reader can follow without diluting the analytical standard
 
 This is not a product specification.
 This is the analysis quality standard.
@@ -22,6 +23,10 @@ A valid DeepValue Lab report must help answer four questions:
 - Has recent news changed the valuation assumptions?
 - Is the current market price a good entry zone, not just a good company?
 - Is the original thesis still intact, weakening, or broken?
+
+It should also let a motivated general reader answer one more question quickly:
+
+- In plain language, what is the stock price already assuming and why does that matter?
 
 If a report cannot answer these four questions clearly, it does not meet the standard.
 
@@ -60,6 +65,15 @@ The report must follow this logic:
 This order is mandatory.
 The report should not jump straight from business quality to valuation conclusion.
 
+Before the numbered sections, the report must include a short `Quick Take For General Readers` block.
+
+That block should orient the reader in plain language before the full memo begins:
+
+- what the company does
+- the current valuation call
+- what the market is already pricing in
+- what would most likely change the conclusion
+
 ## 5. Required Sections
 
 ### 5.1 Business Classification
@@ -76,6 +90,7 @@ Examples:
 - pre-commercial or milestone-driven
 
 The report must explain why this classification matters for valuation.
+The report should also say what the company actually does in ordinary language before relying on category labels.
 
 ### 5.2 Thesis
 
@@ -107,6 +122,7 @@ Examples:
 - milestone or scenario valuation
 
 The report must explain why this method fits this company better than the obvious alternatives.
+The report should make that explanation understandable before the shorthand becomes dense.
 
 ### 5.5 Current Valuation Snapshot
 
@@ -196,6 +212,7 @@ Technicals may support:
 - a wait-for-confirmation zone
 
 Technicals must not be used to claim intrinsic value.
+The section should end with a plain-language execution takeaway, not just indicator recitation.
 
 ### 5.12 What To Monitor Next
 
@@ -251,10 +268,18 @@ A valid DeepValue Lab report should help a real investor decide:
 - whether this is an attractive or unattractive entry zone
 - what would change the conclusion
 
+It should also help a motivated general reader understand:
+
+- what the company actually does
+- why this stock is cheap / fair / rich
+- what the current price is already assuming
+- what could change the call next
+
 The report should not feel like:
 
 - a generic company summary
 - a news recap
+- an analyst memo that only specialists can decode
 
 ## 9. Benchmark Quality Rule
 
@@ -269,6 +294,7 @@ It is defined by analytical properties:
 - the report includes the main counterweights that cap the valuation multiple
 - the scenario worksheet is auditable rather than hand-wavy
 - the conclusion explains what the market already prices in and whether there is real safety margin
+- the top of the report gives a non-specialist reader a truthful orientation before the denser technical discussion begins
 
 In practice, this means a report is below standard if it:
 
@@ -338,6 +364,7 @@ A report meets DeepValue Lab quality when it is:
 - analytically coherent
 - explicit about assumptions
 - clear about what the market already prices in
+- readable without sacrificing rigor
 - clear about what would prove the thesis wrong
 - useful for actual decision-making
 

@@ -1,6 +1,6 @@
 # DeepValue Lab Report Contract
 
-Updated: 2026-03-20
+Updated: 2026-04-15
 
 ## 1. Purpose
 
@@ -16,6 +16,7 @@ The goal is consistent analytical completeness and decision usefulness.
 A report is not complete unless it includes every required section in the required order.
 
 An agent may write concise or detailed content depending on the company and available data, but it may not skip required sections.
+An agent must also include the required prefatory orientation block before the numbered sections.
 
 ## 3. Required Output Order
 
@@ -39,12 +40,32 @@ Every report must use this section order:
 
 No sections may be merged in a way that hides whether a required topic was covered.
 
+### Required Prefatory Block
+
+Before `## 1. Business Classification`, every report must include:
+
+`## Quick Take For General Readers`
+
+Required content:
+
+- one plain-language sentence or bullet on what the company does
+- one explicit valuation call in plain language
+- one sentence on what the current price is already assuming
+- one sentence on what would most likely change the call
+
+Rules:
+
+- keep it to at most four short bullets or four short sentences
+- do not rely on unexplained acronyms when plain-English wording works
+- treat it as reader orientation, not as a substitute for the full memo
+
 ## 4. Section Requirements
 
 ### 4.1 Business Classification
 
 Required content:
 
+- what the company actually does in plain language
 - what type of business this is
 - why that business type matters for valuation
 
@@ -83,6 +104,7 @@ Required content:
 - valuation method used
 - why that method fits this company
 - why more obvious alternatives are less appropriate if relevant
+- one plain-language explanation of why this metric is the right tool for this business
 
 Minimum acceptable output:
 
@@ -171,6 +193,7 @@ Required content:
 Minimum acceptable output:
 
 - one paragraph or bullet set explaining what the market is underwriting
+- one plain-language line clarifying what is not priced in
 
 ### 4.11 Provisional Conclusion
 
@@ -202,6 +225,7 @@ Required content:
 - favorable / neutral / stretched
 - explanation
 - technicals must be framed as execution support only
+- clear execution takeaway in plain language
 
 Minimum acceptable output:
 
@@ -246,6 +270,18 @@ Current default technical language:
 
 The report should not claim that RSI or MRC proves intrinsic value.
 
+## 5.5 Reader Accessibility Rule In The Contract
+
+The canonical English markdown report is the main analytical artifact and must also be readable to a motivated general reader.
+
+Rules:
+
+- every report must include `Quick Take For General Readers` before Section 1
+- each analytical section with more than one sentence should open with a plain-language lead before technical detail
+- explain important acronyms and shorthand on first use in the English report when a non-specialist reader may not know them
+- keep necessary jargon when precision requires it, but pair it with explanation instead of making readers decode the thesis from shorthand alone
+- readability is an analytical quality requirement, not a separate cosmetic pass
+
 ## 6.5 Benchmark Quality Rule
 
 Completeness alone is not sufficient.
@@ -257,6 +293,7 @@ A report that includes every section but fails one of the following is still bel
 - scenario fair values are not auditable from the stated assumptions
 - material claims in the body are not backed by the listed sources
 - conclusion praises company quality without clearly stating price-versus-value judgment
+- the report is analytically correct but still too jargon-dense for a motivated general reader to follow the call
 
 ## 6. Conclusion Style Rule
 
@@ -268,17 +305,20 @@ Preferred style:
 - conditional
 - explicit about assumptions
 - explicit about what is priced in
+- readable without sacrificing rigor
 
 Avoid:
 
 - vague praise of management without valuation context
 - generic language like "great company, strong growth" without price framing
 - unsupported confidence
+- burying the core call under unexplained shorthand
 
 ## 7. Completion Rules
 
 A report is incomplete if any of the following are missing:
 
+- quick take for general readers
 - thesis
 - variant perception
 - valuation lens
@@ -301,6 +341,8 @@ Date:
 Company:
 Ticker:
 Point-in-time price:
+
+## Quick Take For General Readers
 
 ## 1. Business Classification
 
@@ -332,6 +374,20 @@ Point-in-time price:
 
 ## 15. Sources Used
 ```
+
+## 8.1 Canonical English Report Readability Contract
+
+The English markdown report is the canonical narrative artifact.
+
+It must preserve analytical meaning while also reducing reader friction.
+
+Apply these rules:
+
+1. **Quick take first**: Open the report with `Quick Take For General Readers` before Section 1.
+2. **Plain-language lead**: In multi-sentence analytical sections, begin with a plain-language sentence before technical detail.
+3. **Acronyms explained on first use**: When an acronym or shorthand term (for example EPS, FCF, EBITDA, RSI, EMA, P/E, EV) appears for the first time in a reader-facing paragraph, explain it briefly unless it is obviously standard in-context.
+4. **Jargon paired with meaning**: Retain necessary professional jargon, but pair it with enough explanation that the reader does not have to infer the thesis from jargon alone.
+5. **No analytical dilution**: Do not remove the numerical reasoning, scenario logic, or professional judgment in the name of simplification.
 
 ## 8.5 zh-TW Structured Data Translation Contract
 

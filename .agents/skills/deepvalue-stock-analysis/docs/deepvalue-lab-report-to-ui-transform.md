@@ -1,8 +1,19 @@
 # Report-to-UI Transform Rules
 
-Date: 2026-03-17
+Date: 2026-04-15
 
 When converting a raw markdown analysis report (from research/archive/) into the structured JSON that the stock detail page consumes (StockDetail in web/src/types/stocks.ts), apply these rules.
+
+## 0. Reader Orientation
+
+The hero is the first-stop surface for non-specialist readers.
+
+Rules:
+
+- `summary` and `currentPriceImpliesBrief` should preserve the report's `Quick Take For General Readers` orientation
+- prefer plain-language wording over analyst shorthand in hero-facing text
+- avoid unexplained acronyms in hero-facing text unless the acronym is more familiar than the fully written term
+- the reader should be able to understand the core call from the hero before opening scenario details
 
 ## 1. Scenario Key Metrics
 
@@ -27,6 +38,7 @@ currentPriceImpliesBrief: a single sentence (max ~25 words) summarizing the pric
 Example brief: "Market prices in full consensus ~34% growth and AI GPU doubling with no re-rating — no upside surprise baked in."
 
 Rule: lead with what the market IS pricing, end with what it is NOT pricing.
+Prefer plain-language wording over compressed analyst shorthand because this field sits in the hero.
 
 ## 3. Current Price Implied Facts
 
@@ -61,7 +73,7 @@ The event, modelVariableChanged, impact, and affectedScenario fields from the re
 ## 6. Section Reading Order
 
 The detail page renders sections in this order:
-  Hero (summary, badges, metrics, variant perception, price implies brief)
+  Hero (summary, badges, metrics, variant perception, price implies brief; should work as a 30-second read for a non-specialist reader)
   Scenario Model (Bear/Base/Bull with key metrics)
   Current Valuation Snapshot (market cap, EV, multiples, balance sheet)
   Pricing Context (full price implies + expectation bridge + rail)

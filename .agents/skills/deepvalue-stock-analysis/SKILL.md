@@ -9,6 +9,8 @@ Use this skill to produce a DeepValue Lab quality stock analysis report.
 
 This skill is for analysis quality and execution consistency. It is not a generic stock-summary skill.
 
+The methodology must preserve buy-side rigor while staying understandable to a motivated general reader. The canonical English report may not offload all simplification work to the zh-TW translation or to UI summary fields.
+
 ## Load The Method First
 
 Before doing substantive company analysis, read these methodology documents:
@@ -35,13 +37,14 @@ Follow this workflow in order:
 8. Explain what the current price implies.
 9. Determine thesis status.
 10. Determine technical entry status.
-11. Write the report using the required contract.
-12. Generate the EN `StockDetail` JSON from the report.
-13. Generate the zh-TW `StockDetail` JSON by translating prose fields from the EN JSON.
-14. Save all three artifacts to the research archive.
-15. Write a case entry to `research/cases/<TICKER>.md` using the template in `research/cases/_TEMPLATE.md`. Update the index table in `research/cases/_index.md`.
-16. Perform a completion check before finishing.
-17. Perform a benchmark quality check before finishing.
+11. Write a short `Quick Take For General Readers` block before Section 1.
+12. Write the report using the required contract.
+13. Generate the EN `StockDetail` JSON from the report.
+14. Generate the zh-TW `StockDetail` JSON by translating prose fields from the EN JSON.
+15. Save all three artifacts to the research archive.
+16. Write a case entry to `research/cases/<TICKER>.md` using the template in `research/cases/_TEMPLATE.md`. Update the index table in `research/cases/_index.md`.
+17. Perform a completion check before finishing.
+18. Perform a benchmark quality check before finishing.
 
 ## Source Rule
 
@@ -56,6 +59,15 @@ Use current sources for:
 Prefer official company filings, official investor-relations releases, and other primary sources.
 
 ## Output Contract
+
+Before Section 1, the report must include an unnumbered `Quick Take For General Readers` block.
+
+That block should state, in plain language:
+
+- what the company does
+- the current valuation call
+- what the current price is already assuming
+- what would most likely change the call
 
 The report must include all of these sections in this order:
 
@@ -99,6 +111,18 @@ The best places for this judgment are usually:
 - What The Current Price Implies
 - Provisional Conclusion
 - Thesis Status
+
+## Reader Comprehension Rule
+
+The canonical English markdown report is a reader-facing artifact, not just an analyst scratchpad.
+
+Rules:
+
+- include `Quick Take For General Readers` before Section 1
+- in any analytical section with more than one sentence, lead with a plain-language sentence before technical detail
+- explain important acronyms and shorthand on first use in the English report when a motivated general reader may not know them
+- keep necessary financial jargon, but pair it with explanation instead of making readers decode the thesis from jargon alone
+- preserve the buy-side memo tone, but do not confuse density with rigor
 
 ## Cross-Check Rule
 
@@ -167,7 +191,7 @@ The type definition lives at `web/src/types/stocks.ts`. All `LocalizedText` fiel
 | `bearFairValue` | bear case fair value (number) |
 | `bullFairValue` | bull case fair value (number) |
 | `discountToBase` | computed: `((currentPrice - baseFairValue) / baseFairValue) * 100` |
-| `summary` | 1-2 sentence decision summary from Provisional Conclusion |
+| `summary` | 1-2 sentence decision summary from Quick Take / Provisional Conclusion, understandable to a motivated general reader |
 | `lastUpdated` | analysis date (YYYY-MM-DD) |
 
 **StockDetail fields:**
@@ -318,6 +342,7 @@ Do not:
 
 Before finishing, verify that the report includes:
 
+- quick take for general readers
 - thesis
 - variant perception
 - valuation lens
@@ -342,6 +367,7 @@ Also verify that:
 - all three artifacts were saved to `research/archive/YYYY/MM/DD/`
 - the user was asked whether to publish to the backend
 - if published, the backend returned `201` with valid `reportId` and R2 keys
+- the English report includes plain-language orientation rather than relying only on jargon
 
 Then check whether the report meets the DeepValue Lab benchmark quality bar.
 
@@ -352,6 +378,7 @@ Minimum benchmark questions:
 - Are the main downside and multiple-capping variables modeled, not just mentioned later?
 - Can another agent reproduce the scenario outputs from the stated assumptions?
 - Are all material claims in the body covered by `Sources Used`?
+- Can a motivated general reader explain what the company does, what the current price is assuming, and why the stock is cheap / fair / rich after reading the top of the report?
 
 If any answer is no, the report is below standard even if all sections are present.
 
