@@ -31,6 +31,7 @@ Before making changes, verify:
 - the current working directory is the target repo root
 - the current state of `AGENTS.md`, `CLAUDE.md`, and `.claude/CLAUDE.md`
 - whether `CONVENTIONS.md` exists, because agents should be told to read it before coding when present
+- whether the repo already exposes a second-brain or durable-context location that should be preserved
 - whether the repo already has a clear convention for where Claude instructions live
 
 Choose the Claude instruction file with this rule:
@@ -93,6 +94,7 @@ If required project details are missing or ambiguous, ask concise questions and 
 Treat these as blocking questions. Ask and wait before writing if any are unresolved:
 - the preferred project display name, if the repo folder name is generic or misleading
 - the authoritative Claude instruction file, if both `CLAUDE.md` and `.claude/CLAUDE.md` exist without a clear convention
+- where the project's second brain lives, if the repo uses one and the location is not already visible in the repo
 - the durable context location to reference, if the project uses one and the path is not already visible in the repo
 - validation commands, if they cannot be inferred from repo files
 - any project-specific instruction sections that must be preserved verbatim
@@ -204,7 +206,7 @@ If `AGENTS.md` is new, add a top-level heading first.
 
 Project name: `<PROJECT_NAME>`
 Project purpose: `<PROJECT_PURPOSE>`
-Durable context location: `<CONTEXT_LOCATION_OR_NONE>`
+Second brain or durable context location: `<SECOND_BRAIN_OR_CONTEXT_LOCATION_OR_NONE>`
 
 Use external or durable context for background only. Verify current code, config, and behavior in the repository.
 
